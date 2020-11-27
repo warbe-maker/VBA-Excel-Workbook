@@ -25,6 +25,6 @@ End Sub
 
 Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
 #If CompMan Then
-    mCompMan.ExportChangedComponents wb:=ThisWorkbook, sHosted:=HOSTED_COMM_COMPS
+'    mCompMan.ExportChangedComponents wb:=ThisWorkbook, sHosted:=HOSTED_COMM_COMPS
 #End If
 End Sub

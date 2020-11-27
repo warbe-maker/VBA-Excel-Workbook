@@ -35,9 +35,9 @@ Option Compare Text
 #Const VBE = 1              ' Requires a Reference to "Microsoft Visual Basis Extensibility ..."
 ' --- Begin of declarations to get all Workbooks of all running Excel instances
 Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" (ByVal hWnd1 As LongPtr, ByVal hWnd2 As LongPtr, ByVal lpsz1 As String, ByVal lpsz2 As String) As LongPtr
-Private Declare PtrSafe Function GetClassName Lib "user32" Alias "GetClassNameA" (ByVal hwnd As LongPtr, ByVal lpClassName As String, ByVal nMaxCount As LongPtr) As LongPtr
+Private Declare PtrSafe Function GetClassName Lib "user32" Alias "GetClassNameA" (ByVal hWnd As LongPtr, ByVal lpClassName As String, ByVal nMaxCount As LongPtr) As LongPtr
 Private Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As UUID) As LongPtr
-Private Declare PtrSafe Function AccessibleObjectFromWindow Lib "oleacc" (ByVal hwnd As LongPtr, ByVal dwId As LongPtr, ByRef riid As UUID, ByRef ppvObject As Object) As LongPtr
+Private Declare PtrSafe Function AccessibleObjectFromWindow Lib "oleacc" (ByVal hWnd As LongPtr, ByVal dwId As LongPtr, ByRef riid As UUID, ByRef ppvObject As Object) As LongPtr
 
 Type UUID 'GUID
     Data1 As Long
@@ -55,6 +55,23 @@ Const ERR_GOW01 = "A Workbook with the provided name (parameter vWb) is open. Ho
 Const ERR_GOW02 = "A Workbook named '<>' (parameter vWb) is not open. A full name must be provided to get it opened!"
 Const ERR_GOW03 = "A Workbook file named '<>' (parameter vWb) does not exist!"
 
+Public Function AppErr(ByVal err_no As Long) As Long
+' -----------------------------------------------------------------
+' Used with Err.Raise AppErr(<l>).
+' When the error number <l> is > 0 it is considered an "Application
+' Error Number and vbObjectErrror is added to it into a negative
+' number in order not to confuse with a VB runtime error.
+' When the error number <l> is negative it is considered an
+' Application Error and vbObjectError is added to convert it back
+' into its origin positive number.
+' ------------------------------------------------------------------
+    If err_no < 0 Then
+        AppErr = err_no - vbObjectError
+    Else
+        AppErr = vbObjectError + err_no
+    End If
+End Function
+
 Public Function IsName(ByVal v As Variant) As Boolean
 Dim sExt As String
 
@@ -70,6 +87,23 @@ Dim sExt As String
     End If
 
 End Function
+
+Private Sub ErrMsg( _
+             ByVal err_source As String, _
+    Optional ByVal err_no As Long = 0, _
+    Optional ByVal err_dscrptn As String = vbNullString)
+' ------------------------------------------------------
+' This Common Component does not have its own error
+' handling. Instead it passes on any error to the
+' caller's error handling.
+' ------------------------------------------------------
+    
+    If err_no = 0 Then err_no = Err.Number
+    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+
+    Err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
+
+End Sub
 
 Public Function IsFullName(ByVal v As Variant) As Boolean
 ' -------------------------------------------------------
@@ -110,13 +144,13 @@ Public Function IsOpen(ByVal vWb As Variant, _
 ' der) the Workbook is regarded moved and thus is returned as
 ' open object(wbResult).
 ' -----------------------------------------------------------
-Const PROC      As String = "IsOpen"    ' Procedure's name for error handling and execution tracing
-Dim sWbBaseName As String
-Dim wb          As Workbook
-Dim dctOpen     As Dictionary
-Dim wbOpen      As Workbook
-
-    On Error GoTo on_error
+    Const PROC = "IsOpen"    ' Procedure's name for error handling and execution tracing
+    
+    On Error GoTo eh
+    Dim sWbBaseName As String
+    Dim wb          As Workbook
+    Dim dctOpen     As Dictionary
+    Dim wbOpen      As Workbook
     
     If Not mWrkbk.IsObject(vWb) And Not mWrkbk.IsFullName(vWb) And Not mWrkbk.IsName(vWb) And Not TypeName(vWb) = "String" _
     Then Err.Raise AppErr(1), ErrSrc(PROC), "The Workbook (parameter vWb) is neither a Workbook object nor a Workbook's name or fullname)!"
@@ -155,14 +189,9 @@ Dim wbOpen      As Workbook
         End If
     End If
     
-exit_proc:
-    Exit Function
+xt: Exit Function
     
-on_error:
-#If Debugging = 1 Then
-    Debug.Print Err.Description: Stop: Resume
-#End If
-    ErrHndlr Err.Number, ErrSrc(PROC), Err.Description, Erl
+eh: ErrMsg ErrSrc(PROC)
 End Function
 
 Public Function Opened() As Dictionary
@@ -186,7 +215,7 @@ Dim app     As Variant
 Dim dct     As Dictionary
 Dim i       As Long
 
-    On Error GoTo on_error
+    On Error GoTo eh
     
     hWndMain = FindWindowEx(0&, 0&, "XLMAIN", vbNullString)
     lApps = 0
@@ -199,7 +228,7 @@ Dim i       As Long
                 lApps = 1
                 ReDim aApps(1 To 1)
                 Set aApps(lApps) = app
-            ElseIf checkHwnds(aApps, app.hwnd) Then
+            ElseIf checkHwnds(aApps, app.hWnd) Then
                 lApps = lApps + 1
                 ReDim Preserve aApps(1 To lApps)
                 Set aApps(lApps) = app
@@ -220,14 +249,9 @@ Dim i       As Long
     End With
     Set Opened = dct
 
-exit_proc:
-    Exit Function
+xt: Exit Function
     
-on_error:
-#If Debugging = 1 Then
-    Stop: Resume
-#End If
-    ErrHndlr Err.Number, ErrSrc(PROC), Err.Description, Erl
+eh: ErrMsg ErrSrc(PROC)
 End Function
 
 #If Win64 Then
@@ -238,76 +262,73 @@ End Function
 
 #If Win64 Then
     Dim hWndDesk As LongPtr
-    Dim hwnd As LongPtr
+    Dim hWnd As LongPtr
 #Else
     Dim hWndDesk As Long
-    Dim hwnd As Long
+    Dim hWnd As Long
 #End If
 ' -----------------------------------------------------------------------------------
 '
 ' -----------------------------------------------------------------------------------
-Dim sText   As String
-Dim lRet    As Long
-Dim iid     As UUID
-Dim ob      As Object
+    Const PROC = "GetExcelObjectFromHwnd"
+    
+    Dim sText   As String
+    Dim lRet    As Long
+    Dim iid     As UUID
+    Dim ob      As Object
     
     hWndDesk = FindWindowEx(hWndMain, 0&, "XLDESK", vbNullString)
 
     If hWndDesk <> 0 Then
-        hwnd = FindWindowEx(hWndDesk, 0, vbNullString, vbNullString)
+        hWnd = FindWindowEx(hWndDesk, 0, vbNullString, vbNullString)
 
-        Do While hwnd <> 0
+        Do While hWnd <> 0
             sText = String$(100, Chr$(0))
-            lRet = CLng(GetClassName(hwnd, sText, 100))
-            If Left$(sText, lRet) = "EXCEL7" Then
+            lRet = CLng(GetClassName(hWnd, sText, 100))
+            If left$(sText, lRet) = "EXCEL7" Then
                 Call IIDFromString(StrPtr(IID_IDispatch), iid)
-                If AccessibleObjectFromWindow(hwnd, OBJID_NATIVEOM, iid, ob) = 0 Then 'S_OK
+                If AccessibleObjectFromWindow(hWnd, OBJID_NATIVEOM, iid, ob) = 0 Then 'S_OK
                     Set GetExcelObjectFromHwnd = ob.Application
-                    GoTo exit_proc
+                    GoTo xt
                 End If
             End If
-            hwnd = FindWindowEx(hWndDesk, hwnd, vbNullString, vbNullString)
+            hWnd = FindWindowEx(hWndDesk, hWnd, vbNullString, vbNullString)
         Loop
         
     End If
     
-exit_proc:
+xt: Exit Function
+    
+eh: ErrMsg ErrSrc(PROC)
 End Function
 
 #If Win64 Then
-    Private Function checkHwnds(ByRef xlApps() As Application, hwnd As LongPtr) As Boolean
+    Private Function checkHwnds(ByRef xlApps() As Application, hWnd As LongPtr) As Boolean
 #Else
-    Private Function checkHwnds(ByRef xlApps() As Application, hwnd As Long) As Boolean
+    Private Function checkHwnds(ByRef xlApps() As Application, hWnd As Long) As Boolean
 #End If
 ' -----------------------------------------------------------------------------------------
 '
 ' -----------------------------------------------------------------------------------------
-Const PROC  As String = "checkHwnds"            ' This procedure's name for the error handling and execution tracking
-Dim i       As Long
-
-    On Error GoTo on_error
-    BoP ErrSrc(PROC)
+    Const PROC = "checkHwnds"            ' This procedure's name for the error handling and execution tracking
     
-    If UBound(xlApps) = 0 Then GoTo exit_proc
+    On Error GoTo eh
+    Dim i       As Long
+    
+    If UBound(xlApps) = 0 Then GoTo xt
 
     For i = LBound(xlApps) To UBound(xlApps)
-        If xlApps(i).hwnd = hwnd Then
+        If xlApps(i).hWnd = hWnd Then
             checkHwnds = False
-            GoTo exit_proc
+            GoTo xt
         End If
     Next i
 
     checkHwnds = True
     
-exit_proc:
-    EoP ErrSrc(PROC)
-    Exit Function
+xt: Exit Function
     
-on_error:
-#If Debugging = 1 Then
-    Stop: Resume
-#End If
-    ErrHndlr Err.Number, ErrSrc(PROC), Err.Description, Erl
+eh: ErrMsg ErrSrc(PROC)
 End Function
 
 Public Function GetOpen(ByVal vWb As Variant) As Workbook
@@ -317,13 +338,14 @@ Public Function GetOpen(ByVal vWb As Variant) As Workbook
 ' is not open it is opened.
 ' Note: A ReadOnly mode has to be set by the caller.
 ' -------------------------------------------------------
-Const PROC      As String = "GetOpen"   ' This procedure's name for the error handling and execution tracking
-Dim sTest       As String
-Dim sWbBaseName As String
-Dim sPath       As String
-Dim wb          As Workbook
+    Const PROC = "GetOpen"
+    
+    On Error GoTo eh
+    Dim sTest       As String
+    Dim sWbBaseName As String
+    Dim sPath       As String
+    Dim wb          As Workbook
 
-    On Error GoTo on_error
     Set GetOpen = Nothing
     
     If Not mWrkbk.IsName(vWb) And Not mWrkbk.IsFullName(vWb) And Not mWrkbk.IsObject(vWb) _
@@ -370,14 +392,9 @@ Dim wb          As Workbook
         End With
     End If
     
-exit_proc:
-    Exit Function
+xt: Exit Function
     
-on_error:
-#If Debugging Then
-    Stop: Resume
-#End If
-    ErrHndlr Err.Number, ErrSrc(PROC), Err.Description, Erl
+eh: ErrMsg ErrSrc(PROC)
 End Function
 
 Private Function TestSheet(ByVal wb As Workbook, _
@@ -395,5 +412,5 @@ Private Function TestSheet(ByVal wb As Workbook, _
 End Function
 
 Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = "mWrkbk" & "." & sProc
+    ErrSrc = "mWrkbk." & sProc
 End Function
