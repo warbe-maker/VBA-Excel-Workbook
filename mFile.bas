@@ -50,17 +50,17 @@ Public Function Exists(ByVal xst_file As Variant, _
     Set xst_cll = New Collection
 
     If TypeName(xst_file) <> "File" And TypeName(xst_file) <> "String" _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "The File (parameter xst_file) for the File's existence check is neither a full path/file name nor a file object!"
+    Then err.Raise AppErr(1), ErrSrc(PROC), "The File (parameter xst_file) for the File's existence check is neither a full path/file name nor a file object!"
     If Not TypeName(xst_fso) = "Nothing" And Not TypeName(xst_fso) = "File" _
-    Then Err.Raise AppErr(2), ErrSrc(PROC), "The provided return parameter (xst_fso) is not a File type!"
+    Then err.Raise AppErr(2), ErrSrc(PROC), "The provided return parameter (xst_fso) is not a File type!"
     If Not TypeName(xst_cll) = "Nothing" And Not TypeName(xst_cll) = "Collection" _
-    Then Err.Raise AppErr(3), ErrSrc(PROC), "The provided return parameter (xst_cll) is not a Collection type!"
+    Then err.Raise AppErr(3), ErrSrc(PROC), "The provided return parameter (xst_cll) is not a Collection type!"
 
     If TypeOf xst_file Is File Then
         With New FileSystemObject
             On Error Resume Next
             sTest = xst_file.Name
-            Exists = Err.Number = 0
+            Exists = err.Number = 0
             If Exists Then
                 '~~ Return the existing file as File object
                 Set xst_fso = .GetFile(xst_file.Path)
@@ -135,7 +135,7 @@ Public Function ToArray(ByVal ta_file As Variant, _
     Dim k       As Long
     
     If Not Exists(ta_file, fso) _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "The file object (vFile) does not exist!"
+    Then err.Raise AppErr(1), ErrSrc(PROC), "The file object (vFile) does not exist!"
     
     '~~ Unload file into a test stream
     With New FileSystemObject
@@ -202,7 +202,7 @@ Public Function ToDict(ByVal td_file As Variant) As Dictionary
     Dim i       As Long
     
     If Not Exists(td_file, fso) _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "The file object (td_file) does not exist!"
+    Then err.Raise AppErr(1), ErrSrc(PROC), "The file object (td_file) does not exist!"
     
     '~~ Unload file into a test stream
     With New FileSystemObject
@@ -292,7 +292,7 @@ Public Function sDiffer( _
 
     a1 = mFile.ToArray(ta_file:=dif_file1, ta_exclude_empty_records:=dif_ignore_empty_records)
     a2 = mFile.ToArray(ta_file:=dif_file2, ta_exclude_empty_records:=dif_ignore_empty_records)
-    vLines = mBasic.ArrayCompare(a1:=a1, a2:=a2, lStopAfter:=dif_stop_after)
+    vLines = mBasic.ArrayCompare(ac_a1:=a1, ac_a2:=a2, ac_stop_after:=dif_stop_after)
     If mBasic.ArrayIsAllocated(arr:=vLines) Then
         sDiffer = True
     End If
@@ -356,10 +356,10 @@ Private Sub ErrMsg( _
 ' caller's error handling.
 ' ------------------------------------------------------
     
-    If err_no = 0 Then err_no = Err.Number
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+    If err_no = 0 Then err_no = err.Number
+    If err_dscrptn = vbNullString Then err_dscrptn = err.Description
 
-    Err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
+    err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
 
 End Sub
 

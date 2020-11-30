@@ -191,7 +191,7 @@ Public Sub Test_03_GetOpen_Errors()
     Set wb = Workbooks.Open(ThisWorkbook.Path & "\" & "Test3.xlsm")
     On Error Resume Next
     Set wb1 = GetOpen(ThisWorkbook.Path & "\Test\" & "Test3.xlsm")
-    Debug.Assert mErH.AppErr(Err.Number) = 3
+    Debug.Assert mErH.AppErr(err.Number) = 3
     wb.Close
     
     '~~ Test E-6: Parameter is neither a Workbook object nor a string
