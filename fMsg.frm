@@ -169,7 +169,7 @@ exit_sub:
     Exit Sub
     
 eh:
-    Debug.Print err.Description: Stop: Resume
+    Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub CollectDesignControls()
@@ -211,7 +211,7 @@ Private Sub CollectDesignControls()
 
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub ProvideCollection(ByRef cll As Collection)
@@ -283,7 +283,7 @@ End Property
 
 Private Property Let AppliedControl(ByVal v As Variant)
     If dctApplied Is Nothing Then Set dctApplied = New Dictionary
-    If Not IsApplied(v) Then dctApplied.Add v, v.Name
+    If Not IsApplied(v) Then dctApplied.Add v, v.name
 End Property
 
 Private Property Get ButtonsFrameHeight() As Single
@@ -782,7 +782,7 @@ Private Sub Collect(ByRef into As Variant, _
 
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
  
@@ -975,7 +975,7 @@ Private Sub ResizeAndReposition()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionAreas()
@@ -1049,7 +1049,7 @@ Private Sub ResizeAndRepositionButtonRows()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionButtons()
@@ -1087,7 +1087,7 @@ Private Sub ResizeAndRepositionButtons()
         
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionButtonsArea()
@@ -1129,7 +1129,7 @@ Private Sub ResizeAndRepositionButtonsArea()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionButtonsFrame()
@@ -1156,7 +1156,7 @@ Private Sub ResizeAndRepositionButtonsFrame()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionMsgArea()
@@ -1179,7 +1179,7 @@ Private Sub ResizeAndRepositionMsgArea()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub ResizeAndRepositionMsgSections()
@@ -1251,7 +1251,7 @@ Private Sub ResizeAndRepositionMsgSections()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Public Sub Setup()
@@ -1319,7 +1319,7 @@ Public Sub Setup()
     
 xt: Exit Sub
 
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupButton(ByVal buttonrow As Long, _
@@ -1352,7 +1352,7 @@ Private Sub SetupButton(ByVal buttonrow As Long, _
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupButtons(ByVal vbuttons As Variant)
@@ -1399,7 +1399,7 @@ Private Sub SetupButtons(ByVal vbuttons As Variant)
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 ' Setup the reply buttons based on the comma delimited string of button captions
@@ -1454,7 +1454,7 @@ Private Sub SetupButtonsFromCollection(ByVal cllButtons As Collection)
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupButtonsFromString(ByVal sButtons As String)
@@ -1519,7 +1519,7 @@ Private Sub SetupButtonsFromValue(ByVal lButtons As Long)
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 ' Setup a message section with its label when one is specified
@@ -1584,7 +1584,7 @@ Private Sub SetupMsgSection(ByVal section As Long)
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 ' Setup the applied monospaced message section (section) with the text (text),
@@ -1606,7 +1606,7 @@ Private Sub SetupMsgSectionMonoSpaced(ByVal section As Long, _
         .Visible = True
         .MultiLine = True
         .WordWrap = False
-        .Font.Name = sMonoSpacedFontName
+        .Font.name = sMonoSpacedFontName
         .Font.Size = siMonoSpacedFontSize
         .AutoSize = True
         .value = text
@@ -1644,7 +1644,7 @@ Private Sub SetupMsgSectionMonoSpaced(ByVal section As Long, _
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 ' Setup the proportional spaced Message Section (section) with the text (text)
@@ -1709,7 +1709,7 @@ Private Sub SetupMsgSectionsMonoSpaced()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 Private Sub SetupMsgSectionsPropSpaced()
@@ -1724,7 +1724,7 @@ Private Sub SetupMsgSectionsPropSpaced()
     
 xt: Exit Sub
     
-eh: Debug.Print err.Description: Stop: Resume
+eh: Debug.Print Err.Description: Stop: Resume
 End Sub
 
 ' When a specific font name and/or size is specified, the extra title label is actively used
@@ -1741,12 +1741,12 @@ Private Sub SetupTitle()
         '~~ When a font name other then the standard UserForm font name is
         '~~ provided the extra hidden title label which mimics the title bar
         '~~ width is displayed. Otherwise it remains hidden.
-        If sTitleFontName <> vbNullString And sTitleFontName <> .Font.Name Then
+        If sTitleFontName <> vbNullString And sTitleFontName <> .Font.name Then
             With .laMsgTitle   ' Hidden by default
                 .Visible = True
                 .top = siTop
                 siTop = VgridPos(.top + .Height)
-                .Font.Name = sTitleFontName
+                .Font.name = sTitleFontName
                 If sTitleFontSize <> 0 Then
                     .Font.Size = sTitleFontSize
                 End If
@@ -1761,7 +1761,7 @@ Private Sub SetupTitle()
             With .laMsgTitle
                 With .Font
                     .Bold = False
-                    .Name = Me.Font.Name
+                    .name = Me.Font.name
                     .Size = 8.65   ' Value which comes to a length close to the length required
                 End With
                 .Visible = False
