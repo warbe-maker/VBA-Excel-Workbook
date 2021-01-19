@@ -19,12 +19,14 @@ Const HOSTED_COMM_COMPS = "mWrkbk"
 
 Private Sub Workbook_Open()
 #If CompMan Then
-    mCompMan.UpdateClonesTheRawHasChanged uc_wb:=ThisWorkbook, uc_hosted:=HOSTED_COMM_COMPS
+    mCompMan.UpdateRawClones uc_wb:=ThisWorkbook _
+                           , uc_hosted:=HOSTED_COMM_COMPS
 #End If
 End Sub
 
 Private Sub Workbook_BeforeSave(ByVal SaveAsUI As Boolean, Cancel As Boolean)
 #If CompMan Then
-    mCompMan.ExportChangedComponents ec_wb:=ThisWorkbook, ec_hosted:=HOSTED_COMM_COMPS
+    mCompMan.ExportChangedComponents ec_wb:=ThisWorkbook _
+                                   , ec_hosted:=HOSTED_COMM_COMPS
 #End If
 End Sub

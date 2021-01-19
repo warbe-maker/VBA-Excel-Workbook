@@ -24,7 +24,6 @@ Option Private Module
 ' W. Rauschenberger, Berlin Nov 2020
 ' -----------------------------------------------------------------------------------
 Public Const VALUE_COMMENT = " ; "
-Private Const VALUE_VARTYPE = "VarType="
 
 Private Declare PtrSafe Function WritePrivateProfileString _
                 Lib "kernel32" Alias "WritePrivateProfileStringA" _
@@ -83,6 +82,18 @@ Public Enum enVarType
     vbError = 10      ' Fehlerwert
     vbBoolean = 11    ' Boolescher Wert
 End Enum
+Private sSplitStr   As String
+
+Public Property Get SplitStr() As String:   SplitStr = sSplitStr:   End Property
+
+Public Property Let SplitStr(ByRef s As String)
+' ---------------------------------------------
+' Extract the kind of line break string in s.
+' ---------------------------------------------
+    If InStr(s, vbCrLf) <> 0 Then sSplitStr = vbCrLf _
+    Else If InStr(s, vbLf) <> 0 Then sSplitStr = vbLf _
+    Else If InStr(s, vbCr) <> 0 Then sSplitStr = vbCr
+End Property
 
 Public Property Get Arry( _
            Optional ByVal fa_file_full_name As String, _
@@ -94,21 +105,23 @@ Public Property Get Arry( _
     Const PROC  As String = "Arry"
     
     On Error GoTo eh
+    Dim cll     As New Collection
     Dim ts      As TextStream
     Dim a       As Variant
     Dim a1()    As String
     Dim sSplit  As String
-    Dim fso     As File
+    Dim fso     As FILE
     Dim sFile   As String
     Dim i       As Long
     Dim j       As Long
+    Dim v       As Variant
     
     If Not Exists(fa_file_full_name, fso) _
     Then Err.Raise AppErr(1), ErrSrc(PROC), "The file object (vFile) does not exist!"
     
     '~~ Unload file into a test stream
     With New FileSystemObject
-        Set ts = .OpenTextFile(fso.Path, 1)
+        Set ts = .OpenTextFile(fso.PATH, 1)
         With ts
             On Error Resume Next ' may be empty
             sFile = .ReadAll
@@ -122,33 +135,25 @@ Public Property Get Arry( _
     If InStr(sFile, vbCr) <> 0 Then sSplit = vbCr
     If InStr(sFile, vbLf) <> 0 Then sSplit = sSplit & vbLf
     
-    '~~ Test stream to array
-    a = Split(sFile, sSplit)
-    
-    '~~ Remove any leading or trailing empty items
-    mBasic.ArrayTrimm a
-    
+    a = Split(sFile, sSplit)    ' Stream to array
+      
     If Not fa_exclude_empty_records Then
         Arry = a
     Else
-        '~~ Count empty records
-        j = 0
+        '~~ Extract non-empty items
         For i = LBound(a) To UBound(a)
-            If Len(Trim$(a(i))) = 0 Then j = j + 1
+            If Len(Trim$(a(i))) <> 0 Then cll.Add a(i)
         Next i
-        j = UBound(a) - j
-        ReDim a1(j - 1)
+        ReDim a1(cll.Count - 1)
         j = 0
-        For i = LBound(a) To UBound(a)
-            If Len(Trim$(a(i))) > 0 Then
-                a1(j) = a(i)
-                j = j + 1
-            End If
-        Next i
+        For Each v In cll
+            a1(j) = v:  j = j + 1
+        Next v
         Arry = a1
     End If
     
-xt: Exit Property
+xt: Set cll = Nothing
+    Exit Property
     
 eh: ErrMsg ErrSrc(PROC)
 End Property
@@ -160,7 +165,7 @@ Public Property Get SectionNames(Optional ByVal sn_file As String) As Dictionary
     Const PROC = "SectionNames"
     
     On Error GoTo eh
-    Dim asSections()     As String
+    Dim asSections()    As String
     Dim dct             As Dictionary
     Dim i               As Long
     Dim iLen            As Long
@@ -169,6 +174,8 @@ Public Property Get SectionNames(Optional ByVal sn_file As String) As Dictionary
     
     Set dct = New Dictionary
     Set SectionNames = New Dictionary
+    
+    If Len(mFile.Txt(sn_file)) = 0 Then GoTo xt
     
     Do While (iLen = Len(strBuffer) - 2) Or (iLen = 0)
         If strBuffer = vbNullString _
@@ -190,9 +197,8 @@ Public Property Get SectionNames(Optional ByVal sn_file As String) As Dictionary
         Next i
     End If
     
-    Set SectionNames = dct
-
-xt: Exit Property
+xt: Set SectionNames = dct
+    Exit Property
     
 eh: ErrMsg ErrSrc(PROC)
 End Property
@@ -200,7 +206,7 @@ End Property
 Public Property Get Txt( _
          Optional ByVal tx_file_full_name As String, _
          Optional ByVal tx_append As Boolean = True, _
-         Optional ByRef tx_split As String) As String
+         Optional ByRef tx_split As String = vbCrLf) As String
 ' ----------------------------------------------------------
 ' Returns the content of the text file (tx_file_full_name)
 ' as string plus the line split character/string (tx_split).
@@ -210,20 +216,25 @@ Public Property Get Txt( _
     On Error GoTo eh
     Dim fso As New FileSystemObject
     Dim ts  As TextStream
+    Dim s   As String
     
-    tx_append = tx_append ' not used! just for the coincidence with tLet
+    tx_append = tx_append ' not used! just for the synch with the Let property
     If Not fso.FileExists(tx_file_full_name) _
     Then Err.Raise AppErr(1), ErrSrc(PROC), "The file '" & tx_file_full_name & "' does not exist!"
 
     Set ts = fso.OpenTextFile(FileName:=tx_file_full_name, IOMode:=ForReading)
-    Txt = ts.ReadAll
-    If InStr(Txt, vbCrLf) <> 0 Then
-        tx_split = vbCrLf
-    ElseIf InStr(Txt, vbCr) <> 0 Then
-        tx_split = vbCr
-    ElseIf InStr(Txt, vbLf) <> 0 Then
-        tx_split = vbLf
+    If Not ts.AtEndOfStream Then
+        s = ts.ReadAll
+        SplitStr = s
+        tx_split = SplitStr
+        If VBA.Right$(s, 2) = vbCrLf Then
+            s = VBA.Left$(s, Len(s) - 2)
+        End If
+    Else
+        Txt = vbNullString
     End If
+    If Txt = vbCrLf Then Txt = vbNullString Else Txt = s
+
 xt: Exit Property
 
 eh: ErrMsg ErrSrc(PROC)
@@ -267,11 +278,10 @@ xt: ts.Close
 eh: ErrMsg ErrSrc(PROC)
 End Property
 
-Public Property Get value( _
+Public Property Get Value( _
            Optional ByVal vl_file As String, _
            Optional ByVal vl_section As String, _
-           Optional ByVal vl_value_name As String, _
-           Optional ByRef vl_comment As String) As Variant
+           Optional ByVal vl_value_name As String) As Variant
 ' -----------------------------------------------------------
 ' Read a value with a specific name from a section
 ' [section]
@@ -294,28 +304,7 @@ Public Property Get value( _
                                     , lpg_FileName:=vl_file _
                                      )
     vValue = Left$(sRetVal, lResult)
-    
-    '~~ Unstrip and return a possibly added comment provided it's not a VarType= comment
-    '~~ which indicates which kind of vartype is to be returned
-    If InStr(vValue, VALUE_COMMENT) <> 0 Then
-        vl_comment = Split(vValue, VALUE_COMMENT)(1)
-        If InStr(vl_comment, VALUE_VARTYPE) <> 0 Then
-            '~~ The comment is a VarType indication generated by the optional vartype argument
-            Select Case Split(vl_comment, "=")(1)
-                Case enVarType.vbBoolean:   value = CBool(Split(vValue, VALUE_COMMENT)(0))
-                Case enVarType.vbCurrency:  value = CCur(Split(vValue, VALUE_COMMENT)(0))
-                Case enVarType.vbDate:      value = CDate(Split(vValue, VALUE_COMMENT)(0))
-                Case enVarType.vbDouble:    value = CDbl(Split(vValue, VALUE_COMMENT)(0))
-                Case enVarType.vbInteger:   value = CInt(Split(vValue, VALUE_COMMENT)(0))
-                Case enVarType.vbLong:      value = CLng(Split(vValue, VALUE_COMMENT)(0))
-                Case enVarType.vbSingle:    value = CSng(Split(vValue, VALUE_COMMENT)(0))
-                Case Else:                  value = Split(vValue, VALUE_COMMENT)(0)
-            End Select
-            vl_comment = vbNullString
-        End If
-    Else
-        value = vValue
-    End If
+    Value = vValue
     
 xt: Exit Property
 
@@ -326,11 +315,10 @@ eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
-Public Property Let value( _
+Public Property Let Value( _
            Optional ByVal vl_file As String, _
            Optional ByVal vl_section As String, _
            Optional ByVal vl_value_name As String, _
-           Optional ByRef vl_comment As String, _
                     ByVal vl_value As Variant)
 ' --------------------------------------------------
 ' Write a value under a name into a section in a
@@ -342,19 +330,11 @@ Public Property Let value( _
     On Error GoTo eh
     Dim lChars      As Long
     Dim sValue      As String
-    Dim sComment    As String
-    
-    If vl_comment <> vbNullString Then
-        sComment = " ; " & vl_comment
-        sComment = Replace(sComment, VALUE_COMMENT & VALUE_COMMENT, VALUE_COMMENT)
-        sComment = Replace(sComment, ";;", ";")
-    End If
     
     Select Case VarType(vl_value)
         Case vbBoolean: sValue = VBA.CStr(VBA.CLng(vl_value))
         Case Else:      sValue = vl_value
     End Select
-    sValue = sValue & sComment
     
     lChars = WritePrivateProfileString(lpw_ApplicationName:=vl_section _
                                      , lpw_KeyName:=vl_value_name _
@@ -403,71 +383,6 @@ Private Function AppIsInstalled(ByVal sApp As String) As Boolean
     Loop
     AppIsInstalled = InStr(Environ$(i), sApp) <> 0
 
-End Function
-
-Private Function ArrayCompare(ByVal ac_a1 As Variant, _
-                              ByVal ac_a2 As Variant, _
-                     Optional ByVal ac_stop_after As Long = 10, _
-                     Optional ByVal ac_id1 As String = vbNullString, _
-                     Optional ByVal ac_id2 As String = vbNullString, _
-                     Optional ByVal ac_ignore_case As Boolean = True) As Variant
-' ----------------------------------------------------------------------------
-' Returns an array of n (as_stop_after) lines which are different between
-' array 1 (ac_a1) and array 2 (ac_a2). Each line element contains the
-' lines which differ in the form:
-' linenumber: <ac_id1> '<line>' || <ac_id2> '<line>'
-' The comparisonWhen a value for stop after n (ac_stop_after) lines.
-' Note: Either or both arrays may not be assigned (=empty).
-' ----------------------------------------------------------------------------
-    Const PROC = "ArrayCompare"
-    
-    On Error GoTo eh
-    Dim l           As Long
-    Dim i           As Long
-    Dim va()        As Variant
-    Dim vbCompare   As Long
-
-    If Not mBasic.ArrayIsAllocated(ac_a1) And mBasic.ArrayIsAllocated(ac_a2) Then
-        va = ac_a2
-    ElseIf mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
-        va = ac_a1
-    ElseIf Not mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
-        GoTo xt
-    End If
-    
-    If ac_ignore_case Then vbCompare = vbTextCompare Else vbCompare = vbBinaryCompare
-    
-    l = 0
-    For i = LBound(ac_a1) To Min(UBound(ac_a1), UBound(ac_a2))
-        If StrComp(ac_a1(i), ac_a2(i), vbCompare) <> 0 Then
-            ReDim Preserve va(l)
-            va(l) = Format(i, "000") & " " & ac_id1 & " '" & ac_a1(i) & "'  < >  '" & ac_id2 & " " & ac_a2(i) & "'"
-            l = l + 1
-            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
-        End If
-    Next i
-    
-    If UBound(ac_a1) < UBound(ac_a2) Then
-        For i = UBound(ac_a1) + 1 To UBound(ac_a2)
-            ReDim Preserve va(l)
-            va(l) = Format(i, "000") & ac_id2 & ": '" & ac_a2(i) & "'"
-            l = l + 1
-            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
-        Next i
-        
-    ElseIf UBound(ac_a2) < UBound(ac_a1) Then
-        For i = UBound(ac_a2) + 1 To UBound(ac_a1)
-            ReDim Preserve va(l)
-            va(l) = Format(i, "000") & " " & ac_id1 & " '" & ac_a1(i) & "'"
-            l = l + 1
-            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
-        Next i
-    End If
-
-xt: ArrayCompare = va
-    Exit Function
-
-eh: ErrMsg ErrSrc(PROC)
 End Function
 
 Public Function Compare(ByVal file_left_full_name As String, _
@@ -525,12 +440,12 @@ End Function
 
 Public Sub Delete(ByVal v As Variant)
 
-    Dim fl  As File
+    Dim fl  As FILE
 
     With New FileSystemObject
         If TypeName(v) = "File" Then
             Set fl = v
-            .DeleteFile fl.Path
+            .DeleteFile fl.PATH
         ElseIf TypeName(v) = "String" Then
             If .FileExists(v) Then
                 .DeleteFile v
@@ -562,7 +477,7 @@ Private Function ErrSrc(ByVal sProc As String) As String
 End Function
 
 Public Function Exists(ByVal xst_file As Variant, _
-              Optional ByRef xst_fso As File = Nothing, _
+              Optional ByRef xst_fso As FILE = Nothing, _
               Optional ByRef xst_cll As Collection = Nothing) As Boolean
 ' ------------------------------------------------------------------
 ' Returns TRUE when the file (xst_file) - which may be a file object
@@ -580,7 +495,7 @@ Public Function Exists(ByVal xst_file As Variant, _
     Dim sFile   As String
     Dim fldr    As Folder
     Dim sfldr   As Folder   ' Sub-Folder
-    Dim fl      As File
+    Dim fl      As FILE
     Dim sPath   As String
     Dim queue   As Collection
 
@@ -594,14 +509,14 @@ Public Function Exists(ByVal xst_file As Variant, _
     If Not TypeName(xst_cll) = "Nothing" And Not TypeName(xst_cll) = "Collection" _
     Then Err.Raise AppErr(3), ErrSrc(PROC), "The provided return parameter (xst_cll) is not a Collection type!"
 
-    If TypeOf xst_file Is File Then
+    If TypeOf xst_file Is FILE Then
         With New FileSystemObject
             On Error Resume Next
             sTest = xst_file.name
             Exists = Err.Number = 0
             If Exists Then
                 '~~ Return the existing file as File object
-                Set xst_fso = .GetFile(xst_file.Path)
+                Set xst_fso = .GetFile(xst_file.PATH)
                 GoTo xt
             End If
         End With
@@ -651,7 +566,7 @@ Public Function Extension(ByVal vFile As Variant)
 
     With New FileSystemObject
         If TypeName(vFile) = "File" Then
-            Extension = .GetExtensionName(vFile.Path)
+            Extension = .GetExtensionName(vFile.PATH)
         Else
             Extension = .GetExtensionName(vFile)
         End If
@@ -701,7 +616,7 @@ Public Property Get Temp(Optional ByVal tmp_extension As String = ".tmp") As Str
     Set fso = Nothing
 End Property
 
-Public Function GetFile(ByVal gf_path As String) As File
+Public Function GetFile(ByVal gf_path As String) As FILE
     With New FileSystemObject
         Set GetFile = .GetFile(gf_path)
     End With
@@ -766,34 +681,96 @@ xt: With fso
 eh: ErrMsg ErrSrc(PROC)
 End Function
 
-Public Function sDiffer( _
-                  ByVal dif_file1 As File, _
-                  ByVal dif_file2 As File, _
-         Optional ByVal dif_stop_after As Long = 1, _
+Public Function Differs( _
+                  ByVal dif_file1 As FILE, _
+                  ByVal dif_file2 As FILE, _
+         Optional ByVal dif_stop_after As Long = 0, _
          Optional ByVal dif_ignore_empty_records As Boolean = False, _
-         Optional ByVal dif_ignore_case As Boolean = True, _
-         Optional ByRef dif_lines As Variant) As Boolean
+         Optional ByVal dif_compare As VbCompareMethod = vbTextCompare) As Dictionary
 ' -----------------------------------------------------------------------------
 ' Returns TRUE when the content of file (dif_file1) differs from the content in
 ' file (dif_file2). The comparison stops after (dif_stop_after) detected
 ' differences. The detected different lines are optionally returned (vResult).
 ' ------------------------------------------------------------------------------
-    Const PROC = "sDiffer"
+    Const PROC = "Differs"
     
     On Error GoTo eh
-    Dim a1      As Variant
-    Dim a2      As Variant
-    Dim vLines  As Variant
-
-    a1 = mFile.ToArray(ta_file:=dif_file1, ta_exclude_empty_records:=dif_ignore_empty_records)
-    a2 = mFile.ToArray(ta_file:=dif_file2, ta_exclude_empty_records:=dif_ignore_empty_records)
-    vLines = ArrayCompare(ac_a1:=a1, ac_a2:=a2, ac_stop_after:=dif_stop_after, ac_ignore_case:=dif_ignore_case)
-    If mBasic.ArrayIsAllocated(arr:=vLines) Then
-        sDiffer = True
-    End If
-    dif_lines = vLines
+    Dim s1          As String
+    Dim s2          As String
+    Dim a1          As Variant
+    Dim a2          As Variant
+    Dim vLines      As Variant
+    Dim dct1        As New Dictionary
+    Dim dct2        As New Dictionary
+    Dim sTest1      As String
+    Dim sTest2      As String
+    Dim dctDif      As Dictionary
+    Dim i           As Long
+    Dim lDiffLine   As Long
     
-xt: Exit Function
+    Set dctDif = New Dictionary
+    s1 = mFile.Txt(tx_file_full_name:=dif_file1.PATH)
+    s2 = mFile.Txt(tx_file_full_name:=dif_file2.PATH)
+    If VBA.StrComp(s1, s2, dif_compare) = 0 Then GoTo xt
+
+    If dif_ignore_empty_records Then
+        sTest1 = VBA.Replace$(s1, sSplitStr & sSplitStr, sSplitStr)
+        sTest2 = VBA.Replace$(s2, sSplitStr & sSplitStr, sSplitStr)
+        If VBA.StrComp(sTest1, sTest2, dif_compare) = 0 Then GoTo xt
+    End If
+     
+    a1 = Split(s1, sSplitStr)
+    For i = LBound(a1) To UBound(a1)
+        If dif_ignore_empty_records Then
+            If VBA.Trim$(a1(i)) <> vbNullString Then
+                dct1.Add i + 1, a1(i)
+            End If
+        Else
+            dct1.Add i + 1, a1(i)
+        End If
+    Next i
+    
+    a2 = Split(s2, sSplitStr)
+    For i = LBound(a2) To UBound(a2)
+        If dif_ignore_empty_records Then
+            If VBA.Trim$(a2(i)) <> vbNullString Then
+                dct2.Add i + 1, a2(i)
+            End If
+        Else
+            dct2.Add i + 1, a2(i)
+        End If
+    Next i
+    If VBA.StrComp(Join(dct1.Items(), sSplitStr), Join(dct2.Items(), sSplitStr), dif_compare) = 0 Then GoTo xt
+    
+    '~~ Get and detect the difference by comparing the items one by one
+    '~~ and optaining the line number from the Dictionary when different
+    For i = LBound(a1) To mBasic.Min(UBound(a1), UBound(a2))
+        If VBA.StrComp(a1(i), a2(i), dif_compare) <> 0 Then
+            lDiffLine = dct1.Keys()(i)
+            dctDif.Add lDiffLine, lDiffLine & ": '" & dct1.Items()(i) & "'" & vbLf & "'" & dct2.Items()(i) & "'"
+            If dif_stop_after > 0 And dctDif.Count >= dif_stop_after Then GoTo xt
+        End If
+    Next i
+    
+    If UBound(a2) > UBound(a1) Then
+        For i = UBound(a1) + 1 To UBound(a2)
+            lDiffLine = dct2.Keys()(i)
+            dctDif.Add lDiffLine, lDiffLine & ": ''" & vbLf & "'" & dct2.Items()(i) & "'"
+            If dif_stop_after > 0 And dctDif.Count >= dif_stop_after Then GoTo xt
+        Next i
+    End If
+    If UBound(a1) > UBound(a2) Then
+        For i = UBound(a2) + 1 To UBound(a1)
+            lDiffLine = dct2.Keys()(i)
+            dctDif.Add lDiffLine, lDiffLine & ": '" & dct1.Items()(i) & "'" & vbLf & "''"
+            If dif_stop_after > 0 And dctDif.Count >= dif_stop_after Then GoTo xt
+        Next i
+    End If
+    
+xt: Set Differs = dctDif
+    Set dct1 = Nothing
+    Set dct2 = Nothing
+    Exit Function
 
 eh: ErrMsg ErrSrc(PROC)
 End Function
@@ -855,6 +832,76 @@ xt: Set cll = Nothing
     
 eh: ErrMsg ErrSrc(PROC)
 End Sub
+'
+'Private Function ArrayCompare( _
+'                        ByVal ac_a1 As Variant, _
+'                        ByVal ac_a2 As Variant, _
+'               Optional ByVal ac_stop_after As Long = 1, _
+'               Optional ByVal ac_compare As VbCompareMethod = vbTextCompare) As Dictionary
+'' ----------------------------------------------------------------------------------------
+'' Returns an array of n (as_stop_after) lines which are different between array 1 (ac_a1)
+'' and array 2 (ac_a2). Each line element contains the lines which differ in the form:
+'' <linenumber> : '<line>'vbLf'<line>'
+'' The comparisonWhen a value for stop after n (ac_stop_after) lines.
+'' Note: Either or both arrays may not be assigned (=empty).
+'' ----------------------------------------------------------------------------------------
+'    Const PROC = "ArrayCompare"
+'
+'    On Error GoTo eh
+'    Dim l       As Long
+'    Dim i       As Long
+'    Dim va      As Variant
+'    Dim dct     As New Dictionary
+'
+'    If Not mBasic.ArrayIsAllocated(ac_a1) And mBasic.ArrayIsAllocated(ac_a2) Then
+'        va = ac_a2
+'    ElseIf mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
+'        va = ac_a1
+'    ElseIf Not mBasic.ArrayIsAllocated(ac_a1) And Not mBasic.ArrayIsAllocated(ac_a2) Then
+'        GoTo xt
+'    End If
+'
+'    l = 0
+'    For i = LBound(ac_a1) To Min(UBound(ac_a1), UBound(ac_a2))
+'        If StrComp(ac_a1(i), ac_a2(i), ac_compare) <> 0 Then
+'            dct.Add Format$(i, "000") & " " & ac_id1 & " '" & ac_a1(i) & "'  < >  '" & ac_id2 & " " & ac_a2(i) & "'"
+'            l = l + 1
+'            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
+'        End If
+'    Next i
+'
+'    If UBound(ac_a1) < UBound(ac_a2) Then
+'        For i = UBound(ac_a1) + 1 To UBound(ac_a2)
+'            ReDim Preserve va(l)
+'            va(l) = Format$(i, "000") & ac_id2 & ": '" & ac_a2(i) & "'"
+'            l = l + 1
+'            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
+'        Next i
+'
+'    ElseIf UBound(ac_a2) < UBound(ac_a1) Then
+'        For i = UBound(ac_a2) + 1 To UBound(ac_a1)
+'            ReDim Preserve va(l)
+'            va(l) = Format$(i, "000") & " " & ac_id1 & " '" & ac_a1(i) & "'"
+'            l = l + 1
+'            If ac_stop_after > 0 And l >= ac_stop_after Then GoTo xt
+'        Next i
+'    End If
+'
+'xt: ArrayCompare = va
+'    Exit Function
+'
+'eh: ErrMsg ErrSrc(PROC)
+'End Function
+
+Private Function ArrayIsAllocated(arr As Variant) As Boolean
+    
+    On Error Resume Next
+    ArrayIsAllocated = _
+    IsArray(arr) _
+    And Not IsError(LBound(arr, 1)) _
+    And LBound(arr, 1) <= UBound(arr, 1)
+    
+End Function
 
 Public Function SectionsGet( _
                       ByVal sg_file As String, _
@@ -954,7 +1001,7 @@ Public Sub SectionsLet( _
         For Each vn In dctValues
             sName = vn
             vValue = dctValues(vn)
-            mFile.value(vl_file:=sl_file _
+            mFile.Value(vl_file:=sl_file _
                     , vl_section:=sSection _
                     , vl_value_name:=sName _
                     ) = vValue
@@ -1023,7 +1070,7 @@ Public Function SelectFile( _
             Optional ByVal sel_filters As String = "*.*", _
             Optional ByVal sel_filter_name As String = "File", _
             Optional ByVal sel_title As String = vbNullString, _
-            Optional ByRef sel_result As File) As Boolean
+            Optional ByRef sel_result As FILE) As Boolean
 ' --------------------------------------------------------------
 ' When a file had been selected TRUE is returned and the
 ' selected file is returned as File object (sel_result).
@@ -1099,7 +1146,7 @@ Public Function ToArray(ByVal ta_file As Variant, _
     Dim a       As Variant
     Dim a1()    As String
     Dim sSplit  As String
-    Dim fso     As File
+    Dim fso     As FILE
     Dim sFile   As String
     Dim i       As Long
     Dim j       As Long
@@ -1109,7 +1156,7 @@ Public Function ToArray(ByVal ta_file As Variant, _
     
     '~~ Unload file into a test stream
     With New FileSystemObject
-        Set ts = .OpenTextFile(fso.Path, 1)
+        Set ts = .OpenTextFile(fso.PATH, 1)
         With ts
             On Error Resume Next ' may be empty
             sFile = .ReadAll
@@ -1167,7 +1214,7 @@ Public Function ToDict(ByVal td_file As Variant) As Dictionary
     Dim a       As Variant
     Dim dct     As New Dictionary
     Dim sSplit  As String
-    Dim fso     As File
+    Dim fso     As FILE
     Dim sFile   As String
     Dim i       As Long
     
@@ -1176,7 +1223,7 @@ Public Function ToDict(ByVal td_file As Variant) As Dictionary
     
     '~~ Unload file into a test stream
     With New FileSystemObject
-        Set ts = .OpenTextFile(fso.Path, 1)
+        Set ts = .OpenTextFile(fso.PATH, 1)
         With ts
             On Error Resume Next ' may be empty
             sFile = .ReadAll
@@ -1303,8 +1350,10 @@ Public Function Values( _
     Set dctValueNames = mFile.ValueNames(vn_file:=vl_file, vn_section:=vl_section)
     For Each vn In dctValueNames
         If Not dctValues.Exists(vn) _
-        Then mDct.DctAdd add_dct:=dctValues, add_key:=vn, add_item:=mFile.value(vl_file:=vl_file, vl_section:=vl_section, vl_value_name:=vn)
+        Then mDct.DctAdd add_dct:=dctValues, add_key:=vn, add_item:=mFile.Value(vl_file:=vl_file, vl_section:=vl_section, vl_value_name:=vn)
     Next vn
     Set Values = dctValues
     
 End Function
+
+
