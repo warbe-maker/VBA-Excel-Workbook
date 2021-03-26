@@ -88,10 +88,49 @@ Public Enum xlOnOff ' ------------------------------------
     xlOn = 1        ' System constants (identical values)
     xlOff = -4146   ' grouped for being used as Enum Type.
 End Enum            ' ------------------------------------
+Public Enum StringAlign
+    AlignLeft = 1
+    AlignRight = 2
+    AlignCentered = 3
+End Enum
 
 Public Property Get MsgReply() As Variant:          MsgReply = vMsgReply:   End Property
 
 Public Property Let MsgReply(ByVal v As Variant):   vMsgReply = v:          End Property
+
+Public Function Align( _
+                ByVal s As String, _
+                ByVal lngth As Long, _
+       Optional ByVal aligned As StringAlign = AlignLeft, _
+       Optional ByVal margin As String = vbNullString, _
+       Optional ByVal fill As String = " ") As String
+' ---------------------------------------------------------
+' Returns a string (s) with a lenght (lngth)
+' aligned (aligned) filled with characters (fill).
+' ---------------------------------------------------------
+    Dim SpaceLeft       As Long
+    Dim LengthRemaining As Long
+    
+    Select Case aligned
+        Case AlignLeft
+            If Len(s & margin) >= lngth _
+            Then Align = VBA.Left$(s & margin, lngth) _
+            Else Align = s & margin & VBA.String$(lngth - (Len(s & margin)), fill)
+        Case AlignRight
+            If Len(margin & s) >= lngth _
+            Then Align = VBA.Left$(margin & s, lngth) _
+            Else Align = VBA.String$(lngth - (Len(margin & s)), fill) & margin & s
+        Case AlignCentered
+            If Len(margin & s & margin) >= lngth Then
+                Align = margin & Left$(s, lngth - (2 * Len(margin))) & margin
+            Else
+                SpaceLeft = Max(1, ((lngth - Len(s) - (2 * Len(margin))) / 2))
+                Align = VBA.String$(SpaceLeft, fill) & margin & s & margin & VBA.String$(SpaceLeft, fill)
+                Align = VBA.Right$(Align, lngth)
+            End If
+    End Select
+
+End Function
 
 Public Function AppErr(ByVal lNo As Long) As Long
 ' -------------------------------------------------------------------------------
@@ -118,7 +157,7 @@ Public Function AppIsInstalled(ByVal sApp As String) As Boolean
     
     Dim i As Long: i = 1
     
-    Do Until left$(Environ$(i), 5) = "Path="
+    Do Until Left$(Environ$(i), 5) = "Path="
         i = i + 1
     Loop
     AppIsInstalled = InStr(Environ$(i), sApp) <> 0
@@ -432,6 +471,18 @@ xt: Exit Function
 eh: ErrMsg ErrSrc(PROC)
 End Function
 
+Public Function Center(ByVal s1 As String, _
+                       ByVal l As Long, _
+               Optional ByVal sFill As String = " ") As String
+' ------------------------------------------------------------
+' Returns s1 centered in a string with length l.
+' ------------------------------------------------------------
+    Dim lSpace As Long
+    lSpace = Max(1, ((l - Len(s1)) / 2))
+    Center = VBA.String$(lSpace, sFill) & s1 & VBA.String$(lSpace, sFill)
+    Center = Right(Center, l)
+End Function
+
 Public Function CleanTrim(ByVal s As String, _
                  Optional ByVal ConvertNonBreakingSpace As Boolean = True) As String
 ' ----------------------------------------------------------------------------------
@@ -469,6 +520,23 @@ Public Function ElementOfIndex(ByVal a As Variant, _
     Next ia
     
 End Function
+
+Private Sub ErrMsg( _
+             ByVal err_source As String, _
+    Optional ByVal err_no As Long = 0, _
+    Optional ByVal err_dscrptn As String = vbNullString)
+' ------------------------------------------------------
+' This Common Component does not have its own error
+' handling. Instead it passes on any error to the
+' caller's error handling.
+' ------------------------------------------------------
+    
+    If err_no = 0 Then err_no = Err.Number
+    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+
+    Err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
+
+End Sub
 
 Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = ThisWorkbook.name & " mBasic." & sProc
@@ -589,21 +657,22 @@ Public Function SelectFolder( _
 
 End Function
 
-Private Sub ErrMsg( _
-             ByVal err_source As String, _
-    Optional ByVal err_no As Long = 0, _
-    Optional ByVal err_dscrptn As String = vbNullString)
-' ------------------------------------------------------
-' This Common Component does not have its own error
-' handling. Instead it passes on any error to the
-' caller's error handling.
-' ------------------------------------------------------
+Public Function Spaced(ByVal s As String) As String
+' -------------------------------------------------
+' Returns a non-breaking-spaced string.
+' Example: Spaced("Ab c") returns = "A b  c"
+' Note: Any provided leading abd trailing spaces
+'       unstripped, any included spaces a doubled.
+' -------------------------------------------------
+    Dim a() As Byte
+    Dim i   As Long
     
-    If err_no = 0 Then err_no = Err.Number
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+    If s = vbNullString Then Exit Function
+    a = StrConv(Trim$(s), vbFromUnicode)
+    Spaced = Chr$(a(LBound(a)))
+    For i = LBound(a) + 1 To UBound(a)
+        If Chr$(a(i)) = " " Then Spaced = Spaced & Chr$(160) Else Spaced = Spaced & Chr$(160) & Chr$(a(i))
+    Next i
 
-    Err.Raise Number:=err_no, Source:=err_source, Description:=err_dscrptn
-
-End Sub
-
+End Function
 

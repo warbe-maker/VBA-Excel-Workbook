@@ -105,7 +105,7 @@ Public Sub Test_02_GetOpen()
     '~~         A Workbook with the same name but from a different location is already open
     '~~         and the file does not/no longer exist at the provided location.
     Set wb3 = Workbooks.Open(sWb3FullName)
-    Debug.Assert GetOpen(sWb1FullName & "\Test2.xlsm").Name = sWb3Name
+    Debug.Assert GetOpen(sWb1FullName & "\Test2.xlsm").name = sWb3Name
     wb3.Close
     
 xt: '~~ Cleanup
@@ -191,7 +191,7 @@ Public Sub Test_03_GetOpen_Errors()
     Set wb = Workbooks.Open(ThisWorkbook.Path & "\" & "Test3.xlsm")
     On Error Resume Next
     Set wb1 = GetOpen(ThisWorkbook.Path & "\Test\" & "Test3.xlsm")
-    Debug.Assert mErH.AppErr(err.Number) = 3
+    Debug.Assert mErH.AppErr(Err.Number) = 3
     wb.Close
     
     '~~ Test E-6: Parameter is neither a Workbook object nor a string
@@ -245,7 +245,7 @@ Public Sub Test_01_IsOpen()
     Debug.Assert IsOpen(wb1, wbResult) = True
 
     '~~ 2. Test IsOpen by Name
-    Debug.Assert IsOpen(wb1.Name, wbResult) = True
+    Debug.Assert IsOpen(wb1.name, wbResult) = True
 
     '~~ 3. Test IsOpen by FullName
     Debug.Assert IsOpen(wb1.FullName, wbResult) = True
@@ -289,17 +289,17 @@ Public Sub Test_04_Is_()
     Set wb = mWrkbk.GetOpen(ThisWorkbook.Path & "\" & "Test1.xlsm")
     
     mErH.BoP ErrSrc(PROC)
-    Debug.Assert IsName(wb.Name) = True
+    Debug.Assert IsName(wb.name) = True
     Debug.Assert IsName(wb.FullName) = False
     Debug.Assert IsName(wb.Path) = False
     Debug.Assert IsName(ThisWorkbook) = False
     
-    Debug.Assert IsFullName(wb.Name) = False
+    Debug.Assert IsFullName(wb.name) = False
     Debug.Assert IsFullName(wb.FullName) = True
     Debug.Assert IsFullName(wb.Path) = False
     Debug.Assert IsFullName(ThisWorkbook) = False
 
-    Debug.Assert IsObject(wb.Name) = False
+    Debug.Assert IsObject(wb.name) = False
     Debug.Assert IsObject(wb.FullName) = False
     Debug.Assert IsObject(wb.Path) = False
     Debug.Assert IsObject(ThisWorkbook) = True
