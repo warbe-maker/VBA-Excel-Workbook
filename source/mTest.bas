@@ -30,13 +30,14 @@ Public Sub Regression()
     mTest.Test_02_GetOpen
     mTest.Test_03_GetOpen_Errors
     mTest.Test_04_Is_
+    mTest.Test_05_Opened
     
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
+        Case mErH.DebugOptResumeErrorLine: Stop: Resume
+        Case mErH.DebugOptResumeNext: Resume Next
         Case mErH.ErrMsgDefaultButton: End
     End Select
 End Sub
@@ -61,17 +62,19 @@ Public Sub Test_02_GetOpen()
     
     '~~ Ensure precondition
     On Error Resume Next
-    wb1.Close
-    wb2.Close
+    wb1.Close False
+    wb2.Close False
+    wb3.Close False
+    
     On Error GoTo eh
     sWb1Name = "Test1.xlsm"
-    sWb1FullName = ThisWorkbook.Path & "\" & sWb1Name
+    sWb1FullName = ThisWorkbook.Path & "\Test\" & sWb1Name
     sWb2Name = sWb1Name
-    sWb2FullName = ThisWorkbook.Path & "\Test\" & sWb2Name
+    sWb2FullName = ThisWorkbook.Path & "\Test\TestSubFolder\" & sWb2Name
     sWb3Name = "Test2.xlsm"
-    sWb3FullName = ThisWorkbook.Path & "\Test\" & sWb3Name
+    sWb3FullName = ThisWorkbook.Path & "\Test\TestSubFolder\" & sWb3Name
     
-    Set wb1 = Workbooks.Open(sWb1FullName) ' open the test Workbook
+    Set wb1 = Workbooks.Open(sWb1FullName) ' open the first test Workbook
     
     '~~ --------------------------------------------
     '~~ Run tests (all not raising an error
@@ -87,16 +90,16 @@ Public Sub Test_02_GetOpen()
 
     '~~ Test 4: GetOpen Workbook by fullname (not open)
     sFullName = wb1.FullName
-    wb1.Close
+    wb1.Close False
     Debug.Assert GetOpen(sFullName).FullName = sFullName
 
     '~~ Test 5: GetOpen Workbook by full name (not open)
     '~~         A Workbook with the same name but from a different location is already open.
     On Error Resume Next
-    wb1.Close
-    wb2.Close
+    wb1.Close False
+    wb2.Close False
     sFullName = wb3.FullName
-    wb3.Close
+    wb3.Close False
 
     On Error GoTo eh
     Debug.Assert GetOpen(sFullName).FullName = sFullName
@@ -106,20 +109,21 @@ Public Sub Test_02_GetOpen()
     '~~         and the file does not/no longer exist at the provided location.
     Set wb3 = Workbooks.Open(sWb3FullName)
     Debug.Assert GetOpen(sWb1FullName & "\Test2.xlsm").name = sWb3Name
-    wb3.Close
+    wb3.Close False
     
 xt: '~~ Cleanup
     On Error Resume Next
-    wb1.Close
-    wb2.Close
-    wb3.Close
+    GetOpen(sWb1FullName).Close False
+    wb1.Close False
+    wb2.Close False
+    wb3.Close False
     mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
-        Case mErH.ErrMsgDefaultButton: End
+        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
+        Case mErH.DebugOptResumeNext:       Resume Next
+        Case mErH.ErrMsgDefaultButton:      GoTo xt
     End Select
 End Sub
 
@@ -209,9 +213,9 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
-        Case mErH.ErrMsgDefaultButton: End
+        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
+        Case mErH.DebugOptResumeNext:       Resume Next
+        Case mErH.ErrMsgDefaultButton:      GoTo xt
     End Select
 End Sub
 
@@ -234,9 +238,9 @@ Public Sub Test_01_IsOpen()
     wb3.Close
     
     With Workbooks
-        Set wb1 = .Open(ThisWorkbook.Path & "\Test1.xlsm")
-        Set wb2 = .Open(ThisWorkbook.Path & "\Test\Test2.xlsm")
-        Set wb3 = .Open(ThisWorkbook.Path & "\Test\Test3.xlsm")
+        Set wb1 = .Open(ThisWorkbook.Path & "\Test\Test1.xlsm")
+        Set wb2 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test2.xlsm")
+        Set wb3 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
     End With
     
     On Error GoTo eh
@@ -250,10 +254,10 @@ Public Sub Test_01_IsOpen()
     '~~ 3. Test IsOpen by FullName
     Debug.Assert IsOpen(wb1.FullName, wbResult) = True
 
-    '~~ 4. A Workbook with the givven nmae is open but from a different location
-    '~~    Since the Workbook does not or no longer exist at the requested location it regarded moved and comsidered open
+    '~~ 4. A Workbook with the givven name is open but from a different location
+    '~~    Since the Workbook does not or no longer exist at the requested location it regarded moved and considered open
     Debug.Assert IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
-    Debug.Assert wbResult.FullName = wb1.Path & "\Test\Test2.xlsm"
+    Debug.Assert wbResult.FullName = wb1.Path & "\Test\TestSubFolder\Test2.xlsm"
     
     '~~ 4b No Workbook object is returned since the parameter is not Variant    Debug.Assert vWb Is wb2
     Debug.Assert IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
@@ -273,9 +277,9 @@ xt: wb1.Close
     Exit Sub
     
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
-        Case mErH.ErrMsgDefaultButton: End
+        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
+        Case mErH.DebugOptResumeNext:       Resume Next
+        Case mErH.ErrMsgDefaultButton:      GoTo xt
     End Select
 End Sub
 
@@ -285,14 +289,17 @@ Public Sub Test_04_Is_()
     On Error GoTo eh
     Dim wb  As Workbook
     Dim wb1 As Workbook
-
-    Set wb = mWrkbk.GetOpen(ThisWorkbook.Path & "\" & "Test1.xlsm")
+    Dim fso As New FileSystemObject
     
     mErH.BoP ErrSrc(PROC)
+    
+    Set wb = mWrkbk.GetOpen(ThisWorkbook.Path & "\Test\Test1.xlsm")
+    
     Debug.Assert IsName(wb.name) = True
-    Debug.Assert IsName(wb.FullName) = False
+    Debug.Assert IsName(wb.FullName) = True
     Debug.Assert IsName(wb.Path) = False
     Debug.Assert IsName(ThisWorkbook) = False
+    Debug.Assert IsName(fso.GetBaseName(wb.FullName)) = False
     
     Debug.Assert IsFullName(wb.name) = False
     Debug.Assert IsFullName(wb.FullName) = True
@@ -306,20 +313,38 @@ Public Sub Test_04_Is_()
     
     Debug.Assert IsObject(wb) = True
     wb.Close
-    Debug.Assert IsObject(wb) = True                              ' A closed Workbook is still a Workbook object
+    Debug.Assert IsObject(wb) = False               ' A closed Workbook is still an object but not an object Type Workbook
     Set wb = Nothing
-    Debug.Assert IsObject(wb) = False                             ' A set to Nothing is no longer a Workbook object
-    Debug.Assert IsObject(wb1) = False                             ' A never assigned Workbook is not a Workbook object
+    Debug.Assert IsObject(wb) = False               ' A set to Nothing is no longer a Workbook object
+    Debug.Assert IsObject(wb1) = False              ' A never assigned Workbook is not a Workbook object
         
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOpt1ResumeError: Stop: Resume
-        Case mErH.DebugOpt2ResumeNext: Resume Next
-        Case mErH.ErrMsgDefaultButton: End
+        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
+        Case mErH.DebugOptResumeNext:       Resume Next
+        Case mErH.ErrMsgDefaultButton:      GoTo xt
     End Select
 End Sub
+ 
+Public Sub Test_05_Opened()
+    Const PROC = "Test_04_Is_"
+
+    On Error GoTo eh
+    mErH.BoP ErrSrc(PROC)
+    Debug.Assert Opened.Count > 0
+    
+xt: mErH.EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
+        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
+        Case mErH.DebugOptResumeNext:       Resume Next
+        Case mErH.ErrMsgDefaultButton:      GoTo xt
+    End Select
+End Sub
+    
  
 Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mTest" & "." & sProc
