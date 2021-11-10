@@ -8,6 +8,137 @@ Option Explicit
 Declare PtrSafe Function GetKeyState Lib "user32" (ByVal vKey As Integer) As Integer
 Const SHIFT_KEY = 16
 
+Private Function AppErr(ByVal app_err_no As Long) As Long
+' ------------------------------------------------------------------------------
+' Ensures that a programmed (i.e. an application) error numbers never conflicts
+' with the number of a VB runtime error. Thr function returns a given positive
+' number (app_err_no) with the vbObjectError added - which turns it into a
+' negative value. When the provided number is negative it returns the original
+' positive "application" error number e.g. for being used with an error message.
+' ------------------------------------------------------------------------------
+    If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
+End Function
+  
+Private Function ErrMsg(ByVal err_source As String, _
+              Optional ByVal err_no As Long = 0, _
+              Optional ByVal err_dscrptn As String = vbNullString, _
+              Optional ByVal err_line As Long = 0) As Variant
+' ------------------------------------------------------------------------------
+' This is a kind of universal error message which includes a debugging option.
+' It may be copied into any module - turned into a Private function. When the/my
+' Common VBA Error Handling Component (ErH) is installed and the Conditional
+' Compile Argument 'CommErHComp = 1' the error message will be displayed by
+' means of the Common VBA Message Component (fMsg, mMsg).
+'
+' Usage: When this procedure is copied as a Private Function into any desired
+'        module an error handling which consideres the possible Conditional
+'        Compile Argument 'Debugging = 1' will look as follows
+'
+'            Const PROC = "procedure-name"
+'            On Error Goto eh
+'        ....
+'        xt: Exit Sub/Function/Property
+'
+'        eh: Select Case ErrMsg(ErrSrc(PROC)
+'               Case vbYes: Stop: Resume
+'               Case vbNo:  Resume Next
+'               Case Else:  Goto xt
+'            End Select
+'        End Sub/Function/Property
+'
+'        The above may appear a lot of code lines but will be a godsend in case
+'        of an error!
+'
+' Used:  - For programmed application errors (Err.Raise AppErr(n), ....) the
+'          function AppErr will be used which turns the positive number into a
+'          negative one. The error message will regard a negative error number
+'          as an 'Application Error' and will use AppErr to turn it back for
+'          the message into its original positive number. Together with the
+'          ErrSrc there will be no need to maintain numerous different error
+'          numbers for a VB-Project.
+'        - The caller provides the source of the error through the module
+'          specific function ErrSrc(PROC) which adds the module name to the
+'          procedure name.
+' ------------------------------------------------------------------------------
+    Dim ErrBttns    As Variant
+    Dim ErrAtLine   As String
+    Dim ErrDesc     As String
+    Dim ErrLine     As Long
+    Dim ErrNo       As Long
+    Dim ErrSrc      As String
+    Dim ErrText     As String
+    Dim ErrTitle    As String
+    Dim ErrType     As String
+    
+    '~~ Obtain error information from the Err object for any argument not provided
+    If err_no = 0 Then err_no = Err.Number
+    If err_line = 0 Then ErrLine = Erl
+    If err_source = vbNullString Then err_source = Err.Source
+    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
+    If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
+    
+    '~~ Determine the type of error
+    Select Case err_no
+        Case Is < 0
+            ErrNo = AppErr(err_no)
+            ErrType = "Application Error "
+        Case Else
+            ErrNo = err_no
+            If (InStr(1, err_dscrptn, "DAO") <> 0 _
+            Or InStr(1, err_dscrptn, "ODBC Teradata Driver") <> 0 _
+            Or InStr(1, err_dscrptn, "ODBC") <> 0 _
+            Or InStr(1, err_dscrptn, "Oracle") <> 0) _
+            Then ErrType = "Database Error " _
+            Else ErrType = "VB Runtime Error "
+    End Select
+    
+    If err_source <> vbNullString Then ErrSrc = " in: """ & err_source & """"   ' assemble ErrSrc from available information"
+    If err_line <> 0 Then ErrAtLine = " at line " & err_line                    ' assemble ErrAtLine from available information
+    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
+       
+    ErrText = "Error: " & vbLf & _
+              err_dscrptn & vbLf & vbLf & _
+              "Source: " & vbLf & _
+              err_source & ErrAtLine
+    
+#If Debugging = 1 Then
+    ErrBttns = vbYesNoCancel
+    ErrText = ErrText & vbLf & vbLf & _
+              "Debugging:" & vbLf & _
+              "Yes    = Resume error line" & vbLf & _
+              "No     = Resume Next (skip error line)" & vbLf & _
+              "Cancel = Terminate"
+#Else
+    ErrBttns = vbCritical
+#End If
+    
+#If CommErHComp = 1 Then
+    '~~ When the Common VBA Error Handling Component (ErH) is installed/used by in the VB-Project
+    ErrMsg = mErH.ErrMsg(err_source:=err_source, err_number:=err_no, err_dscrptn:=err_dscrptn, err_line:=err_line)
+    '~~ Translate back the elaborated reply buttons of mErrH.ErrMsg displays into Yes/No/Cancel
+    '~~ replies with the VBA MsgBox.
+    Select Case ErrMsg
+        Case mErH.DebugOptResumeErrorLine:  ErrMsg = vbYes
+        Case mErH.DebugOptResumeNext:       ErrMsg = vbNo
+        Case Else:                          ErrMsg = vbCancel
+    End Select
+#Else
+#If CommMsgComp = 1 Then
+    '~~ When the Common VBA Message Component (mMsg/fMsg) is not used/installed there might still be the
+    ErrMsg = mMsg.ErrMsg(err_source:=err_source)
+#Else
+    '~~ None of the Common Components is installed/used
+    ErrMsg = MsgBox(Title:=ErrTitle _
+                  , Prompt:=ErrText _
+                  , Buttons:=ErrBttns)
+#End If
+#End If
+End Function
+  
+Private Function ErrSrc(ByVal sProc As String) As String
+    ErrSrc = "mTest" & "." & sProc
+End Function
+
 Public Sub Regression()
 ' ---------------------------------------------------------
 ' All results are asserted and there is no intervention
@@ -35,10 +166,74 @@ Public Sub Regression()
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOptResumeErrorLine: Stop: Resume
-        Case mErH.DebugOptResumeNext: Resume Next
-        Case mErH.ErrMsgDefaultButton: End
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes:  Stop: Resume
+        Case vbNo:   Stop: Resume Next
+        Case Else:   GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_01_IsOpen()
+    Const PROC = "Test_01_IsOpen"  ' This procedure's name for the error handling and execution tracking
+
+    On Error GoTo eh
+    Dim wb          As Workbook
+    Dim sName       As String
+    Dim o           As Object
+    Dim wb1         As Workbook
+    Dim wb2         As Workbook
+    Dim wb3         As Workbook
+    Dim wbResult    As Workbook
+    
+    '~~ Prepare test environment
+    On Error Resume Next
+    wb1.Close
+    wb2.Close
+    wb3.Close
+    
+    With Workbooks
+        Set wb1 = .Open(ThisWorkbook.Path & "\Test\Test1.xlsm")
+        Set wb2 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test2.xlsm")
+        Set wb3 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
+    End With
+    
+    On Error GoTo eh
+    mErH.BoP ErrSrc(PROC)
+    '~~ 1. Test IsOpen by object
+    Debug.Assert mWrkbk.IsOpen(wb1, wbResult) = True
+
+    '~~ 2. Test IsOpen by Name
+    Debug.Assert mWrkbk.IsOpen(wb1.Name, wbResult) = True
+
+    '~~ 3. Test IsOpen by FullName
+    Debug.Assert mWrkbk.IsOpen(wb1.FullName, wbResult) = True
+
+    '~~ 4. A Workbook with the given name is open but from a different location
+    '~~    Since the Workbook does not or no longer exist at the requested location it regarded moved and considered open
+    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
+    Debug.Assert wbResult.FullName = wb1.Path & "\TestSubFolder\Test2.xlsm"
+    
+    '~~ 4b No Workbook object is returned since the parameter is not Variant    Debug.Assert vWb Is wb2
+    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
+    
+    '~~ 5. Workbook does not exist. When a fullname is provided an error is raised
+    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test\Test.xlsm", wbResult) = False
+        
+    '~~ 6. A Workbook with the given Name is open but from a different location
+    '~~    Since it still exists at the requested location it is regarde not open
+    wb3.Close
+    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test3.xlsm", wbResult) = False
+    
+xt: wb1.Close
+    wb2.Close
+    On Error Resume Next: wb3.Close
+    mErH.EoP ErrSrc(PROC)
+    Exit Sub
+    
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes:  Stop: Resume
+        Case vbNo:   Stop: Resume Next
+        Case Else:   GoTo xt
     End Select
 End Sub
 
@@ -108,7 +303,7 @@ Public Sub Test_02_GetOpen()
     '~~         A Workbook with the same name but from a different location is already open
     '~~         and the file does not/no longer exist at the provided location.
     Set wb3 = Workbooks.Open(sWb3FullName)
-    Debug.Assert GetOpen(sWb1FullName & "\Test2.xlsm").name = sWb3Name
+    Debug.Assert GetOpen(sWb1FullName & "\Test2.xlsm").Name = sWb3Name
     wb3.Close False
     
 xt: '~~ Cleanup
@@ -120,10 +315,10 @@ xt: '~~ Cleanup
     mErH.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
-        Case mErH.DebugOptResumeNext:       Resume Next
-        Case mErH.ErrMsgDefaultButton:      GoTo xt
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes:  Stop: Resume
+        Case vbNo:   Stop: Resume Next
+        Case Else:   GoTo xt
     End Select
 End Sub
 
@@ -152,42 +347,42 @@ Public Sub Test_03_GetOpen_Errors()
     sWb3FullName = ThisWorkbook.Path & "\Test\" & sWb3Name
     
     '~~ Test : GetOpen Workbook is object never opened
-    mErH.BoTP ErrSrc(PROC), mErH.AppErr(1) ' Bypass this error as the one asserted
+    mErH.BoTP ErrSrc(PROC), AppErr(1) ' Bypass this error as the one asserted
     mWrkbk.GetOpen wb1
     mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = mErH.AppErr(1)
+    Debug.Assert mErH.MostRecentError = AppErr(1)
 
     '~~ Test E-2: Parameter is Nothing
     Set wb1 = Workbooks.Open(sWb1FullName) ' open the test Workbook
     wb1.Close
-    mErH.BoTP ErrSrc(PROC), mErH.AppErr(2) ' Bypass this error as the one asserted
+    mErH.BoTP ErrSrc(PROC), AppErr(2) ' Bypass this error as the one asserted
     mWrkbk.GetOpen wb1
     mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = mErH.AppErr(2)
+    Debug.Assert mErH.MostRecentError = AppErr(2)
 
     '~~ Test E-2: Parameter is Nothing
     Set wb1 = Nothing
     
-    mErH.BoTP ErrSrc(PROC), mErH.AppErr(1) ' Bypass this error as the one asserted
+    mErH.BoTP ErrSrc(PROC), AppErr(1) ' Bypass this error as the one asserted
     mWrkbk.GetOpen wb1
     mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = mErH.AppErr(1)
+    Debug.Assert mErH.MostRecentError = AppErr(1)
     
     '~~ Test E-3: Parameter is a not open Workbook's name
     On Error Resume Next
     wb1.Close
     wb2.Close
     
-    mErH.BoTP ErrSrc(PROC), mErH.AppErr(5) ' Bypass this error as the one asserted
+    mErH.BoTP ErrSrc(PROC), AppErr(5) ' Bypass this error as the one asserted
     GetOpen sWb1Name
     mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = mErH.AppErr(5)
+    Debug.Assert mErH.MostRecentError = AppErr(5)
 
     '~~ Test E-4: Parameter is a Workbook's full name but the file does't exist
-    mErH.BoTP ErrSrc(PROC), mErH.AppErr(4) ' Bypass this error as the one asserted
+    mErH.BoTP ErrSrc(PROC), AppErr(4) ' Bypass this error as the one asserted
     mWrkbk.GetOpen Replace(sWb1FullName, sWb1Name, "not-existing.xls")
     mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = mErH.AppErr(4)
+    Debug.Assert mErH.MostRecentError = AppErr(4)
 
     '~~ Test E-5: A Workbook with the provided name is open but from a different location
     '             and the Workbook file still exists at the provided location
@@ -195,13 +390,13 @@ Public Sub Test_03_GetOpen_Errors()
     Set wb = Workbooks.Open(ThisWorkbook.Path & "\" & "Test3.xlsm")
     On Error Resume Next
     Set wb1 = GetOpen(ThisWorkbook.Path & "\Test\" & "Test3.xlsm")
-    Debug.Assert mErH.AppErr(Err.Number) = 3
+    Debug.Assert AppErr(Err.Number) = 3
     wb.Close
     
     '~~ Test E-6: Parameter is neither a Workbook object nor a string
     On Error Resume Next
     Set wb = GetOpen(ThisWorkbook.ActiveSheet)
-    Debug.Assert mErH.AppErr(1)
+    Debug.Assert AppErr(1)
 
     '~~ Cleanup
     On Error Resume Next
@@ -212,74 +407,10 @@ Public Sub Test_03_GetOpen_Errors()
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
-        Case mErH.DebugOptResumeNext:       Resume Next
-        Case mErH.ErrMsgDefaultButton:      GoTo xt
-    End Select
-End Sub
-
-Public Sub Test_01_IsOpen()
-    Const PROC = "Test_01_IsOpen"  ' This procedure's name for the error handling and execution tracking
-
-    On Error GoTo eh
-    Dim wb          As Workbook
-    Dim sName       As String
-    Dim o           As Object
-    Dim wb1         As Workbook
-    Dim wb2         As Workbook
-    Dim wb3         As Workbook
-    Dim wbResult    As Workbook
-    
-    '~~ Prepare test environment
-    On Error Resume Next
-    wb1.Close
-    wb2.Close
-    wb3.Close
-    
-    With Workbooks
-        Set wb1 = .Open(ThisWorkbook.Path & "\Test\Test1.xlsm")
-        Set wb2 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test2.xlsm")
-        Set wb3 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
-    End With
-    
-    On Error GoTo eh
-    mErH.BoP ErrSrc(PROC)
-    '~~ 1. Test IsOpen by object
-    Debug.Assert IsOpen(wb1, wbResult) = True
-
-    '~~ 2. Test IsOpen by Name
-    Debug.Assert IsOpen(wb1.name, wbResult) = True
-
-    '~~ 3. Test IsOpen by FullName
-    Debug.Assert IsOpen(wb1.FullName, wbResult) = True
-
-    '~~ 4. A Workbook with the givven name is open but from a different location
-    '~~    Since the Workbook does not or no longer exist at the requested location it regarded moved and considered open
-    Debug.Assert IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
-    Debug.Assert wbResult.FullName = wb1.Path & "\Test\TestSubFolder\Test2.xlsm"
-    
-    '~~ 4b No Workbook object is returned since the parameter is not Variant    Debug.Assert vWb Is wb2
-    Debug.Assert IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
-    
-    '~~ 5. Workbook does not exist. When a fullname is provided an error is raised
-    Debug.Assert IsOpen(wb1.Path & "\Test\Test.xlsm", wbResult) = False
-        
-    '~~ 6. A Workbook with the given Name is open but from a different location
-    '~~    Since it still exists at the requested location it is regarde not open
-    wb3.Close
-    Debug.Assert IsOpen(wb1.Path & "\Test3.xlsm", wbResult) = False
-    
-xt: wb1.Close
-    wb2.Close
-    On Error Resume Next: wb3.Close
-    mErH.EoP ErrSrc(PROC)
-    Exit Sub
-    
-eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
-        Case mErH.DebugOptResumeNext:       Resume Next
-        Case mErH.ErrMsgDefaultButton:      GoTo xt
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes:  Stop: Resume
+        Case vbNo:   Stop: Resume Next
+        Case Else:   GoTo xt
     End Select
 End Sub
 
@@ -295,18 +426,18 @@ Public Sub Test_04_Is_()
     
     Set wb = mWrkbk.GetOpen(ThisWorkbook.Path & "\Test\Test1.xlsm")
     
-    Debug.Assert IsName(wb.name) = True
+    Debug.Assert IsName(wb.Name) = True
     Debug.Assert IsName(wb.FullName) = True
     Debug.Assert IsName(wb.Path) = False
     Debug.Assert IsName(ThisWorkbook) = False
     Debug.Assert IsName(fso.GetBaseName(wb.FullName)) = False
     
-    Debug.Assert IsFullName(wb.name) = False
+    Debug.Assert IsFullName(wb.Name) = False
     Debug.Assert IsFullName(wb.FullName) = True
     Debug.Assert IsFullName(wb.Path) = False
     Debug.Assert IsFullName(ThisWorkbook) = False
 
-    Debug.Assert IsObject(wb.name) = False
+    Debug.Assert IsObject(wb.Name) = False
     Debug.Assert IsObject(wb.FullName) = False
     Debug.Assert IsObject(wb.Path) = False
     Debug.Assert IsObject(ThisWorkbook) = True
@@ -321,12 +452,13 @@ Public Sub Test_04_Is_()
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
-        Case mErH.DebugOptResumeNext:       Resume Next
-        Case mErH.ErrMsgDefaultButton:      GoTo xt
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes:  Stop: Resume
+        Case vbNo:   Stop: Resume Next
+        Case Else:   GoTo xt
     End Select
 End Sub
+
  
 Public Sub Test_05_Opened()
     Const PROC = "Test_04_Is_"
@@ -338,14 +470,9 @@ Public Sub Test_05_Opened()
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case mErH.ErrMsg(ErrSrc(PROC))
-        Case mErH.DebugOptResumeErrorLine:  Stop: Resume
-        Case mErH.DebugOptResumeNext:       Resume Next
-        Case mErH.ErrMsgDefaultButton:      GoTo xt
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbYes:  Stop: Resume
+        Case vbNo:   Stop: Resume Next
+        Case Else:   GoTo xt
     End Select
 End Sub
-    
- 
-Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = "mTest" & "." & sProc
-End Function
