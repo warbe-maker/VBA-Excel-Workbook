@@ -1,4 +1,4 @@
-Attribute VB_Name = "mTest"
+Attribute VB_Name = "mWrkbkTest"
 Option Explicit
 ' ------------------------------------------------------------
 ' Standard Module mTest Test of all Existence checks variants
@@ -19,37 +19,45 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
   
+
 Private Function ErrMsg(ByVal err_source As String, _
               Optional ByVal err_no As Long = 0, _
               Optional ByVal err_dscrptn As String = vbNullString, _
               Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
-' This is a kind of universal error message which includes a debugging option.
-' It may be copied into any module - turned into a Private function. When the/my
-' Common VBA Error Handling Component (ErH) is installed and the Conditional
-' Compile Argument 'CommErHComp = 1' the error message will be displayed by
-' means of the Common VBA Message Component (fMsg, mMsg).
+' Universal error message display service including a debugging option active
+' when the Conditional Compile Argument 'Debugging = 1' and an optional
+' additional "About the error:" section displaying text connected to an error
+' message by two vertical bars (||).
 '
-' Usage: When this procedure is copied as a Private Function into any desired
-'        module an error handling which consideres the possible Conditional
-'        Compile Argument 'Debugging = 1' will look as follows
+' A copy of this function is used in each procedure with an error handling
+' (On error Goto eh).
 '
-'            Const PROC = "procedure-name"
+' The function considers the Common VBA Error Handling Component (ErH) which
+' may be installed (Conditional Compile Argument 'ErHComp = 1') and/or the
+' Common VBA Message Display Component (mMsg) installed (Conditional Compile
+' Argument 'MsgComp = 1'). Only when none of the two is installed the error
+' message is displayed by means of the VBA.MsgBox.
+'
+' Usage: Example with the Conditional Compile Argument 'Debugging = 1'
+'
+'        Private/Public <procedure-name>
+'            Const PROC = "<procedure-name>"
+'
 '            On Error Goto eh
-'        ....
+'            ....
 '        xt: Exit Sub/Function/Property
 '
-'        eh: Select Case ErrMsg(ErrSrc(PROC)
-'               Case vbYes: Stop: Resume
-'               Case vbNo:  Resume Next
-'               Case Else:  Goto xt
+'        eh: Select Case ErrMsg(ErrSrc(PROC))
+'               Case vbResume:  Stop: Resume
+'               Case Else:      GoTo xt
 '            End Select
 '        End Sub/Function/Property
 '
 '        The above may appear a lot of code lines but will be a godsend in case
 '        of an error!
 '
-' Used:  - For programmed application errors (Err.Raise AppErr(n), ....) the
+' Uses:  - For programmed application errors (Err.Raise AppErr(n), ....) the
 '          function AppErr will be used which turns the positive number into a
 '          negative one. The error message will regard a negative error number
 '          as an 'Application Error' and will use AppErr to turn it back for
@@ -59,7 +67,31 @@ Private Function ErrMsg(ByVal err_source As String, _
 '        - The caller provides the source of the error through the module
 '          specific function ErrSrc(PROC) which adds the module name to the
 '          procedure name.
+'
+' W. Rauschenberger Berlin, Nov 2021
 ' ------------------------------------------------------------------------------
+#If ErHComp = 1 Then
+    '~~ ------------------------------------------------------------------------
+    '~~ When the Common VBA Error Handling Component (mErH) is installed in the
+    '~~ VB-Project (which includes the mMsg component) the mErh.ErrMsg service
+    '~~ is preferred since it provides some enhanced features like a path to the
+    '~~ error.
+    '~~ ------------------------------------------------------------------------
+    ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line)
+    GoTo xt
+#ElseIf MsgComp = 1 Then
+    '~~ ------------------------------------------------------------------------
+    '~~ When only the Common Message Services Component (mMsg) is installed but
+    '~~ not the mErH component the mMsg.ErrMsg service is preferred since it
+    '~~ provides an enhanced layout and other features.
+    '~~ ------------------------------------------------------------------------
+    ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line)
+    GoTo xt
+#End If
+    '~~ -------------------------------------------------------------------
+    '~~ When neither the mMsg nor the mErH component is installed the error
+    '~~ message is displayed by means of the VBA.MsgBox
+    '~~ -------------------------------------------------------------------
     Dim ErrBttns    As Variant
     Dim ErrAtLine   As String
     Dim ErrDesc     As String
@@ -69,13 +101,21 @@ Private Function ErrMsg(ByVal err_source As String, _
     Dim ErrText     As String
     Dim ErrTitle    As String
     Dim ErrType     As String
-    
+    Dim ErrAbout    As String
+        
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
     If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
+    
+    If InStr(err_dscrptn, "||") <> 0 Then
+        ErrDesc = Split(err_dscrptn, "||")(0)
+        ErrAbout = Split(err_dscrptn, "||")(1)
+    Else
+        ErrDesc = err_dscrptn
+    End If
     
     '~~ Determine the type of error
     Select Case err_no
@@ -97,42 +137,29 @@ Private Function ErrMsg(ByVal err_source As String, _
     ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
        
     ErrText = "Error: " & vbLf & _
-              err_dscrptn & vbLf & vbLf & _
+              ErrDesc & vbLf & vbLf & _
               "Source: " & vbLf & _
               err_source & ErrAtLine
+    If ErrAbout <> vbNullString _
+    Then ErrText = ErrText & vbLf & vbLf & _
+                  "About: " & vbLf & _
+                  ErrAbout
     
-#If Debugging = 1 Then
-    ErrBttns = vbYesNoCancel
+#If Debugging Then
+    ErrBttns = vbYesNo
     ErrText = ErrText & vbLf & vbLf & _
               "Debugging:" & vbLf & _
-              "Yes    = Resume error line" & vbLf & _
-              "No     = Resume Next (skip error line)" & vbLf & _
-              "Cancel = Terminate"
+              "Yes    = Resume Error Line" & vbLf & _
+              "No     = Terminate"
 #Else
     ErrBttns = vbCritical
 #End If
     
-#If CommErHComp = 1 Then
-    '~~ When the Common VBA Error Handling Component (ErH) is installed/used by in the VB-Project
-    ErrMsg = mErH.ErrMsg(err_source:=err_source, err_number:=err_no, err_dscrptn:=err_dscrptn, err_line:=err_line)
-    '~~ Translate back the elaborated reply buttons of mErrH.ErrMsg displays into Yes/No/Cancel
-    '~~ replies with the VBA MsgBox.
-    Select Case ErrMsg
-        Case mErH.DebugOptResumeErrorLine:  ErrMsg = vbYes
-        Case mErH.DebugOptResumeNext:       ErrMsg = vbNo
-        Case Else:                          ErrMsg = vbCancel
-    End Select
-#Else
-#If CommMsgComp = 1 Then
-    '~~ When the Common VBA Message Component (mMsg/fMsg) is not used/installed there might still be the
-    ErrMsg = mMsg.ErrMsg(err_source:=err_source)
-#Else
-    '~~ None of the Common Components is installed/used
     ErrMsg = MsgBox(Title:=ErrTitle _
                   , Prompt:=ErrText _
                   , Buttons:=ErrBttns)
-#End If
-#End If
+xt: Exit Function
+
 End Function
   
 Private Function ErrSrc(ByVal sProc As String) As String
@@ -167,9 +194,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbYes:  Stop: Resume
-        Case vbNo:   Stop: Resume Next
-        Case Else:   GoTo xt
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
     End Select
 End Sub
 
@@ -231,9 +257,8 @@ xt: wb1.Close
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbYes:  Stop: Resume
-        Case vbNo:   Stop: Resume Next
-        Case Else:   GoTo xt
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
     End Select
 End Sub
 
@@ -316,9 +341,8 @@ xt: '~~ Cleanup
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbYes:  Stop: Resume
-        Case vbNo:   Stop: Resume Next
-        Case Else:   GoTo xt
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
     End Select
 End Sub
 
@@ -408,9 +432,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbYes:  Stop: Resume
-        Case vbNo:   Stop: Resume Next
-        Case Else:   GoTo xt
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
     End Select
 End Sub
 
@@ -453,9 +476,8 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbYes:  Stop: Resume
-        Case vbNo:   Stop: Resume Next
-        Case Else:   GoTo xt
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
     End Select
 End Sub
 
@@ -471,8 +493,7 @@ xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
-        Case vbYes:  Stop: Resume
-        Case vbNo:   Stop: Resume Next
-        Case Else:   GoTo xt
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
     End Select
 End Sub
