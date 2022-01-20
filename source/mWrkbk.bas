@@ -428,7 +428,7 @@ Public Function IsOpen(ByVal wb As Variant, _
             If fso.GetFile(OpenWbk.FullName).Name <> fso.GetFileName(wb) Then Set OpenWbk = Nothing
         End If
     ElseIf mWrkbk.IsFullName(wb) Then
-        WbName = fso.GetBaseName(wb)
+        WbName = fso.GetFileName(wb)
         If OpenWbks.Exists(WbName) Then
             '~~ A Workbook with the same 'WbName' is open
             Set OpenWbk = OpenWbks.Item(WbName)
@@ -437,7 +437,7 @@ Public Function IsOpen(ByVal wb As Variant, _
             If fso.GetFile(OpenWbk.FullName).Name <> fso.GetFileName(wb) Then Set OpenWbk = Nothing
         End If
     ElseIf mWrkbk.IsObject(wb) Then
-        WbName = fso.GetBaseName(wb.Name)
+        WbName = wb.Name
         If Opened.Exists(WbName) Then
             Set OpenWbk = OpenWbks.Item(WbName)
         End If

@@ -184,11 +184,11 @@ Public Sub Regression()
     On Error GoTo eh
     
     mErH.BoP ErrSrc(PROC)
-    mTest.Test_01_IsOpen
-    mTest.Test_02_GetOpen
-    mTest.Test_03_GetOpen_Errors
-    mTest.Test_04_Is_
-    mTest.Test_05_Opened
+    mWrkbkTest.Test_01_IsOpen
+    mWrkbkTest.Test_02_GetOpen
+    mWrkbkTest.Test_03_GetOpen_Errors
+    mWrkbkTest.Test_04_Is_
+    mWrkbkTest.Test_05_Opened
     
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
