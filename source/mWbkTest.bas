@@ -1,4 +1,4 @@
-Attribute VB_Name = "mWrkbkTest"
+Attribute VB_Name = "mWbkTest"
 Option Explicit
 ' ------------------------------------------------------------
 ' Standard Module mTest Test of all Existence checks variants
@@ -19,6 +19,48 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
   
+
+Private Sub BoP(ByVal b_proc As String, _
+          ParamArray b_arguments() As Variant)
+' ------------------------------------------------------------------------------
+' Common 'Begin of Procedure' service. When neither the Common Execution Trace
+' Component (mTrc) nor the Common Error Handling Component (mErH) is installed
+' (indicated by the Conditional Compile Arguments 'ExecTrace = 1' and/or the
+' Conditional Compile Argument 'ErHComp = 1') this procedure does nothing.
+' Else the service is handed over to the corresponding procedures.
+' May be copied as Private Sub into any module or directly used when mBasic is
+' installed.
+' ------------------------------------------------------------------------------
+    Dim s As String
+    If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
+#If ErHComp = 1 Then
+    '~~ The error handling also hands over to the mTrc component when 'ExecTrace = 1'
+    '~~ so the Else is only for the case only the mTrc is installed but not the merH.
+    mErH.BoP b_proc, s
+#ElseIf ExecTrace = 1 Then
+    mTrc.BoP b_proc, s
+#End If
+End Sub
+
+Private Sub EoP(ByVal e_proc As String, _
+      Optional ByVal e_inf As String = vbNullString)
+' ------------------------------------------------------------------------------
+' Common 'End of Procedure' service. When neither the Common Execution Trace
+' Component (mTrc) nor the Common Error Handling Component (mErH) is installed
+' (indicated by the Conditional Compile Arguments 'ExecTrace = 1' and/or the
+' Conditional Compile Argument 'ErHComp = 1') this procedure does nothing.
+' Else the service is handed over to the corresponding procedures.
+' May be copied as Private Sub into any module or directly used when mBasic is
+' installed.
+' ------------------------------------------------------------------------------
+#If ErHComp = 1 Then
+    '~~ The error handling also hands over to the mTrc component when 'ExecTrace = 1'
+    '~~ so the Else is only for the case the mTrc is installed but the merH is not.
+    mErH.EoP e_proc
+#ElseIf ExecTrace = 1 Then
+    mTrc.EoP e_proc, e_inf
+#End If
+End Sub
 
 Private Function ErrMsg(ByVal err_source As String, _
               Optional ByVal err_no As Long = 0, _
@@ -163,7 +205,7 @@ xt: Exit Function
 End Function
   
 Private Function ErrSrc(ByVal sProc As String) As String
-    ErrSrc = "mTest" & "." & sProc
+    ErrSrc = "mWbkTest" & "." & sProc
 End Function
 
 Public Sub Regression()
@@ -184,11 +226,14 @@ Public Sub Regression()
     On Error GoTo eh
     
     mErH.BoP ErrSrc(PROC)
-    mWrkbkTest.Test_01_IsOpen
-    mWrkbkTest.Test_02_GetOpen
-    mWrkbkTest.Test_03_GetOpen_Errors
-    mWrkbkTest.Test_04_Is_
-    mWrkbkTest.Test_05_Opened
+    mErH.Regression = True
+    mWbkTest.Test_01_IsOpen
+    mWbkTest.Test_02_GetOpen
+    mWbkTest.Test_03_GetOpen_Errors
+    mWbkTest.Test_04_Is_Name_FullName_Object
+    mWbkTest.Test_05_Opened
+    BoTP ErrSrc(PROC), AppErr(1)
+    mWbkTest.Test_06_Exists
     
 xt: mErH.EoP ErrSrc(PROC)
     Exit Sub
@@ -203,57 +248,73 @@ Public Sub Test_01_IsOpen()
     Const PROC = "Test_01_IsOpen"  ' This procedure's name for the error handling and execution tracking
 
     On Error GoTo eh
-    Dim wb          As Workbook
-    Dim sName       As String
-    Dim o           As Object
-    Dim wb1         As Workbook
-    Dim wb2         As Workbook
-    Dim wb3         As Workbook
-    Dim wbResult    As Workbook
+    Dim fso             As New FileSystemObject
+    Dim wb              As Workbook
+    Dim sName           As String
+    Dim o               As Object
+    Dim wb1             As Workbook
+    Dim wb2             As Workbook
+    Dim wb3             As Workbook
+    Dim wbResult        As Workbook
+    Dim sWb1FullName    As String
+    Dim sWb2FullName    As String
+    Dim sWb3FullName    As String
+    Dim sWb1Name        As String
+    Dim sWb2Name        As String
+    Dim sWb3Name        As String
+    
+    BoP ErrSrc(PROC)
+    sWb1FullName = ThisWorkbook.Path & "\Test\Test1.xlsm"
+    sWb2FullName = ThisWorkbook.Path & "\Test\TestSubFolder\Test2.xlsm"
+    sWb3FullName = ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm"
+    sWb1Name = fso.GetFileName(sWb1FullName)
+    sWb2Name = fso.GetFileName(sWb2FullName)
+    sWb3Name = fso.GetFileName(sWb3FullName)
     
     '~~ Prepare test environment
-    On Error Resume Next
-    wb1.Close
-    wb2.Close
-    wb3.Close
+    mWbk.WbClose sWb1Name
+    mWbk.WbClose sWb2Name
+    mWbk.WbClose sWb3Name
     
     With Workbooks
-        Set wb1 = .Open(ThisWorkbook.Path & "\Test\Test1.xlsm")
-        Set wb2 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test2.xlsm")
-        Set wb3 = .Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
+        Set wb1 = .Open(sWb1FullName)
+        Set wb2 = .Open(sWb2FullName)
+        Set wb3 = .Open(sWb3FullName)
     End With
     
-    On Error GoTo eh
-    mErH.BoP ErrSrc(PROC)
     '~~ 1. Test IsOpen by object
-    Debug.Assert mWrkbk.IsOpen(wb1, wbResult) = True
+    Debug.Assert mWbk.IsOpen(wb1, wbResult) = True
 
     '~~ 2. Test IsOpen by Name
-    Debug.Assert mWrkbk.IsOpen(wb1.Name, wbResult) = True
+    Debug.Assert mWbk.IsOpen(wb1.Name, wbResult) = True
 
     '~~ 3. Test IsOpen by FullName
-    Debug.Assert mWrkbk.IsOpen(wb1.FullName, wbResult) = True
+    Debug.Assert mWbk.IsOpen(wb1.FullName, wbResult) = True
 
     '~~ 4. A Workbook with the given name is open but from a different location
     '~~    Since the Workbook does not or no longer exist at the requested location it regarded moved and considered open
-    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
+    Debug.Assert mWbk.IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
     Debug.Assert wbResult.FullName = wb1.Path & "\TestSubFolder\Test2.xlsm"
     
     '~~ 4b No Workbook object is returned since the parameter is not Variant    Debug.Assert vWb Is wb2
-    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
+    Debug.Assert mWbk.IsOpen(wb1.Path & "\Test2.xlsm", wbResult) = True
     
     '~~ 5. Workbook does not exist. When a fullname is provided an error is raised
-    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test\Test.xlsm", wbResult) = False
+    Debug.Assert mWbk.IsOpen(wb1.Path & "\Test\Test.xlsm", wbResult) = False
         
     '~~ 6. A Workbook with the given Name is open but from a different location
     '~~    Since it still exists at the requested location it is regarde not open
     wb3.Close
-    Debug.Assert mWrkbk.IsOpen(wb1.Path & "\Test3.xlsm", wbResult) = False
+    Debug.Assert mWbk.IsOpen(wb1.Path & "\Test3.xlsm", wbResult) = False
     
-xt: wb1.Close
-    wb2.Close
-    On Error Resume Next: wb3.Close
-    mErH.EoP ErrSrc(PROC)
+xt: On Error Resume Next
+    With Application
+        .Workbooks(sWb1Name).Close
+        .Workbooks(sWb2Name).Close
+        .Workbooks(sWb3Name).Close
+    End With
+    Set fso = Nothing
+    EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -278,7 +339,7 @@ Public Sub Test_02_GetOpen()
     Dim sWb3FullName    As String
     Dim sFullName       As String
     
-    mErH.BoP ErrSrc(PROC)
+    BoP ErrSrc(PROC)
     
     '~~ Ensure precondition
     On Error Resume Next
@@ -337,7 +398,7 @@ xt: '~~ Cleanup
     wb1.Close False
     wb2.Close False
     wb3.Close False
-    mErH.EoP ErrSrc(PROC)
+    EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -372,23 +433,23 @@ Public Sub Test_03_GetOpen_Errors()
     
     '~~ Test : GetOpen Workbook is object never opened
     mErH.BoTP ErrSrc(PROC), AppErr(1) ' Bypass this error as the one asserted
-    mWrkbk.GetOpen wb1
-    mErH.EoP ErrSrc(PROC)
+    mWbk.GetOpen wb1
+    EoP ErrSrc(PROC)
     Debug.Assert mErH.MostRecentError = AppErr(1)
 
     '~~ Test E-2: Parameter is Nothing
     Set wb1 = Workbooks.Open(sWb1FullName) ' open the test Workbook
     wb1.Close
     mErH.BoTP ErrSrc(PROC), AppErr(2) ' Bypass this error as the one asserted
-    mWrkbk.GetOpen wb1
-    mErH.EoP ErrSrc(PROC)
+    mWbk.GetOpen wb1
+    EoP ErrSrc(PROC)
     Debug.Assert mErH.MostRecentError = AppErr(2)
 
     '~~ Test E-2: Parameter is Nothing
     Set wb1 = Nothing
     
     mErH.BoTP ErrSrc(PROC), AppErr(1) ' Bypass this error as the one asserted
-    mWrkbk.GetOpen wb1
+    mWbk.GetOpen wb1
     mErH.EoP ErrSrc(PROC)
     Debug.Assert mErH.MostRecentError = AppErr(1)
     
@@ -404,7 +465,7 @@ Public Sub Test_03_GetOpen_Errors()
 
     '~~ Test E-4: Parameter is a Workbook's full name but the file does't exist
     mErH.BoTP ErrSrc(PROC), AppErr(4) ' Bypass this error as the one asserted
-    mWrkbk.GetOpen Replace(sWb1FullName, sWb1Name, "not-existing.xls")
+    mWbk.GetOpen Replace(sWb1FullName, sWb1Name, "not-existing.xls")
     mErH.EoP ErrSrc(PROC)
     Debug.Assert mErH.MostRecentError = AppErr(4)
 
@@ -428,7 +489,7 @@ Public Sub Test_03_GetOpen_Errors()
     wb2.Close
     wb3.Close
 
-xt: mErH.EoP ErrSrc(PROC)
+xt: EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -437,42 +498,49 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_04_Is_()
-    Const PROC = "Test_04_Is_"
+Public Sub Test_04_Is_Name_FullName_Object()
+    Const PROC = "Test_04_Is_Name_FullName_Object"
     
     On Error GoTo eh
-    Dim wb  As Workbook
-    Dim wb1 As Workbook
-    Dim fso As New FileSystemObject
+    Dim wb              As Workbook
+    Dim wb1             As Workbook
+    Dim fso             As New FileSystemObject
+    Dim sWb1FullName    As String
+    Dim sWb1Name        As String
     
-    mErH.BoP ErrSrc(PROC)
+    BoP ErrSrc(PROC)
     
-    Set wb = mWrkbk.GetOpen(ThisWorkbook.Path & "\Test\Test1.xlsm")
+    sWb1FullName = ThisWorkbook.Path & "\Test\Test1.xlsm"
+    sWb1Name = fso.GetFileName(sWb1FullName)
+    Set wb = mWbk.GetOpen(sWb1FullName)
     
+    '~~ Test 1: IsName
     Debug.Assert IsName(wb.Name) = True
-    Debug.Assert IsName(wb.FullName) = True
+    Debug.Assert IsName(wb.FullName) = False
     Debug.Assert IsName(wb.Path) = False
     Debug.Assert IsName(ThisWorkbook) = False
     Debug.Assert IsName(fso.GetBaseName(wb.FullName)) = False
     
-    Debug.Assert IsFullName(wb.Name) = False
-    Debug.Assert IsFullName(wb.FullName) = True
-    Debug.Assert IsFullName(wb.Path) = False
-    Debug.Assert IsFullName(ThisWorkbook) = False
+    '~~ Test 2: IsFullName
+    Debug.Assert mWbk.IsFullName(wb.Name) = False
+    Debug.Assert mWbk.IsFullName(wb.FullName) = True
+    Debug.Assert mWbk.IsFullName(wb.Path) = False
+    Debug.Assert mWbk.IsFullName(ThisWorkbook) = False
 
-    Debug.Assert IsObject(wb.Name) = False
-    Debug.Assert IsObject(wb.FullName) = False
-    Debug.Assert IsObject(wb.Path) = False
-    Debug.Assert IsObject(ThisWorkbook) = True
-    
-    Debug.Assert IsObject(wb) = True
+    '~~ Test 3: IsWbObject
+    Debug.Assert mWbk.IsWbObject(wb.Name) = False
+    Debug.Assert mWbk.IsWbObject(wb.FullName) = False
+    Debug.Assert mWbk.IsWbObject(wb.Path) = False
+    Debug.Assert mWbk.IsWbObject(ThisWorkbook) = True
+    Debug.Assert mWbk.IsWbObject(wb) = True
     wb.Close
-    Debug.Assert IsObject(wb) = False               ' A closed Workbook is still an object but not an object Type Workbook
+    Debug.Assert mWbk.IsWbObject(wb) = False               ' A closed Workbook is still an object but not an object Type Workbook
     Set wb = Nothing
-    Debug.Assert IsObject(wb) = False               ' A set to Nothing is no longer a Workbook object
-    Debug.Assert IsObject(wb1) = False              ' A never assigned Workbook is not a Workbook object
+    Debug.Assert mWbk.IsWbObject(wb) = False               ' A set to Nothing is no longer a Workbook object
+    Debug.Assert mWbk.IsWbObject(wb1) = False              ' A never assigned Workbook is not a Workbook object
         
-xt: mErH.EoP ErrSrc(PROC)
+xt: Set fso = Nothing
+    EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -481,15 +549,69 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
- 
 Public Sub Test_05_Opened()
-    Const PROC = "Test_04_Is_"
+    Const PROC = "Test_04_Is_Name_FullName_Object"
 
     On Error GoTo eh
-    mErH.BoP ErrSrc(PROC)
+    BoP ErrSrc(PROC)
     Debug.Assert Opened.Count > 0
     
-xt: mErH.EoP ErrSrc(PROC)
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
+Public Sub Test_06_Exists()
+    Const PROC              As String = "Test_06_Exists"
+    Const TEST_RANGE_NAME   As String = "celTestRangeName"
+    Const TEST_WS_NAME      As String = "Exists-Test"
+    Const TEST_WS_CODE_NAME As String = "wsAny"
+    
+    On Error GoTo eh
+    Dim fso             As New FileSystemObject
+    Dim wb1             As Workbook
+    Dim wb2             As Workbook
+    Dim sWb1FullName    As String
+    Dim sWb2FullName    As String
+    Dim sWb1Name        As String
+    Dim sWb2Name        As String
+    
+    BoP ErrSrc(PROC)
+    sWb1FullName = ThisWorkbook.Path & "\Test\Test1.xlsm"
+    sWb1Name = fso.GetFileName(sWb1FullName)
+    Set wb1 = mWbk.GetOpen(sWb1FullName)
+    sWb2FullName = ThisWorkbook.Path & "\Test\TestSubFolder\Test2.xlsm"
+    sWb2Name = fso.GetFileName(sWb2FullName)
+    ThisWorkbook.Activate
+
+    '~~ Test 1: Workbook exists
+    Debug.Assert mWbk.Exists(sWb1FullName) = True
+    Debug.Assert mWbk.Exists(sWb1FullName & "x") = False
+    Debug.Assert mWbk.Exists(sWb1Name) = True ' able to check existence though onl the name is provided because the Workbook is open
+    
+    '~~ Test 2: Worksheet exists
+    Debug.Assert mWbk.Exists(sWb1Name, TEST_WS_NAME & "x") = False
+    Debug.Assert mWbk.Exists(sWb1Name, TEST_WS_CODE_NAME & "x") = False
+    Debug.Assert mWbk.Exists(sWb1Name, TEST_WS_NAME) = True
+    Debug.Assert mWbk.Exists(sWb1Name, TEST_WS_CODE_NAME) = True
+    
+    
+    '~~ Test 3: Range Name exists
+    Debug.Assert mWbk.Exists(ex_wb:=sWb1Name, ex_ws:=TEST_WS_NAME, ex_range_name:=TEST_RANGE_NAME) = True
+    Debug.Assert mWbk.Exists(ex_wb:=sWb1Name, ex_ws:=TEST_WS_CODE_NAME, ex_range_name:=TEST_RANGE_NAME) = True
+    
+    '~~ Test 4: Error conditions
+    '~~ Test 4-1: Workbook is not open (AppErr(1)
+    mErH.BoTP ErrSrc(PROC), AppErr(1)   ' application error 1 asserted
+    Debug.Print mWbk.Exists(sWb2Name, TEST_WS_CODE_NAME)
+
+xt: mWbk.WbClose wb1
+    Set fso = Nothing
+    EoP ErrSrc(PROC)
     Exit Sub
 
 eh: Select Case ErrMsg(ErrSrc(PROC))

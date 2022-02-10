@@ -15,7 +15,7 @@ Option Explicit
 '
 ' W. Rauschenberger, Berlin Sept 2019
 ' -------------------------------------------------------------------
-Const HOSTED_RAWS = "mWrkbk"
+Const HOSTED_RAWS = "mWbk"
 
 Private Sub Workbook_Open()
     mCompManClient.CompManService "UpdateOutdatedCommonComponents", HOSTED_RAWS
