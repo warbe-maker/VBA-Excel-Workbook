@@ -1,9 +1,21 @@
+22-02-15 00:30:32                 >> Export Changed (by Addin) for Wbk.xlsm: 
+22-02-15 00:30:32 00,0000         |  >> mCompMan.ExportChangedComponents
+22-02-15 00:30:32 00,0481         |  |  >> mService.ExportChangedComponents
+22-02-15 00:30:32 00,0949         |  |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 00:30:32 00,1084 00,0135 |  |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 00:30:32 00,1090         |  |  |  >> mExport.ChangedComponents
+22-02-15 00:30:33 00,7656 00,6566 |  |  |  << mExport.ChangedComponents
+22-02-15 00:30:33 00,7665 00,7184 |  |  << mService.ExportChangedComponents
+22-02-15 00:30:33 00,7671 00,7671 |  << mCompMan.ExportChangedComponents
+22-02-15 00:30:33 00,7671 00,7671 << Export Changed (by Addin) for Wbk.xlsm: . Impact on performance (caused by the trace) was 00,0006 seconds!
 
-        >> 22-02-11 17:16:45 'UpdateOutdatedCommonComponents(CompMan.xlam)' for 'Wbk.xlsm': 
-        |  >> mCompMan.UpdateOutdatedCommonComponents
-        |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
- 00,087 |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
-        |  |  >> mUpdate.Outdated
- 00,684 |  |  << mUpdate.Outdated
- 00,869 |  << mCompMan.UpdateOutdatedCommonComponents
-        << 22-02-11 17:16:45 'UpdateOutdatedCommonComponents(CompMan.xlam)' for 'Wbk.xlsm': 
+22-02-15 00:30:48                 >> Export Changed (by Addin) for Wbk.xlsm: 
+22-02-15 00:30:48 00,0000         |  >> mCompMan.ExportChangedComponents
+22-02-15 00:30:48 00,0473         |  |  >> mService.ExportChangedComponents
+22-02-15 00:30:48 00,0927         |  |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 00:30:48 00,1062 00,0136 |  |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 00:30:48 00,1068         |  |  |  >> mExport.ChangedComponents
+22-02-15 00:30:49 00,7229 00,6161 |  |  |  << mExport.ChangedComponents
+22-02-15 00:30:49 00,7237 00,6765 |  |  << mService.ExportChangedComponents
+22-02-15 00:30:49 00,7244 00,7244 |  << mCompMan.ExportChangedComponents
+22-02-15 00:30:49 00,7244 00,7244 << Export Changed (by Addin) for Wbk.xlsm: . Impact on performance (caused by the trace) was 00,0005 seconds!

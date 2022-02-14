@@ -165,7 +165,7 @@ Public Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.Source
+    If err_source = vbNullString Then err_source = Err.source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
@@ -223,6 +223,23 @@ End Function
 
 Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mCompManClient." & sProc
+End Function
+
+Private Function IsString(ByVal v As Variant, _
+                 Optional ByVal vbnullstring_is_a_string = False) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when v is neither an object nor numeric.
+' ----------------------------------------------------------------------------
+    Dim s As String
+    On Error Resume Next
+    s = v
+    If Err.Number = 0 Then
+        If Not IsNumeric(v) Then
+            If (s = vbNullString And vbnullstring_is_a_string) _
+            Or s <> vbNullString _
+            Then IsString = True
+        End If
+    End If
 End Function
 
 

@@ -148,7 +148,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.Source
+    If err_source = vbNullString Then err_source = Err.source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
@@ -225,6 +225,7 @@ Public Sub Regression()
 
     On Error GoTo eh
     
+    mTrc.LogTitle = "Execution trace log 'Regression Test' mWbk module"
     mErH.BoP ErrSrc(PROC)
     mErH.Regression = True
     mWbkTest.Test_01_IsOpen
@@ -232,10 +233,16 @@ Public Sub Regression()
     mWbkTest.Test_03_GetOpen_Errors
     mWbkTest.Test_04_Is_Name_FullName_Object
     mWbkTest.Test_05_Opened
-    BoTP ErrSrc(PROC), AppErr(1)
     mWbkTest.Test_06_Exists
     
 xt: mErH.EoP ErrSrc(PROC)
+    mErH.Regression = False
+#If ExecTrace = 1 Then
+    mTrc.Dsply
+    '~~ This test deletes the trace log file after this display
+    Kill mTrc.LogFile
+#End If
+    mErH.Regression = False
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -372,33 +379,18 @@ Public Sub Test_02_GetOpen()
     '~~ Test 4: GetOpen Workbook by fullname (not open)
     sFullName = wb1.FullName
     wb1.Close False
-    Debug.Assert GetOpen(sFullName).FullName = sFullName
-
-    '~~ Test 5: GetOpen Workbook by full name (not open)
-    '~~         A Workbook with the same name but from a different location is already open.
-    On Error Resume Next
+    Set wb1 = GetOpen(sFullName)
+    Debug.Assert wb1.FullName = sFullName
     wb1.Close False
-    wb2.Close False
-    sFullName = wb3.FullName
-    wb3.Close False
-
-    On Error GoTo eh
-    Debug.Assert GetOpen(sFullName).FullName = sFullName
-
-    '~~ Test 6: GetOpen Workbook by full name (not open)
+    
+    '~~ Test 5: GetOpen Workbook by full name
     '~~         A Workbook with the same name but from a different location is already open
     '~~         and the file does not/no longer exist at the provided location.
     Set wb3 = Workbooks.Open(sWb3FullName)
-    Debug.Assert GetOpen(sWb1FullName & "\Test2.xlsm").Name = sWb3Name
+    Debug.Assert GetOpen(Replace(sWb1FullName, "Test1", "Test2")).Name = sWb3Name
     wb3.Close False
     
-xt: '~~ Cleanup
-    On Error Resume Next
-    GetOpen(sWb1FullName).Close False
-    wb1.Close False
-    wb2.Close False
-    wb3.Close False
-    EoP ErrSrc(PROC)
+xt: EoP ErrSrc(PROC)
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -423,6 +415,7 @@ Public Sub Test_03_GetOpen_Errors()
     Dim sWb3FullName    As String
     Dim sFullName       As String
         
+    BoP ErrSrc(PROC)
     ' Prepare
     sWb1Name = "Test1.xlsm"
     sWb1FullName = ThisWorkbook.Path & "\" & sWb1Name
@@ -432,62 +425,44 @@ Public Sub Test_03_GetOpen_Errors()
     sWb3FullName = ThisWorkbook.Path & "\Test\" & sWb3Name
     
     '~~ Test : GetOpen Workbook is object never opened
-    mErH.BoTP ErrSrc(PROC), AppErr(1) ' Bypass this error as the one asserted
+    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
     mWbk.GetOpen wb1
-    EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = AppErr(1)
 
     '~~ Test E-2: Parameter is Nothing
-    Set wb1 = Workbooks.Open(sWb1FullName) ' open the test Workbook
-    wb1.Close
-    mErH.BoTP ErrSrc(PROC), AppErr(2) ' Bypass this error as the one asserted
+    If Not wb1 Is Nothing Then wb1.Close False
+    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
     mWbk.GetOpen wb1
-    EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = AppErr(2)
 
     '~~ Test E-2: Parameter is Nothing
     Set wb1 = Nothing
-    
-    mErH.BoTP ErrSrc(PROC), AppErr(1) ' Bypass this error as the one asserted
+    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
     mWbk.GetOpen wb1
-    mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = AppErr(1)
     
     '~~ Test E-3: Parameter is a not open Workbook's name
-    On Error Resume Next
-    wb1.Close
-    wb2.Close
-    
-    mErH.BoTP ErrSrc(PROC), AppErr(5) ' Bypass this error as the one asserted
+    mErH.Asserted AppErr(3) ' skip display of error message when mErH.Regression = True
     GetOpen sWb1Name
-    mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = AppErr(5)
 
     '~~ Test E-4: Parameter is a Workbook's full name but the file does't exist
-    mErH.BoTP ErrSrc(PROC), AppErr(4) ' Bypass this error as the one asserted
+    mErH.Asserted AppErr(4) ' skip display of error message when mErH.Regression = True
     mWbk.GetOpen Replace(sWb1FullName, sWb1Name, "not-existing.xls")
-    mErH.EoP ErrSrc(PROC)
-    Debug.Assert mErH.MostRecentError = AppErr(4)
 
     '~~ Test E-5: A Workbook with the provided name is open but from a different location
     '             and the Workbook file still exists at the provided location
-    Close wb1
-    Set wb = Workbooks.Open(ThisWorkbook.Path & "\" & "Test3.xlsm")
-    On Error Resume Next
+    If Not wb1 Is Nothing Then wb1.Close False
+    Set wb = Workbooks.Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
+    mErH.Asserted AppErr(2)
     Set wb1 = GetOpen(ThisWorkbook.Path & "\Test\" & "Test3.xlsm")
-    Debug.Assert AppErr(Err.Number) = 3
-    wb.Close
+    wb1.Close False
     
     '~~ Test E-6: Parameter is neither a Workbook object nor a string
-    On Error Resume Next
+    mErH.Asserted AppErr(1)
     Set wb = GetOpen(ThisWorkbook.ActiveSheet)
-    Debug.Assert AppErr(1)
 
     '~~ Cleanup
     On Error Resume Next
-    wb1.Close
-    wb2.Close
-    wb3.Close
+    If Not wb1 Is Nothing Then wb1.Close False
+    If Not wb2 Is Nothing Then wb2.Close False
+    If Not wb3 Is Nothing Then wb3.Close False
 
 xt: EoP ErrSrc(PROC)
     Exit Sub
@@ -606,7 +581,7 @@ Public Sub Test_06_Exists()
     
     '~~ Test 4: Error conditions
     '~~ Test 4-1: Workbook is not open (AppErr(1)
-    mErH.BoTP ErrSrc(PROC), AppErr(1)   ' application error 1 asserted
+    mErH.Asserted AppErr(1)
     Debug.Print mWbk.Exists(sWb2Name, TEST_WS_CODE_NAME)
 
 xt: mWbk.WbClose wb1
