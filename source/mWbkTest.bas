@@ -18,8 +18,8 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
-  
 
+  
 Private Sub BoP(ByVal b_proc As String, _
           ParamArray b_arguments() As Variant)
 ' ------------------------------------------------------------------------------
@@ -203,6 +203,7 @@ Private Function ErrMsg(ByVal err_source As String, _
 xt: Exit Function
 
 End Function
+
   
 Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mWbkTest" & "." & sProc
@@ -237,18 +238,32 @@ Public Sub Regression()
     
 xt: mErH.EoP ErrSrc(PROC)
     mErH.Regression = False
-#If ExecTrace = 1 Then
-    mTrc.Dsply
-    '~~ This test deletes the trace log file after this display
-    Kill mTrc.LogFile
-#End If
-    mErH.Regression = False
+    RegressionKeepLog
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
+End Sub
+
+Private Sub RegressionKeepLog()
+    Dim sFile As String
+
+#If ExecTrace = 1 Then
+#If MsgComp = 1 Or ErHComp = 1 Then
+    '~~ avoid the error message when the Conditional Compile Argument 'MsgComp = 0'!
+    mTrc.Dsply
+#End If
+    '~~ Keep the regression test result
+    With New FileSystemObject
+        sFile = .GetParentFolderName(mTrc.LogFile) & "\RegressionTest.log"
+        If .FileExists(sFile) Then .DeleteFile (sFile)
+        .GetFile(mTrc.LogFile).Name = "RegressionTest.log"
+    End With
+    mTrc.Terminate
+#End If
+
 End Sub
 
 Public Sub Test_01_IsOpen()
@@ -594,3 +609,4 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Sub
+

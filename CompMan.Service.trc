@@ -19,3 +19,111 @@
 22-02-15 00:30:49 00,7237 00,6765 |  |  << mService.ExportChangedComponents
 22-02-15 00:30:49 00,7244 00,7244 |  << mCompMan.ExportChangedComponents
 22-02-15 00:30:49 00,7244 00,7244 << Export Changed (by Addin) for Wbk.xlsm: . Impact on performance (caused by the trace) was 00,0005 seconds!
+
+22-02-15 14:30:10                 >> Update Outdated (by Addin) for Wbk.xlsm: 
+22-02-15 14:30:10 00,0000         |  >> mCompMan.UpdateOutdatedCommonComponents
+22-02-15 14:30:10 00,0568         |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 14:30:10 00,0891 00,0323 |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 14:30:10 00,0897         |  |  >> mUpdate.Outdated
+22-02-15 14:30:10 00,3849         |  |  |  >> mUpdate.UpdateConfirmed
+22-02-15 14:30:12 01,9551 01,5702 |  |  |  << mUpdate.UpdateConfirmed
+22-02-15 14:30:12 01,9568         |  |  |  >> mRenew.ByImport
+22-02-15 14:30:12 01,9575         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 14:30:12 02,2930 00,3355 |  |  |  |  << mRenew.SaveWbk
+22-02-15 14:30:12 02,2938         |  |  |  |  > Rename the to-be-re-imported component
+22-02-15 14:30:12 02,2977 00,0039 |  |  |  |  < Rename the to-be-re-imported component
+22-02-15 14:30:12 02,2981         |  |  |  |  > Import the Raw Common Component
+22-02-15 14:30:12 02,3028 00,0047 |  |  |  |  < Import the Raw Common Component
+22-02-15 14:30:12 02,3032         |  |  |  |  > Export the Used Common Component
+22-02-15 14:30:12 02,3125 00,0093 |  |  |  |  < Export the Used Common Component
+22-02-15 14:30:12 02,3129         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 14:30:12 02,6097 00,2969 |  |  |  |  << mRenew.SaveWbk
+22-02-15 14:30:12 02,6102 00,6534 |  |  |  << mRenew.ByImport
+22-02-15 14:30:12 02,6511         |  |  |  >> mUpdate.UpdateConfirmed
+22-02-15 14:30:13 03,8028 01,1517 |  |  |  << mUpdate.UpdateConfirmed
+22-02-15 14:30:14 03,8045         |  |  |  >> mRenew.ByImport
+22-02-15 14:30:14 03,8052         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 14:30:14 04,0920 00,2868 |  |  |  |  << mRenew.SaveWbk
+22-02-15 14:30:14 04,0928         |  |  |  |  > Rename the to-be-re-imported component
+22-02-15 14:30:14 04,0963 00,0036 |  |  |  |  < Rename the to-be-re-imported component
+22-02-15 14:30:14 04,0967         |  |  |  |  > Import the Raw Common Component
+22-02-15 14:30:14 04,1023 00,0056 |  |  |  |  < Import the Raw Common Component
+22-02-15 14:30:14 04,1032         |  |  |  |  > Export the Used Common Component
+22-02-15 14:30:14 04,1132 00,0100 |  |  |  |  < Export the Used Common Component
+22-02-15 14:30:14 04,1136         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 14:30:14 04,4106 00,2970 |  |  |  |  << mRenew.SaveWbk
+22-02-15 14:30:14 04,4111 00,6065 |  |  |  << mRenew.ByImport
+22-02-15 14:30:14 04,4405 04,3508 |  |  << mUpdate.Outdated
+22-02-15 14:30:14 04,4413 04,4413 |  << mCompMan.UpdateOutdatedCommonComponents
+22-02-15 14:30:14 04,4413 04,4413 << Update Outdated (by Addin) for Wbk.xlsm: . Impact on performance (caused by the trace) was 00,0007 seconds!
+
+22-02-15 18:24:01                 >> Update Outdated (by Addin) for Wbk.xlsm: 
+22-02-15 18:24:01 00,0000         |  >> mCompMan.UpdateOutdatedCommonComponents
+22-02-15 18:24:01 00,1494         |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 18:24:01 00,3231 00,1737 |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 18:24:01 00,3566         |  |  >> mUpdate.Outdated
+22-02-15 18:24:02 01,4308 01,0743 |  |  << mUpdate.Outdated
+22-02-15 18:24:02 01,4317 01,4317 |  << mCompMan.UpdateOutdatedCommonComponents
+22-02-15 18:24:02 01,4317 01,4317 << Update Outdated (by Addin) for Wbk.xlsm: . Impact on performance (caused by the trace) was 00,0008 seconds!
+
+22-02-15 23:15:30                 >> Update Outdated (by Addin) for Wbk.xlsm: 
+22-02-15 23:15:30 00,0000         |  >> mCompMan.UpdateOutdatedCommonComponents
+22-02-15 23:15:30 00,1552         |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 23:15:30 00,2067 00,0515 |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 23:15:30 00,2073         |  |  >> mUpdate.Outdated
+22-02-15 23:15:30 00,5158         |  |  |  >> mUpdate.UpdateConfirmed
+22-02-15 23:15:32 02,1597 01,6439 |  |  |  << mUpdate.UpdateConfirmed
+22-02-15 23:15:32 02,1608         |  |  |  >> mRenew.ByImport
+22-02-15 23:15:32 02,1612         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 23:15:32 02,5021 00,3409 |  |  |  |  << mRenew.SaveWbk
+22-02-15 23:15:32 02,5027         |  |  |  |  > Rename the to-be-re-imported component
+22-02-15 23:15:32 02,5060 00,0033 |  |  |  |  < Rename the to-be-re-imported component
+22-02-15 23:15:32 02,5064         |  |  |  |  > Import the Raw Common Component
+22-02-15 23:15:32 02,5116 00,0052 |  |  |  |  < Import the Raw Common Component
+22-02-15 23:15:32 02,5120         |  |  |  |  > Export the Used Common Component
+22-02-15 23:15:32 02,5218 00,0098 |  |  |  |  < Export the Used Common Component
+22-02-15 23:15:32 02,5222         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 23:15:32 02,8248 00,3026 |  |  |  |  << mRenew.SaveWbk
+22-02-15 23:15:32 02,8253 00,6645 |  |  |  << mRenew.ByImport
+22-02-15 23:15:32 02,8709         |  |  |  >> mUpdate.UpdateConfirmed
+22-02-15 23:15:34 03,9827 01,1118 |  |  |  << mUpdate.UpdateConfirmed
+22-02-15 23:15:34 03,9838         |  |  |  >> mRenew.ByImport
+22-02-15 23:15:34 03,9843         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 23:15:34 04,3024 00,3181 |  |  |  |  << mRenew.SaveWbk
+22-02-15 23:15:34 04,3030         |  |  |  |  > Rename the to-be-re-imported component
+22-02-15 23:15:34 04,3057 00,0027 |  |  |  |  < Rename the to-be-re-imported component
+22-02-15 23:15:34 04,3061         |  |  |  |  > Import the Raw Common Component
+22-02-15 23:15:34 04,3157 00,0096 |  |  |  |  < Import the Raw Common Component
+22-02-15 23:15:34 04,3161         |  |  |  |  > Export the Used Common Component
+22-02-15 23:15:34 04,3245 00,0084 |  |  |  |  < Export the Used Common Component
+22-02-15 23:15:34 04,3249         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 23:15:34 04,6302 00,3052 |  |  |  |  << mRenew.SaveWbk
+22-02-15 23:15:34 04,6306 00,6468 |  |  |  << mRenew.ByImport
+22-02-15 23:15:34 04,6870         |  |  |  >> mUpdate.UpdateConfirmed
+22-02-15 23:15:36 06,2784 01,5914 |  |  |  << mUpdate.UpdateConfirmed
+22-02-15 23:15:36 06,2798         |  |  |  >> mRenew.ByImport
+22-02-15 23:15:36 06,2803         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 23:15:36 06,5902 00,3099 |  |  |  |  << mRenew.SaveWbk
+22-02-15 23:15:36 06,5908         |  |  |  |  > Rename the to-be-re-imported component
+22-02-15 23:15:36 06,5937 00,0030 |  |  |  |  < Rename the to-be-re-imported component
+22-02-15 23:15:36 06,5942         |  |  |  |  > Import the Raw Common Component
+22-02-15 23:15:36 06,5985 00,0043 |  |  |  |  < Import the Raw Common Component
+22-02-15 23:15:36 06,5990         |  |  |  |  > Export the Used Common Component
+22-02-15 23:15:36 06,6084 00,0095 |  |  |  |  < Export the Used Common Component
+22-02-15 23:15:36 06,6089         |  |  |  |  >> mRenew.SaveWbk
+22-02-15 23:15:36 06,9159 00,3071 |  |  |  |  << mRenew.SaveWbk
+22-02-15 23:15:36 06,9167 00,6368 |  |  |  << mRenew.ByImport
+22-02-15 23:15:37 06,9955 06,7882 |  |  << mUpdate.Outdated
+22-02-15 23:15:37 06,9967 06,9967 |  << mCompMan.UpdateOutdatedCommonComponents
+22-02-15 23:15:37 06,9967 06,9967 << Update Outdated (by Addin) for Wbk.xlsm: . Impact on performance (caused by the trace) was 00,0010 seconds!
+
+22-02-15 23:20:27                 >> Export Changed (by Addin) for Wbk.xlsm: 
+22-02-15 23:20:27 00,0000         |  >> mCompMan.ExportChangedComponents
+22-02-15 23:20:27 00,0480         |  |  >> mService.ExportChangedComponents
+22-02-15 23:20:27 00,0939         |  |  |  >> mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 23:20:27 00,1070 00,0131 |  |  |  << mCompMan.MaintainPropertiesOfHostedRawCommonComponents
+22-02-15 23:20:27 00,1075         |  |  |  >> mExport.ChangedComponents
+22-02-15 23:20:28 00,9099 00,8024 |  |  |  << mExport.ChangedComponents
+22-02-15 23:20:28 00,9106 00,8627 |  |  << mService.ExportChangedComponents
+22-02-15 23:20:28 00,9111 00,9111 |  << mCompMan.ExportChangedComponents
+22-02-15 23:20:28 00,9111 00,9111 << Export Changed (by Addin) for Wbk.xlsm: . Impact on performance (caused by the trace) was 00,0004 seconds!

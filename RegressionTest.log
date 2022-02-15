@@ -1,0 +1,16 @@
+22-02-15 23:19:08                 >> Execution trace log 'Regression Test' mWbk module
+22-02-15 23:19:08 00,0000         |  >> mWbkTest.Regression
+22-02-15 23:19:08 00,0020         |  |  >> mWbkTest.Test_01_IsOpen
+22-02-15 23:19:12 04,1129 04,1109 |  |  << mWbkTest.Test_01_IsOpen
+22-02-15 23:19:12 04,1176         |  |  >> mWbkTest.Test_02_GetOpen
+22-02-15 23:19:15 07,1522 03,0346 |  |  << mWbkTest.Test_02_GetOpen
+22-02-15 23:19:15 07,1562         |  |  >> mWbkTest.Test_03_GetOpen_Errors
+22-02-15 23:19:16 08,1674 01,0112 |  |  << mWbkTest.Test_03_GetOpen_Errors
+22-02-15 23:19:16 08,1681         |  |  >> mWbkTest.Test_04_Is_Name_FullName_Object
+22-02-15 23:19:17 09,2324 01,0643 |  |  << mWbkTest.Test_04_Is_Name_FullName_Object
+22-02-15 23:19:17 09,2336         |  |  >> mWbkTest.Test_04_Is_Name_FullName_Object
+22-02-15 23:19:17 09,2376 00,0039 |  |  << mWbkTest.Test_04_Is_Name_FullName_Object
+22-02-15 23:19:17 09,2382         |  |  >> mWbkTest.Test_06_Exists
+22-02-15 23:19:19 10,8099 01,5716 |  |  << mWbkTest.Test_06_Exists
+22-02-15 23:19:19 10,8119 10,8119 |  << mWbkTest.Regression
+22-02-15 23:19:19 10,8119 10,8119 << Execution trace log 'Regression Test' mWbk module. Impact on performance (caused by the trace) was 00,0008 seconds!
