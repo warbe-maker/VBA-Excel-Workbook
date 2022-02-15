@@ -23,10 +23,13 @@ Download and import _[mWbk.bas][1]_
 ### Usage
 The module is prepared to provided its services completely autonomous - and at the same time to fit perfectly into my personal environment. The latter means it is prepared to use the Common Execution Trace service and the Common Error Service, both merely depending on download and setting the corresponding _Conditional Compile Arguments_.
 
-
 still to be completed
+
+See also: [Conflicts with personal and public _Common Components_][2]
+
 
 ## Contribution
 Any kind of contribution is absolutely and unconditionally welcome. 
 
 [1]:https://gitcdn.link/cdn/warbe-maker/Common-VBA-Workbook-Services/master/source/mWbk.bas
+[2]:https://warbe-maker.github.io/vba/common/2022/02/15/Personal-and-public-Common-Components.html
