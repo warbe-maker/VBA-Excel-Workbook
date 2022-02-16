@@ -19,7 +19,6 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
-  
 Private Sub BoP(ByVal b_proc As String, _
           ParamArray b_arguments() As Variant)
 ' ------------------------------------------------------------------------------
@@ -210,35 +209,38 @@ Private Function ErrSrc(ByVal sProc As String) As String
 End Function
 
 Public Sub Regression()
-' ---------------------------------------------------------
-' All results are asserted and there is no intervention
-' required for the whole test. When an assertion fails the
-' test procedure will stop and indicates the problem with
-' the called procedure.
-' An execution trace is displayed for each test procedure.
+' ----------------------------------------------------------------------------
+' All results are asserted and there is no intervention required for the whole
+' test. When an assertion fails the test procedure will stop and indicates the
+' problem with the called procedure. An execution trace log is displayed at
+' the end of the test.
 '
-' Please note:
-' There is a lot of Workbook open and close going on during
-' this test which will take some 20 seconds for the whole
-' test to finish.
-' ---------------------------------------------------------
+' Please note: There is a lot of Workbook open and close going on during this
+'              test. This will take some 20 seconds for the whole test to
+'              finish and comes with some unavoidable flicker.
+' ----------------------------------------------------------------------------
     Const PROC = "Regression"
 
     On Error GoTo eh
     
+    '~~ Initialization of a new Trace Log File for this Regression test
+    '~~ ! must be done prior the first BoP !
+    mTrc.LogFile = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "Regression Test.log")
     mTrc.LogTitle = "Execution trace log 'Regression Test' mWbk module"
-    mErH.BoP ErrSrc(PROC)
+        
     mErH.Regression = True
-    mWbkTest.Test_01_IsOpen
-    mWbkTest.Test_02_GetOpen
-    mWbkTest.Test_03_GetOpen_Errors
-    mWbkTest.Test_04_Is_Name_FullName_Object
-    mWbkTest.Test_05_Opened
-    mWbkTest.Test_06_Exists
+    
+    mErH.BoP ErrSrc(PROC)
+    mWbkTest.Test_00_Opened_Service
+    mWbkTest.Test_01_IsOpen_Service
+    mWbkTest.Test_02_GetOpen_Service
+    mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+    mWbkTest.Test_04_Is_Services
+    mWbkTest.Test_06_Exists_Service
     
 xt: mErH.EoP ErrSrc(PROC)
     mErH.Regression = False
-    RegressionKeepLog
+    mTrc.Dsply
     Exit Sub
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -247,27 +249,11 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Private Sub RegressionKeepLog()
-    Dim sFile As String
-
-#If ExecTrace = 1 Then
-#If MsgComp = 1 Or ErHComp = 1 Then
-    '~~ avoid the error message when the Conditional Compile Argument 'MsgComp = 0'!
-    mTrc.Dsply
-#End If
-    '~~ Keep the regression test result
-    With New FileSystemObject
-        sFile = .GetParentFolderName(mTrc.LogFile) & "\RegressionTest.log"
-        If .FileExists(sFile) Then .DeleteFile (sFile)
-        .GetFile(mTrc.LogFile).Name = "RegressionTest.log"
-    End With
-    mTrc.Terminate
-#End If
-
-End Sub
-
-Public Sub Test_01_IsOpen()
-    Const PROC = "Test_01_IsOpen"  ' This procedure's name for the error handling and execution tracking
+Public Sub Test_01_IsOpen_Service()
+' ----------------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------------
+    Const PROC = "Test_01_IsOpen_Service"  ' This procedure's name for the error handling and execution tracking
 
     On Error GoTo eh
     Dim fso             As New FileSystemObject
@@ -345,8 +331,11 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_02_GetOpen()
-    Const PROC = "Test_02_GetOpen"  ' This procedure's name for the error handling and execution tracking
+Public Sub Test_02_GetOpen_Service()
+' ----------------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------------
+    Const PROC = "Test_02_GetOpen_Service"  ' This procedure's name for the error handling and execution tracking
 
     On Error GoTo eh
     Dim wb              As Workbook
@@ -414,8 +403,11 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_03_GetOpen_Errors()
-    Const PROC = "Test_03_GetOpen_Errors"
+Public Sub Test_03_GetOpen_Service_Error_Conditions()
+' ----------------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------------
+    Const PROC = "Test_03_GetOpen_Service_Error_Conditions"
     
     On Error GoTo eh
     Dim wb              As Workbook
@@ -488,8 +480,11 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_04_Is_Name_FullName_Object()
-    Const PROC = "Test_04_Is_Name_FullName_Object"
+Public Sub Test_04_Is_Services()
+' ----------------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------------
+    Const PROC = "Test_04_Is_Services"
     
     On Error GoTo eh
     Dim wb              As Workbook
@@ -539,12 +534,30 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_05_Opened()
-    Const PROC = "Test_04_Is_Name_FullName_Object"
-
+Public Sub Test_00_Opened_Service()
+' ----------------------------------------------------------------------------
+' This test works with the current Excel environment. I.e. it is insecure
+' how many and which Workbooks are open. Certain only is ThisWorkbook.
+' Because the function is used with the IsOpen and the GetOpen service the
+' Regression test will tested it first.
+' ----------------------------------------------------------------------------
+    Const PROC = "Test_00_Opened_Service"
+    
     On Error GoTo eh
+    Dim dct As Dictionary
+    Dim v   As Variant
+    
     BoP ErrSrc(PROC)
-    Debug.Assert Opened.Count > 0
+    
+    Set dct = mWbk.Opened
+    Debug.Assert Opened.Count >= 1
+    
+    For Each v In dct
+        If v = ThisWorkbook.Name Then
+            Debug.Assert dct(v) Is ThisWorkbook
+            Exit For
+        End If
+    Next v
     
 xt: EoP ErrSrc(PROC)
     Exit Sub
@@ -555,8 +568,11 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
-Public Sub Test_06_Exists()
-    Const PROC              As String = "Test_06_Exists"
+Public Sub Test_06_Exists_Service()
+' ----------------------------------------------------------------------------
+'
+' ----------------------------------------------------------------------------
+    Const PROC              As String = "Test_06_Exists_Service"
     Const TEST_RANGE_NAME   As String = "celTestRangeName"
     Const TEST_WS_NAME      As String = "Exists-Test"
     Const TEST_WS_CODE_NAME As String = "wsAny"

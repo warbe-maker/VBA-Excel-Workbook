@@ -17,14 +17,31 @@ Option Compare Text
 '               instance with the Workbook's Name as the key and the Workbook object
 '               as the item.
 '
-' Uses:
-' - Common Components mErH, fMsg, mMsg (in mWbkTest only!)
+' Uses:         mErH, fMsg, mMsg, mTrc (in mWbkTest module only!)
 '
 ' Requires: Reference to "Microsoft Scripting Runtine"
-'           Reference to "Microsoft Visual Basic for Applications Extensibility ..."
+'
+' See: https://github.com/warbe-maker/Common-VBA-Excel-Workbook-Services
 '
 ' W. Rauschenberger, Berlin Jan 2022
 ' -----------------------------------------------------------------------------------
+#If Not MsgComp = 1 Then
+    ' ------------------------------------------------------------------------
+    ' The 'minimum error handling' aproach implemented with this module and
+    ' provided by the ErrMsg function uses the VBA.MsgBox to display an error
+    ' message which includes a debugging option to resume the error line
+    ' provided the Conditional Compile Argument 'Debugging = 1'.
+    ' This declaration allows the mTrc module to work completely autonomous.
+    ' It becomes obsolete when the mMsg/fMsg module is installed 1) which must
+    ' be indicated by the Conditional Compile Argument MsgComp = 1
+    '
+    ' 1) See https://github.com/warbe-maker/Common-VBA-Message-Service for
+    '    how to install an use.
+    ' ------------------------------------------------------------------------
+    Private Const vbResumeOk As Long = 7 ' Buttons value in mMsg.ErrMsg (pass on not supported)
+    Private Const vbResume   As Long = 6 ' return value (equates to vbYes)
+#End If
+
 ' --- Begin of declarations to get all Workbooks of all running Excel instances
 Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA" (ByVal hWnd1 As LongPtr, ByVal hWnd2 As LongPtr, ByVal lpsz1 As String, ByVal lpsz2 As String) As LongPtr
 Private Declare PtrSafe Function GetClassName Lib "user32" Alias "GetClassNameA" (ByVal hWnd As LongPtr, ByVal lpClassName As String, ByVal nMaxCount As LongPtr) As LongPtr
