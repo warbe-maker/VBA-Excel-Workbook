@@ -21,11 +21,7 @@ Most of the services accept a Workbook argument which is either a Workbook objec
 Download and import _[mWbk.bas][1]_
 
 ### Usage
-The module is prepared to provided its services completely autonomous - and at the same time to fit perfectly into my personal environment. The latter means it is prepared to use the Common Execution Trace service and the Common Error Service, both merely depending on download and setting the corresponding _Conditional Compile Arguments_.
-
-still to be completed
-
-See also: [Conflicts with personal and public _Common Components_][2]
+> This _Common Component_ is prepared to function completely autonomously ( download, import, use) but at the same time to integrate with my personal 'standard' VB-Project design. See [Conflicts with personal and public _Common Components_][2] for more details.
 
 
 ## Contribution
