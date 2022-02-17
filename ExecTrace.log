@@ -1,0 +1,71 @@
+22-02-17 11:42:04 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-02-17 11:42:04                 >> Begin execution trace 
+22-02-17 11:42:04 00,0000         |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:42:35 01,0871 01,0871 |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:42:35 01,0871 01,0871 << End execution trace 
+22-02-17 11:42:35                 Impact on the overall performance (caused by the trace itself): 00,0000 seconds!
+22-02-17 11:42:35 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+
+22-02-17 11:45:08 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-02-17 11:45:08                 >> Begin execution trace 
+22-02-17 11:45:08 00,0000         |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:45:08 00,0032         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test object = Nothing 
+22-02-17 11:45:36 10,5984 10,5952 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test object = Nothing 
+22-02-17 11:45:43 11,5502 11,5502 |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:45:43 11,5502 11,5502 << End execution trace 
+22-02-17 11:45:43                 Impact on the overall performance (caused by the trace itself): 00,0000 seconds!
+22-02-17 11:45:43 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+
+22-02-17 11:53:41 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-02-17 11:53:41                 >> Begin execution trace 
+22-02-17 11:53:41 00,0000         |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:53:41 00,0026         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-02-17 11:53:43 00,0040 00,0014 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-02-17 11:53:43 00,0047         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-02-17 11:53:51 00,0067 00,0020 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-02-17 11:53:51 00,0076         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-02-17 11:53:53 00,0097 00,0022 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-02-17 11:53:53 00,0104         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-02-17 11:54:02 00,9210 00,9106 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-02-17 11:54:02 00,9220         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectButNotAWorkbook
+22-02-17 11:54:04 00,9241 00,0021 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectButNotAWorkbook
+22-02-17 11:54:04 00,9248 00,9248 |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:54:04 00,9248 00,9248 << End execution trace 
+22-02-17 11:54:04                 Impact on the overall performance (caused by the trace itself): 00,0007 seconds!
+22-02-17 11:54:04 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+
+22-02-17 11:56:06 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-02-17 11:56:06                 >> Begin execution trace 
+22-02-17 11:56:06 00,0000         |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:56:06 00,0025         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-02-17 11:56:11 00,0040 00,0014 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-02-17 11:56:11 00,0050         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
+22-02-17 11:56:18 00,0068 00,0018 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
+22-02-17 11:56:18 00,0074         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-02-17 11:56:34 01,0216 01,0142 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-02-17 11:56:34 01,0226         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-02-17 11:56:37 01,0258 00,0033 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-02-17 11:56:37 01,0268         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-02-17 11:56:38 01,0290 00,0023 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-02-17 11:56:38 01,0297 01,0297 |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:56:38 01,0297 01,0297 << End execution trace 
+22-02-17 11:56:38                 Impact on the overall performance (caused by the trace itself): 00,0006 seconds!
+22-02-17 11:56:38 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+
+22-02-17 11:58:08 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-02-17 11:58:08                 >> Begin execution trace 
+22-02-17 11:58:08 00,0000         |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:58:08 00,0035         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-02-17 11:58:14 00,0059 00,0024 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-02-17 11:58:14 00,0069         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
+22-02-17 11:58:23 00,0085 00,0016 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
+22-02-17 11:58:23 00,0093         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-02-17 11:58:26 00,9853 00,9760 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-02-17 11:58:26 00,9864         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-02-17 11:58:27 00,9899 00,0035 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-02-17 11:58:27 00,9906         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-02-17 11:58:28 00,9929 00,0022 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-02-17 11:58:28 00,9937 00,9937 |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-02-17 11:58:28 00,9937 00,9937 << End execution trace 
+22-02-17 11:58:28                 Impact on the overall performance (caused by the trace itself): 00,0008 seconds!
+22-02-17 11:58:28 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)

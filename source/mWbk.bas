@@ -476,7 +476,8 @@ Public Function GetOpen(ByVal vWb As Variant) As Workbook
         sWbName = vWb
         sWbFullName = vbNullString
     Else
-        Err.Raise AppErr(1), ErrSrc(PROC), "The Workbook (parameter vWb) is neither a Workbook object nor a string (name or fullname)!"
+        Err.Raise AppErr(1), ErrSrc(PROC), "The Workbook (parameter vWb) is neither a Workbook object nor a string (name or fullname)!" & vbLf & _
+                                           "(TypeName of argument = '" & TypeName(vWb) & "'!)"
     End If
 
     If mWbk.IsWbObject(vWb) Then

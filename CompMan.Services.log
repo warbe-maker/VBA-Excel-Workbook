@@ -1,61 +1,43 @@
-22-02-16 12:52:24 Update Outdated (by Addin) for Wbk.xlsm: 
-22-02-16 12:52:24 -----------------------------------------
-22-02-16 12:52:25 UserForm           fMsg .........: Used Common Component up-to-date
-22-02-16 12:52:25 Standard-Module    mBasic .......: Used Common Component up-to-date
-22-02-16 12:52:25 Standard-Module    mCompManClient: Used Common Component up-to-date
-22-02-16 12:52:25 Standard-Module    mErH .........: Used Common Component up-to-date
-22-02-16 12:52:25 Standard-Module    mMsg .........: Used Common Component up-to-date
-22-02-16 12:52:25 Standard-Module    mTrc .........: Outdated Used Common Component! (Export-Files 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Excel-Workbook-Services\source\mTrc.bas' differs from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mTrc.bas')
-22-02-16 12:52:27                                    DoEvents delayed continuation for 00001 msec)
-22-02-16 12:52:28                                    Workbook saved (DoEvents delayed continuation for 00008 msec)
-22-02-16 12:52:28                                    'mTrc' renamed to 'mTrc_RenamedByCompMan'
-22-02-16 12:52:28                                    'mTrc_RenamedByCompMan' removed (removal is postponed by Excel until process has finished)
-22-02-16 12:52:28                                    'mTrc' (re-)imported from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mTrc.bas'
-22-02-16 12:52:28                                    'mTrc' exported to 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Excel-Workbook-Services\source\mTrc.bas'
-22-02-16 12:52:28                                    DoEvents delayed continuation for 00003 msec)
-22-02-16 12:52:28                                    Workbook saved (DoEvents delayed continuation for 00007 msec)
-22-02-16 12:52:28                                    Used Common Component renewed/updated by (re-)import of the Raw's Export File (E:\Ablage\Excel VBA\DevAndTest\Common-Components\mTrc.bas)
-22-02-16 13:19:55 ========================================
-22-02-16 13:19:55 Export Changed (by Addin) for Wbk.xlsm: 
-22-02-16 13:19:55 ----------------------------------------
-22-02-16 13:19:55 UserForm           fMsg .........: Used Common Component code unchanged
-22-02-16 13:19:55 Standard-Module    mBasic .......: Used Common Component code unchanged
-22-02-16 13:19:55 Standard-Module    mCompManClient: Used Common Component code unchanged
-22-02-16 13:19:55 Standard-Module    mErH .........: Used Common Component code unchanged
-22-02-16 13:19:55 Standard-Module    mMsg .........: Used Common Component code unchanged
-22-02-16 13:19:55 Standard-Module    mTrc .........: Used Common Component code unchanged
-22-02-16 13:19:55 Standard-Module    mWbkTest .....: Other component code modification exported
-22-02-16 13:19:55                                    Modification exported
-22-02-16 13:19:56 Workbook           wbWrkbk ......: Other component unchanged
-22-02-16 13:19:56 Worksheet CodeName wsWrkbk ......: Other component unchanged
-22-02-16 13:24:17 ========================================
-22-02-16 13:24:17 Export Changed (by Addin) for Wbk.xlsm: 
-22-02-16 13:24:17 ----------------------------------------
-22-02-16 13:24:18 UserForm           fMsg .........: Used Common Component code unchanged
-22-02-16 13:24:18 Standard-Module    mBasic .......: Used Common Component code unchanged
-22-02-16 13:24:18 Standard-Module    mCompManClient: Used Common Component code unchanged
-22-02-16 13:24:18 Standard-Module    mErH .........: Used Common Component code unchanged
-22-02-16 13:24:18 Standard-Module    mMsg .........: Used Common Component code unchanged
-22-02-16 13:24:18 Standard-Module    mTrc .........: Used Common Component code unchanged
-22-02-16 13:24:18 Standard-Module    mWbk .........: Hosted Raw Common Component code modified
-22-02-16 13:24:18                                    Hosted Raw Common Component code modified
-22-02-16 13:24:18                                    Exported, Revision Number increased, Export File copied to 'Common Components Folder'
-22-02-16 13:24:18 Standard-Module    mWbkTest .....: Other component unchanged
-22-02-16 13:24:18 Workbook           wbWrkbk ......: Other component unchanged
-22-02-16 13:24:18 Worksheet CodeName wsWrkbk ......: Other component unchanged
-22-02-16 13:28:52 ========================================
-22-02-16 13:28:52 Export Changed (by Addin) for Wbk.xlsm: 
-22-02-16 13:28:52 ----------------------------------------
-22-02-16 13:28:53 Export-File obsolete (deleted because component no longer exists)
-22-02-16 13:28:53 UserForm           fMsg .........: Used Common Component code unchanged
-22-02-16 13:28:53 Standard-Module    mCompManClient: Used Common Component code unchanged
-22-02-16 13:28:53 Standard-Module    mErH .........: Used Common Component code unchanged
-22-02-16 13:28:53 Standard-Module    mMsg .........: Used Common Component code unchanged
-22-02-16 13:28:53 Standard-Module    mTrc .........: Used Common Component code unchanged
-22-02-16 13:28:53 Standard-Module    mWbk .........: Hosted Raw Common Component code modified
-22-02-16 13:28:53                                    Hosted Raw Common Component code modified
-22-02-16 13:28:53                                    Exported, Revision Number increased, Export File copied to 'Common Components Folder'
-22-02-16 13:28:53 Standard-Module    mWbkTest .....: Other component code modification exported
-22-02-16 13:28:53                                    Modification exported
-22-02-16 13:28:53 Workbook           wbWrkbk ......: Other component unchanged
-22-02-16 13:28:53 Worksheet CodeName wsWrkbk ......: Other component unchanged
+22-02-17 11:41:51 Update Outdated (by Addin) for Wbk.xlsm: 
+22-02-17 11:41:51 -----------------------------------------
+22-02-17 11:41:52 UserForm           fMsg .........: Used Common Component up-to-date
+22-02-17 11:41:52 Standard-Module    mCompManClient: Used Common Component up-to-date
+22-02-17 11:41:52 Standard-Module    mErH .........: Outdated Used Common Component! (Export-Files 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Excel-Workbook-Services\source\mErH.bas' differs from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas')
+22-02-17 11:41:54                                    DoEvents delayed continuation for 00008 msec)
+22-02-17 11:41:54                                    Workbook saved (DoEvents delayed continuation for 00009 msec)
+22-02-17 11:41:54                                    'mErH' renamed to 'mErH_RenamedByCompMan'
+22-02-17 11:41:54                                    'mErH_RenamedByCompMan' removed (removal is postponed by Excel until process has finished)
+22-02-17 11:41:54                                    'mErH' (re-)imported from 'E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas'
+22-02-17 11:41:54                                    'mErH' exported to 'E:\Ablage\Excel VBA\DevAndTest\Common-VBA-Excel-Workbook-Services\source\mErH.bas'
+22-02-17 11:41:54                                    DoEvents delayed continuation for 00026 msec)
+22-02-17 11:41:55                                    Workbook saved (DoEvents delayed continuation for 00006 msec)
+22-02-17 11:41:55                                    Used Common Component renewed/updated by (re-)import of the Raw's Export File (E:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas)
+22-02-17 11:41:55 Standard-Module    mMsg .........: Used Common Component up-to-date
+22-02-17 11:41:55 Standard-Module    mTrc .........: Used Common Component up-to-date
+22-02-17 11:58:31 ========================================
+22-02-17 11:58:31 Export Changed (by Addin) for Wbk.xlsm: 
+22-02-17 11:58:31 ----------------------------------------
+22-02-17 11:58:31 UserForm           fMsg .........: Used Common Component code unchanged
+22-02-17 11:58:31 Standard-Module    mCompManClient: Used Common Component code unchanged
+22-02-17 11:58:31 Standard-Module    mErH .........: Used Common Component code unchanged
+22-02-17 11:58:31 Standard-Module    mMsg .........: Used Common Component code unchanged
+22-02-17 11:58:31 Standard-Module    mTrc .........: Used Common Component code unchanged
+22-02-17 11:58:32 Standard-Module    mWbk .........: Hosted Raw Common Component code modified
+22-02-17 11:58:32                                    Hosted Raw Common Component code modified
+22-02-17 11:58:32                                    Exported, Revision Number increased, Export File copied to 'Common Components Folder'
+22-02-17 11:58:32 Standard-Module    mWbkTest .....: Other component code modification exported
+22-02-17 11:58:32                                    Modification exported
+22-02-17 11:58:32 Workbook           wbWrkbk ......: Other component unchanged
+22-02-17 11:58:32 Worksheet CodeName wsWrkbk ......: Other component unchanged
+22-02-17 12:05:29 ========================================
+22-02-17 12:05:29 Export Changed (by Addin) for Wbk.xlsm: 
+22-02-17 12:05:29 ----------------------------------------
+22-02-17 12:05:29 UserForm           fMsg .........: Used Common Component code unchanged
+22-02-17 12:05:29 Standard-Module    mCompManClient: Used Common Component code unchanged
+22-02-17 12:05:29 Standard-Module    mErH .........: Used Common Component code unchanged
+22-02-17 12:05:29 Standard-Module    mMsg .........: Used Common Component code unchanged
+22-02-17 12:05:30 Standard-Module    mTrc .........: Used Common Component code unchanged
+22-02-17 12:05:30 Standard-Module    mWbkTest .....: Other component code modification exported
+22-02-17 12:05:30                                    Modification exported
+22-02-17 12:05:30 Workbook           wbWrkbk ......: Other component unchanged
+22-02-17 12:05:30 Worksheet CodeName wsWrkbk ......: Other component unchanged

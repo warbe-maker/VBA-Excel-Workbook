@@ -369,30 +369,40 @@ Public Sub Test_02_GetOpen_Service()
     Set wb1 = Workbooks.Open(sWb1FullName) ' open the first test Workbook
     
     '~~ --------------------------------------------
-    '~~ Run tests (all not raising an error
+    '~~ Run tests (all not raising an error)
     '~~ --------------------------------------------
     '~~ Test 1: GetOpen Workbook by object (open)
+    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookObject"
     Debug.Assert GetOpen(wb1) Is wb1
+    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookObject"
 
     '~~ Test 2: GetOpen Workbook by name (open)
+    BoP ErrSrc(PROC) & ".Test_ArgIsNameOfOpenWorkbook"
     Debug.Assert GetOpen(sWb1Name) Is wb1
+    EoP ErrSrc(PROC) & ".Test_ArgIsNameOfOpenWorkbook"
 
     '~~ Test 3: GetOpen Workbook by fullname (open)
+    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpen"
     Debug.Assert GetOpen(sWb1FullName) Is wb1
+    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpen"
 
     '~~ Test 4: GetOpen Workbook by fullname (not open)
+    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameNotOpen"
     sFullName = wb1.FullName
     wb1.Close False
     Set wb1 = GetOpen(sFullName)
     Debug.Assert wb1.FullName = sFullName
     wb1.Close False
+    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameNotOpen"
     
     '~~ Test 5: GetOpen Workbook by full name
     '~~         A Workbook with the same name but from a different location is already open
     '~~         and the file does not/no longer exist at the provided location.
+    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpenFromMovedToLocation"
     Set wb3 = Workbooks.Open(sWb3FullName)
     Debug.Assert GetOpen(Replace(sWb1FullName, "Test1", "Test2")).Name = sWb3Name
     wb3.Close False
+    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpenFromMovedToLocation"
     
 xt: EoP ErrSrc(PROC)
     Exit Sub
@@ -431,40 +441,40 @@ Public Sub Test_03_GetOpen_Service_Error_Conditions()
     sWb3Name = "Test2.xlsm"
     sWb3FullName = ThisWorkbook.Path & "\Test\" & sWb3Name
     
-    '~~ Test : GetOpen Workbook is object never opened
+    '~~ Test 1a: GetOpen Workbook is object never opened
+    BoP ErrSrc(PROC) & ".Test_ObjectIsNothing"
     mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
     mWbk.GetOpen wb1
-
-    '~~ Test E-2: Parameter is Nothing
-    If Not wb1 Is Nothing Then wb1.Close False
-    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
-    mWbk.GetOpen wb1
-
-    '~~ Test E-2: Parameter is Nothing
-    Set wb1 = Nothing
-    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
-    mWbk.GetOpen wb1
+    EoP ErrSrc(PROC) & ".Test_ObjectIsNothing"
     
-    '~~ Test E-3: Parameter is a not open Workbook's name
-    mErH.Asserted AppErr(3) ' skip display of error message when mErH.Regression = True
-    GetOpen sWb1Name
-
-    '~~ Test E-4: Parameter is a Workbook's full name but the file does't exist
-    mErH.Asserted AppErr(4) ' skip display of error message when mErH.Regression = True
-    mWbk.GetOpen Replace(sWb1FullName, sWb1Name, "not-existing.xls")
-
-    '~~ Test E-5: A Workbook with the provided name is open but from a different location
+    '~~ Test 1b: Parameter is neither a Workbook object nor a string
+    BoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
+    mErH.Asserted AppErr(1)
+    Set wb = GetOpen(ThisWorkbook.ActiveSheet)
+    EoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
+    
+    '~~ Test 2: A Workbook with the provided name is open but from a different location
     '             and the Workbook file still exists at the provided location
+    BoP ErrSrc(PROC) & ".Test_OpenButDiffLocationNoLongerExisting"
     If Not wb1 Is Nothing Then wb1.Close False
     Set wb = Workbooks.Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
     mErH.Asserted AppErr(2)
     Set wb1 = GetOpen(ThisWorkbook.Path & "\Test\" & "Test3.xlsm")
     wb1.Close False
+    EoP ErrSrc(PROC) & ".Test_OpenButDiffLocationNoLongerExisting"
     
-    '~~ Test E-6: Parameter is neither a Workbook object nor a string
-    mErH.Asserted AppErr(1)
-    Set wb = GetOpen(ThisWorkbook.ActiveSheet)
+    '~~ Test 3: Parameter is a not open Workbook's name
+    BoP ErrSrc(PROC) & ".Test_WorkbookNameNotAnOpenWorkbook"
+    mErH.Asserted AppErr(3) ' skip display of error message when mErH.Regression = True
+    GetOpen sWb1Name
+    EoP ErrSrc(PROC) & ".Test_WorkbookNameNotAnOpenWorkbook"
 
+    '~~ Test 4: Parameter is a Workbook's full name but the file does't exist
+    BoP ErrSrc(PROC) & ".Test_WorkbookFullNameNotExisting"
+    mErH.Asserted AppErr(4) ' skip display of error message when mErH.Regression = True
+    mWbk.GetOpen Replace(sWb1FullName, sWb1Name, "not-existing.xls")
+    EoP ErrSrc(PROC) & ".Test_WorkbookFullNameNotExisting"
+    
     '~~ Cleanup
     On Error Resume Next
     If Not wb1 Is Nothing Then wb1.Close False
