@@ -90,6 +90,15 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
 
+Private Function ArrayIsAllocated(arr As Variant) As Boolean
+    
+    On Error Resume Next
+    ArrayIsAllocated = VBA.IsArray(arr) _
+                   And Not VBA.IsError(LBound(arr, 1)) _
+                   And LBound(arr, 1) <= UBound(arr, 1)
+    
+End Function
+
 Public Sub Asserted(ParamArray botp_errs_asserted() As Variant)
     vErrsAsserted = botp_errs_asserted
 End Sub
@@ -435,13 +444,12 @@ Private Sub ErrMsgButtons(ByRef err_buttons As Variant)
     Set err_buttons = cll
 End Sub
 
-Private Function ErrMsgDsply( _
-                    ByVal err_source As String, _
-                    ByVal err_number As Long, _
-                    ByVal err_dscrptn As String, _
-                    ByVal err_line As Long, _
-           Optional ByVal err_no_asserted As Long = 0, _
-           Optional ByVal err_buttons As Variant = vbOKOnly) As Variant
+Private Function ErrMsgDsply(ByVal err_source As String, _
+                             ByVal err_number As Long, _
+                             ByVal err_dscrptn As String, _
+                             ByVal err_line As Long, _
+                    Optional ByVal err_no_asserted As Long = 0, _
+                    Optional ByVal err_buttons As Variant = vbOKOnly) As Variant
 ' ------------------------------------------------------------------------------
 ' Displays the error message. The displayed path to the error may be provided as
 ' the error is passed on to the 'Entry-Procedure' or based on all passed BoP/EoP
@@ -543,7 +551,7 @@ Private Function ErrMsgDsply( _
     
     mMsg.Dsply dsply_title:=sTitle _
              , dsply_msg:=ErrMsgText _
-             , dsply_buttons:=err_buttons
+             , dsply_buttons:=mMsg.Buttons(err_buttons)
     
     ErrMsgDsply = mMsg.RepliedWith
 
