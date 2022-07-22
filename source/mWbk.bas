@@ -23,7 +23,7 @@ Option Compare Text
 '
 ' See: https://github.com/warbe-maker/Common-VBA-Excel-Workbook-Services
 '
-' W. Rauschenberger, Berlin Jan 2022
+' W. Rauschenberger, Berlin June 2022
 ' -----------------------------------------------------------------------------------
 #If Not MsgComp = 1 Then
     ' ------------------------------------------------------------------------
@@ -32,11 +32,9 @@ Option Compare Text
     ' message which includes a debugging option to resume the error line
     ' provided the Conditional Compile Argument 'Debugging = 1'.
     ' This declaration allows the mTrc module to work completely autonomous.
-    ' It becomes obsolete when the mMsg/fMsg module is installed 1) which must
-    ' be indicated by the Conditional Compile Argument MsgComp = 1
-    '
-    ' 1) See https://github.com/warbe-maker/Common-VBA-Message-Service for
-    '    how to install an use.
+    ' It becomes obsolete when the mMsg/fMsg module is installed which must
+    ' be indicated by the Conditional Compile Argument MsgComp = 1.
+    ' See https://github.com/warbe-maker/Common-VBA-Message-Service
     ' ------------------------------------------------------------------------
     Private Const vbResumeOk As Long = 7 ' Buttons value in mMsg.ErrMsg (pass on not supported)
     Private Const vbResume   As Long = 6 ' return value (equates to vbYes)
@@ -47,24 +45,34 @@ Private Declare PtrSafe Function FindWindowEx Lib "user32" Alias "FindWindowExA"
 Private Declare PtrSafe Function GetClassName Lib "user32" Alias "GetClassNameA" (ByVal hWnd As LongPtr, ByVal lpClassName As String, ByVal nMaxCount As LongPtr) As LongPtr
 Private Declare PtrSafe Function IIDFromString Lib "ole32" (ByVal lpsz As LongPtr, ByRef lpiid As UUID) As LongPtr
 Private Declare PtrSafe Function AccessibleObjectFromWindow Lib "oleacc" (ByVal hWnd As LongPtr, ByVal dwId As LongPtr, ByRef riid As UUID, ByRef ppvObject As Object) As LongPtr
+
 Type UUID 'GUID
     Data1 As Long
     Data2 As Integer
     Data3 As Integer
     Data4(7) As Byte
 End Type
+
 Private Const IID_IDispatch As String = "{00020400-0000-0000-C000-000000000046}"
 Private Const OBJID_NATIVEOM As LongPtr = &HFFFFFFF0
 ' --- End of declarations to get all Workbooks of all running Excel instances
 
 Public Property Get Value(Optional ByVal v_ws As Worksheet, _
-                          Optional ByVal v_name As String) As String
+                          Optional ByVal v_name As Variant) As String
+' ----------------------------------------------------------------------------
+' Returns a Value from a Worksheet (v_ws) identified by (v_name) which may be
+' a Range-Name or a Range.
+' ----------------------------------------------------------------------------
     Const PROC = "Value-Get"
     
     On Error Resume Next
-    Value = v_ws.Range(v_name).Value
+    Select Case TypeName(v_name)
+        Case "String":  Value = v_ws.Range(v_name).Value
+        Case "Range":   Value = v_name.Value
+        Case Else:      Err.Raise AppErr(1), ErrSrc(PROC), "The argument 'v_name is neither a string (RangeName) nor a Range!"
+    End Select
     If Err.Number <> 0 _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "The Worksheet '" & v_ws.Name & "' has no range with a name '" & v_name & "'!"
+    Then Err.Raise AppErr(2), ErrSrc(PROC), "The Worksheet '" & v_ws.Name & "' has no range with a name '" & v_name & "'!"
     
 xt: Exit Property
     
@@ -74,34 +82,23 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Property
 
-Public Sub WbClose(ByVal c_wb As Variant, _
-               Optional ByVal c_save_changes As Boolean = True, _
-               Optional ByVal c_save_as_file As String = vbNullString, _
-               Optional ByVal c_route_workbook As String = vbNullString)
-' ----------------------------------------------------------------------------
-' Closes the Workbook (c_wb) - provided either as Workbook object, as Namne
-' or FullName provided it is open, i.e. without using On Error Resume Next!
-' ----------------------------------------------------------------------------
-    Dim wb As Workbook
-    If mWbk.IsWbObject(c_wb) Then
-        c_wb.Close
-    ElseIf mWbk.IsName(c_wb) Or mWbk.IsFullName(c_wb) Then
-        If mWbk.IsOpen(c_wb, wb) Then
-            wb.Close c_save_changes, c_save_as_file, c_route_workbook
-        End If
-    End If
-End Sub
-
 Public Property Let Value(Optional ByVal v_ws As Worksheet, _
-                          Optional ByVal v_name As String, _
+                          Optional ByVal v_name As Variant, _
                                    ByVal v_value As String)
+' ----------------------------------------------------------------------------
+' Saves a Value to a Werksheet (v_ws) identified by (v_name) which may be a
+' Range-Name or a Range.
+' ----------------------------------------------------------------------------
     Const PROC = "Value-Let"
     
     On Error Resume Next
-    v_ws.Range(v_name).Value = v_value
-
+    Select Case TypeName(v_name)
+        Case "String":  v_ws.Range(v_name).Value = v_value
+        Case "Range":   v_name.Value = v_value
+        Case Else:      Err.Raise AppErr(1), ErrSrc(PROC), "The argument 'v_name is neither a string (RangeName) nor a Range!"
+    End Select
     If Err.Number <> 0 _
-    Then Err.Raise AppErr(1), ErrSrc(PROC), "The Worksheet '" & v_ws.Name & "' has no range with a name '" & v_name & "'!"
+    Then Err.Raise AppErr(2), ErrSrc(PROC), "The Worksheet '" & v_ws.Name & "' has no range with a name '" & v_name & "'!"
     
 xt: Exit Property
     
@@ -235,7 +232,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
@@ -449,13 +446,13 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Public Function GetOpen(ByVal vWb As Variant) As Workbook
-' -------------------------------------------------------
-' Returns an open Workbook object or raises an error.
-' If vWb is a full path-file name, the file exists but
+Public Function GetOpen(ByVal go_wb As Variant, _
+               Optional ByVal go_read_only As Boolean = False) As Workbook
+' ----------------------------------------------------------------------------
+' Returns an open Workbook object or raises an error. If go_wb is a full path-file name, the file exists but
 ' is not open it is opened.
 ' Note: A ReadOnly mode has to be set by the caller.
-' -------------------------------------------------------
+' ----------------------------------------------------------------------------
     Const PROC = "GetOpen"
     
     On Error GoTo eh
@@ -466,22 +463,22 @@ Public Function GetOpen(ByVal vWb As Variant) As Workbook
         
     Set wbOpen = Nothing
        
-    If mWbk.IsWbObject(vWb) Then
-        sWbName = vWb.Name
-        sWbFullName = vWb.FullName
-    ElseIf mWbk.IsFullName(vWb) Then
-        sWbName = fso.GetFileName(vWb)
-        sWbFullName = vWb
-    ElseIf mWbk.IsName(vWb) Then
-        sWbName = vWb
+    If mWbk.IsWbObject(go_wb) Then
+        sWbName = go_wb.Name
+        sWbFullName = go_wb.FullName
+    ElseIf mWbk.IsFullName(go_wb) Then
+        sWbName = fso.GetFileName(go_wb)
+        sWbFullName = go_wb
+    ElseIf mWbk.IsName(go_wb) Then
+        sWbName = go_wb
         sWbFullName = vbNullString
     Else
-        Err.Raise AppErr(1), ErrSrc(PROC), "The Workbook (parameter vWb) is neither a Workbook object nor a string (name or fullname)!" & vbLf & _
-                                           "(TypeName of argument = '" & TypeName(vWb) & "'!)"
+        Err.Raise AppErr(1), ErrSrc(PROC), "The Workbook (parameter go_wb) is neither a Workbook object nor a string (name or fullname)!" & vbLf & _
+                                           "(TypeName of argument = '" & TypeName(go_wb) & "'!)"
     End If
 
-    If mWbk.IsWbObject(vWb) Then
-        Set GetOpen = vWb
+    If mWbk.IsWbObject(go_wb) Then
+        Set GetOpen = go_wb
         GoTo xt
     End If
     
@@ -506,7 +503,7 @@ Public Function GetOpen(ByVal vWb As Variant) As Workbook
             Then Err.Raise AppErr(3), ErrSrc(PROC), "A Workbook named '" & sWbName & "' is not open - and cannot be opened because this requires the full file name!"
             If Not fso.FileExists(sWbFullName) _
             Then Err.Raise AppErr(4), ErrSrc(PROC), "A Workbook named '" & sWbFullName & "' does not exist!"
-            Set GetOpen = Workbooks.Open(sWbFullName)
+            Set GetOpen = Workbooks.Open(sWbFullName, , go_read_only)
             GoTo xt
         End If
     End With
@@ -537,24 +534,6 @@ Public Function IsName(ByVal v As Variant) As Boolean
 ' ----------------------------------------------------------------------------
     If VarType(v) = vbString Then
         IsName = InStr(v, "\") = 0 And InStr(v, "/") = 0 And v Like "*.xl*"
-    End If
-End Function
-
-Public Function IsWbObject(ByVal v As Variant) As Boolean
-' ----------------------------------------------------------------------------
-' Returns TRUE when v is a valid Workbook object.
-' ----------------------------------------------------------------------------
-    If VarType(v) = vbObject Then
-        IsWbObject = TypeName(v) = "Workbook"
-    End If
-End Function
-
-Public Function IsWsObject(ByVal v As Variant) As Boolean
-' ----------------------------------------------------------------------------
-' Returns TRUE when v is a valid Workbook object.
-' ----------------------------------------------------------------------------
-    If VarType(v) = vbObject Then
-        IsWsObject = TypeName(v) = "Worksheet"
     End If
 End Function
 
@@ -624,6 +603,24 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
+Public Function IsWbObject(ByVal v As Variant) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when v is a valid Workbook object.
+' ----------------------------------------------------------------------------
+    If VarType(v) = vbObject Then
+        IsWbObject = TypeName(v) = "Workbook"
+    End If
+End Function
+
+Public Function IsWsObject(ByVal v As Variant) As Boolean
+' ----------------------------------------------------------------------------
+' Returns TRUE when v is a valid Workbook object.
+' ----------------------------------------------------------------------------
+    If VarType(v) = vbObject Then
+        IsWsObject = TypeName(v) = "Worksheet"
+    End If
+End Function
+
 Public Function Opened() As Dictionary
 ' ----------------------------------------------------------------------------
 ' Returns a Dictionary of all currently open Workbooks in any running excel
@@ -682,4 +679,22 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Function
+
+Public Sub WbClose(ByVal c_wb As Variant, _
+               Optional ByVal c_save_changes As Boolean = True, _
+               Optional ByVal c_save_as_file As String = vbNullString, _
+               Optional ByVal c_route_workbook As String = vbNullString)
+' ----------------------------------------------------------------------------
+' Closes the Workbook (c_wb) - provided either as Workbook object, as Namne
+' or FullName provided it is open, i.e. without using On Error Resume Next!
+' ----------------------------------------------------------------------------
+    Dim wb As Workbook
+    If mWbk.IsWbObject(c_wb) Then
+        c_wb.Close
+    ElseIf mWbk.IsName(c_wb) Or mWbk.IsFullName(c_wb) Then
+        If mWbk.IsOpen(c_wb, wb) Then
+            wb.Close c_save_changes, c_save_as_file, c_route_workbook
+        End If
+    End If
+End Sub
 
