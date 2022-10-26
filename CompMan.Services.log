@@ -1,19 +1,48 @@
-22-07-22 21:16:49 UpdateOutdatedCommonComponents (by CompMan.xlsb) for Wbk.xlsm: 
-22-07-22 21:16:49 ---------------------------------------------------------------
-22-07-22 21:18:30 ========================================================
-22-07-22 21:18:30 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
-22-07-22 21:18:30 --------------------------------------------------------
-22-07-22 21:18:30 ========================================================
-22-07-22 21:18:30 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
-22-07-22 21:18:30 --------------------------------------------------------
-22-07-22 21:18:31 UserForm                                            fMsg .........: Unchanged Used Common Component
-22-07-22 21:18:31 Standard-Module                                     mCompManClient: Unchanged Used Common Component
-22-07-22 21:18:31 Standard-Module                                     mErH .........: Unchanged Used Common Component
-22-07-22 21:18:31 Standard-Module                                     mMsg .........: Unchanged Used Common Component
-22-07-22 21:18:31 Standard-Module                                     mTrc .........: Unchanged Used Common Component
-22-07-22 21:18:31 Standard-Module                                     mWbk .........: Hosted Raw Common Component code modified
-22-07-22 21:18:31                                                                     Code modified of Hosted Raw Common Component
-22-07-22 21:18:31                                                                     Exported, Revision Number increased, Export File copied to 'Common Components Folder'
-22-07-22 21:18:31 Standard-Module                                     mWbkTest .....: Unchanged component
-22-07-22 21:18:31 Workbook                                            wbWrkbk ......: Unchanged component
-22-07-22 21:18:31 Worksheet                                           wsWrkbk ......: Unchanged component
+22-10-26 14:56:52 UpdateOutdatedCommonComponents (by CompMan.xlsb) for Wbk.xlsm: 
+22-10-26 14:56:52 ---------------------------------------------------------------
+22-10-26 15:08:25 ========================================================
+22-10-26 15:08:25 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
+22-10-26 15:08:25 --------------------------------------------------------
+22-10-26 15:08:25 ========================================================
+22-10-26 15:08:25 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
+22-10-26 15:08:25 --------------------------------------------------------
+22-10-26 15:08:26 UserForm        fMsg .........: Unchanged Used Common Component
+22-10-26 15:08:26 Standard-Module mCompManClient: Unchanged Used Common Component
+22-10-26 15:08:26 Standard-Module mErH .........: Unchanged Used Common Component
+22-10-26 15:08:26 Standard-Module mMsg .........: Modified Used Common Component exported (due revert allert registered!)
+22-10-26 15:08:26 Standard-Module mTrc .........: Unchanged Used Common Component
+22-10-26 15:08:27 Standard-Module mWbk .........: Hosted Raw Common Component code modified
+22-10-26 15:08:30                                 Code modified of Hosted Raw Common Component
+22-10-26 15:08:30                                 Exported, Revision Number increased, Export File copied to 'Common Components Folder'
+22-10-26 15:08:30 Standard-Module mWbkTest .....: Modified code exported
+22-10-26 15:08:30 Workbook        wbWrkbk ......: Modified code exported
+22-10-26 15:08:30 Worksheet       wsWrkbk ......: Unchanged component
+22-10-26 15:08:45 ========================================================
+22-10-26 15:08:45 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
+22-10-26 15:08:45 --------------------------------------------------------
+22-10-26 15:08:46 ========================================================
+22-10-26 15:08:46 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
+22-10-26 15:08:46 --------------------------------------------------------
+22-10-26 15:08:46 UserForm        fMsg .........: Unchanged Used Common Component
+22-10-26 15:08:46 Standard-Module mCompManClient: Unchanged Used Common Component
+22-10-26 15:08:46 Standard-Module mErH .........: Unchanged Used Common Component
+22-10-26 15:08:46 Standard-Module mMsg .........: Unchanged Used Common Component
+22-10-26 15:08:47 Standard-Module mTrc .........: Unchanged Used Common Component
+22-10-26 15:08:47 Standard-Module mWbkTest .....: Unchanged component
+22-10-26 15:08:47 Workbook        wbWrkbk ......: Unchanged component
+22-10-26 15:08:47 Worksheet       wsWrkbk ......: Unchanged component
+22-10-26 15:35:47 ========================================================
+22-10-26 15:35:47 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
+22-10-26 15:35:47 --------------------------------------------------------
+22-10-26 15:35:47 ========================================================
+22-10-26 15:35:47 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
+22-10-26 15:35:47 --------------------------------------------------------
+22-10-26 15:35:47 Export-File obsolete (deleted because component no longer exists)
+22-10-26 15:35:48 UserForm        fMsg .........: Unchanged Used Common Component
+22-10-26 15:35:48 Standard-Module mCompManClient: Unchanged Used Common Component
+22-10-26 15:35:48 Standard-Module mErH .........: Unchanged Used Common Component
+22-10-26 15:35:48 Standard-Module mMsg .........: Unchanged Used Common Component
+22-10-26 15:35:48 Standard-Module mTrc .........: Unchanged Used Common Component
+22-10-26 15:35:48 Standard-Module mWbkTest .....: Modified code exported
+22-10-26 15:35:48 Workbook        wbWrkbk ......: Unchanged component
+22-10-26 15:35:48 Worksheet       wshWbkTest ...: Modified code exported

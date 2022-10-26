@@ -9,8 +9,8 @@ Option Explicit
 ' - Update of outdated used 'Common Components' (by re-importing an
 '   up-to-date component's Export File whereby this corresponding 'raw'
 '   component is hosted in another, possibly dedicated Workbook).
-' - Synchronization of a 'Sync-Target-Workbook' with its
-'   up-to-date 'Sync-source-Workbook'
+' - Synchronization of a Sync-Target-Workbook with its up-to-date
+' Sync-Source-Workbook
 '
 ' W. Rauschenberger, Berlin May 2022
 '
@@ -19,7 +19,7 @@ Option Explicit
 ' ----------------------------------------------------------------------
 ' CompMan's global specifications essential for CompMan clients
 Public Const SRVC_UPDATE_OUTDATED   As String = "UpdateOutdatedCommonComponents"
-Public Const SRVC_SYNCHRONIZE       As String = "SynchronizeWorkbooks"
+Public Const SRVC_SYNCHRONIZE       As String = "SynchronizeVBProjects"
 Public Const SRVC_EXPORT_CHANGED    As String = "ExportChangedComponents"
 Public Const COMPMAN_ADDIN          As String = "CompMan.xlam"
 Public Const COMPMAN_DEVLP          As String = "CompMan.xlsb"
@@ -144,7 +144,7 @@ Private Function WbServicing(ByVal csa_service As String) As String
                     WbServicing = mCompManClient.COMPMAN_ADDIN
                     Result = ResultByAddin
                 Case Else
-                    mService.DsplyStatus "Update sercvice not available by Addin! (" & mCompManClient.COMPMAN_DEVLP & " cannot update its own components)"
+                    DsplyStatus "Update sercvice not available by Addin! (" & mCompManClient.COMPMAN_DEVLP & " cannot update its own components)"
            End Select
         End If
     End If
@@ -156,7 +156,7 @@ Private Function WbServicing(ByVal csa_service As String) As String
             Case AppErr(1), AppErr(2)
                 WbServicing = vbNullString
             Case AppErr(3)
-                mService.DsplyStatus csa_service & " ( by " & WbServicing & ") for " & ThisWorkbook.Name & ": " & _
+                DsplyStatus csa_service & " ( by " & WbServicing & ") for " & ThisWorkbook.Name & ": " & _
                                         "Denied! (the corresponding 'Sync-Source-Workbook' has not been found in CompMan's 'Serviced-Folder'!"
                 WbServicing = vbNullString
         End Select
@@ -332,3 +332,11 @@ Private Function IsString(ByVal v As Variant, _
         End If
     End If
 End Function
+
+Private Sub DsplyStatus(ByVal s As String)
+    With Application
+        .StatusBar = vbNullString
+        .StatusBar = s
+    End With
+End Sub
+

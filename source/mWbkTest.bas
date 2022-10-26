@@ -147,7 +147,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
@@ -236,6 +236,7 @@ Public Sub Regression()
     mWbkTest.Test_02_GetOpen_Service
     mWbkTest.Test_03_GetOpen_Service_Error_Conditions
     mWbkTest.Test_04_Is_Services
+    mWbkTest.Test_05_Value_Service
     mWbkTest.Test_06_Exists_Service
     
 xt: mErH.EoP ErrSrc(PROC)
@@ -257,7 +258,7 @@ Public Sub Test_01_IsOpen_Service()
 
     On Error GoTo eh
     Dim fso             As New FileSystemObject
-    Dim wb              As Workbook
+    Dim wbk              As Workbook
     Dim sName           As String
     Dim o               As Object
     Dim wb1             As Workbook
@@ -338,7 +339,7 @@ Public Sub Test_02_GetOpen_Service()
     Const PROC = "Test_02_GetOpen_Service"  ' This procedure's name for the error handling and execution tracking
 
     On Error GoTo eh
-    Dim wb              As Workbook
+    Dim wbk              As Workbook
     Dim wb1             As Workbook
     Dim sWb1Name        As String
     Dim sWb1FullName    As String
@@ -420,7 +421,7 @@ Public Sub Test_03_GetOpen_Service_Error_Conditions()
     Const PROC = "Test_03_GetOpen_Service_Error_Conditions"
     
     On Error GoTo eh
-    Dim wb              As Workbook
+    Dim wbk              As Workbook
     Dim wb1             As Workbook
     Dim sWb1Name        As String
     Dim sWb1FullName    As String
@@ -450,14 +451,14 @@ Public Sub Test_03_GetOpen_Service_Error_Conditions()
     '~~ Test 1b: Parameter is neither a Workbook object nor a string
     BoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
     mErH.Asserted AppErr(1)
-    Set wb = GetOpen(ThisWorkbook.ActiveSheet)
+    Set wbk = GetOpen(ThisWorkbook.ActiveSheet)
     EoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
     
     '~~ Test 2: A Workbook with the provided name is open but from a different location
     '             and the Workbook file still exists at the provided location
     BoP ErrSrc(PROC) & ".Test_OpenButDiffLocationNoLongerExisting"
     If Not wb1 Is Nothing Then wb1.Close False
-    Set wb = Workbooks.Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
+    Set wbk = Workbooks.Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
     mErH.Asserted AppErr(2)
     Set wb1 = GetOpen(ThisWorkbook.Path & "\Test\" & "Test3.xlsm")
     wb1.Close False
@@ -497,7 +498,7 @@ Public Sub Test_04_Is_Services()
     Const PROC = "Test_04_Is_Services"
     
     On Error GoTo eh
-    Dim wb              As Workbook
+    Dim wbk              As Workbook
     Dim wb1             As Workbook
     Dim fso             As New FileSystemObject
     Dim sWb1FullName    As String
@@ -507,31 +508,31 @@ Public Sub Test_04_Is_Services()
     
     sWb1FullName = ThisWorkbook.Path & "\Test\Test1.xlsm"
     sWb1Name = fso.GetFileName(sWb1FullName)
-    Set wb = mWbk.GetOpen(sWb1FullName)
+    Set wbk = mWbk.GetOpen(sWb1FullName)
     
     '~~ Test 1: IsName
-    Debug.Assert IsName(wb.Name) = True
-    Debug.Assert IsName(wb.FullName) = False
-    Debug.Assert IsName(wb.Path) = False
+    Debug.Assert IsName(wbk.Name) = True
+    Debug.Assert IsName(wbk.FullName) = False
+    Debug.Assert IsName(wbk.Path) = False
     Debug.Assert IsName(ThisWorkbook) = False
-    Debug.Assert IsName(fso.GetBaseName(wb.FullName)) = False
+    Debug.Assert IsName(fso.GetBaseName(wbk.FullName)) = False
     
     '~~ Test 2: IsFullName
-    Debug.Assert mWbk.IsFullName(wb.Name) = False
-    Debug.Assert mWbk.IsFullName(wb.FullName) = True
-    Debug.Assert mWbk.IsFullName(wb.Path) = False
+    Debug.Assert mWbk.IsFullName(wbk.Name) = False
+    Debug.Assert mWbk.IsFullName(wbk.FullName) = True
+    Debug.Assert mWbk.IsFullName(wbk.Path) = False
     Debug.Assert mWbk.IsFullName(ThisWorkbook) = False
 
     '~~ Test 3: IsWbObject
-    Debug.Assert mWbk.IsWbObject(wb.Name) = False
-    Debug.Assert mWbk.IsWbObject(wb.FullName) = False
-    Debug.Assert mWbk.IsWbObject(wb.Path) = False
+    Debug.Assert mWbk.IsWbObject(wbk.Name) = False
+    Debug.Assert mWbk.IsWbObject(wbk.FullName) = False
+    Debug.Assert mWbk.IsWbObject(wbk.Path) = False
     Debug.Assert mWbk.IsWbObject(ThisWorkbook) = True
-    Debug.Assert mWbk.IsWbObject(wb) = True
-    wb.Close
-    Debug.Assert mWbk.IsWbObject(wb) = False               ' A closed Workbook is still an object but not an object Type Workbook
-    Set wb = Nothing
-    Debug.Assert mWbk.IsWbObject(wb) = False               ' A set to Nothing is no longer a Workbook object
+    Debug.Assert mWbk.IsWbObject(wbk) = True
+    wbk.Close
+    Debug.Assert mWbk.IsWbObject(wbk) = False               ' A closed Workbook is still an object but not an object Type Workbook
+    Set wbk = Nothing
+    Debug.Assert mWbk.IsWbObject(wbk) = False               ' A set to Nothing is no longer a Workbook object
     Debug.Assert mWbk.IsWbObject(wb1) = False              ' A never assigned Workbook is not a Workbook object
         
 xt: Set fso = Nothing
@@ -578,6 +579,45 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Sub
 
+Public Sub Test_05_Value_Service()
+    Const PROC = "Test_05_Value_Service"
+    
+    On Error GoTo eh
+    Dim rng As Range
+    
+    BoP ErrSrc(PROC)
+
+    '~~ Test 1: Range name as string
+    wshWbkTest.Unprotect
+    wshWbkTest.UsedRange.Cells.ClearContents
+    wshWbkTest.Protect
+    
+    mWbk.Value(wshWbkTest, "celValueUnlocked") = "Test-Value-Unlocked"
+    Debug.Assert mWbk.Value(wshWbkTest, "celValueUnlocked") = "Test-Value-Unlocked"
+    mWbk.Value(wshWbkTest, "celValueLocked") = "Test-Value-Locked"
+    Debug.Assert mWbk.Value(wshWbkTest, "celValueLocked") = "Test-Value-Locked"
+    
+    '~~ Test 2: Range as object
+    wshWbkTest.Unprotect
+    wshWbkTest.UsedRange.Cells.ClearContents
+    wshWbkTest.Protect
+    
+    Set rng = Range("celValueUnlocked")
+    mWbk.Value(wshWbkTest, rng) = "Test-Value-Unlocked"
+    Debug.Assert mWbk.Value(wshWbkTest, rng) = "Test-Value-Unlocked"
+    Set rng = Range("celValueLocked")
+    mWbk.Value(wshWbkTest, rng) = "Test-Value-Locked"
+    Debug.Assert mWbk.Value(wshWbkTest, rng) = "Test-Value-Locked"
+    
+xt: EoP ErrSrc(PROC)
+    Exit Sub
+    
+eh: Select Case ErrMsg(ErrSrc(PROC))
+        Case vbResume:  Stop: Resume
+        Case Else:      GoTo xt
+    End Select
+End Sub
+
 Public Sub Test_06_Exists_Service()
 ' ----------------------------------------------------------------------------
 '
@@ -617,8 +657,8 @@ Public Sub Test_06_Exists_Service()
     
     
     '~~ Test 3: Range Name exists
-    Debug.Assert mWbk.Exists(ex_wb:=sWb1Name, ex_ws:=TEST_WS_NAME, ex_range_name:=TEST_RANGE_NAME) = True
-    Debug.Assert mWbk.Exists(ex_wb:=sWb1Name, ex_ws:=TEST_WS_CODE_NAME, ex_range_name:=TEST_RANGE_NAME) = True
+    Debug.Assert mWbk.Exists(ex_wbk:=sWb1Name, ex_wsh:=TEST_WS_NAME, ex_range_name:=TEST_RANGE_NAME) = True
+    Debug.Assert mWbk.Exists(ex_wbk:=sWb1Name, ex_wsh:=TEST_WS_CODE_NAME, ex_range_name:=TEST_RANGE_NAME) = True
     
     '~~ Test 4: Error conditions
     '~~ Test 4-1: Workbook is not open (AppErr(1)
@@ -635,4 +675,3 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
         Case Else:      GoTo xt
     End Select
 End Sub
-

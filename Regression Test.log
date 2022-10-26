@@ -1,39 +1,41 @@
-22-02-17 12:04:54 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
-22-02-17 12:04:54                 >> Execution trace log 'Regression Test' mWbk module
-22-02-17 12:04:54 00,0000         |  >> mWbkTest.Regression
-22-02-17 12:04:54 00,0025         |  |  >> mWbkTest.Test_00_Opened_Service
-22-02-17 12:04:54 00,0057 00,0032 |  |  << mWbkTest.Test_00_Opened_Service
-22-02-17 12:04:54 00,0063         |  |  >> mWbkTest.Test_01_IsOpen_Service
-22-02-17 12:04:58 03,8544 03,8481 |  |  << mWbkTest.Test_01_IsOpen_Service
-22-02-17 12:04:58 03,8600         |  |  >> mWbkTest.Test_02_GetOpen_Service
-22-02-17 12:04:59 04,6505         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookObject
-22-02-17 12:04:59 04,6539 00,0034 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookObject
-22-02-17 12:04:59 04,6545         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsNameOfOpenWorkbook
-22-02-17 12:04:59 04,6580 00,0035 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsNameOfOpenWorkbook
-22-02-17 12:04:59 04,6593         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpen
-22-02-17 12:04:59 04,6622 00,0029 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpen
-22-02-17 12:04:59 04,6633         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameNotOpen
-22-02-17 12:05:00 05,9969 01,3336 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameNotOpen
-22-02-17 12:05:00 05,9978         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpenFromMovedToLocation
-22-02-17 12:05:01 06,9114 00,9136 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpenFromMovedToLocation
-22-02-17 12:05:01 06,9125 03,0525 |  |  << mWbkTest.Test_02_GetOpen_Service
-22-02-17 12:05:01 06,9164         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions
-22-02-17 12:05:01 06,9174         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
-22-02-17 12:05:01 06,9187 00,0014 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
-22-02-17 12:05:01 06,9196         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
-22-02-17 12:05:01 06,9214 00,0019 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
-22-02-17 12:05:01 06,9223         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
-22-02-17 12:05:02 07,8160 00,8938 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
-22-02-17 12:05:02 07,8170         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
-22-02-17 12:05:02 07,8200 00,0029 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
-22-02-17 12:05:02 07,8210         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
-22-02-17 12:05:02 07,8243 00,0033 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
-22-02-17 12:05:02 07,8250 00,9086 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions
-22-02-17 12:05:02 07,8258         |  |  >> mWbkTest.Test_04_Is_Services
-22-02-17 12:05:03 08,8172 00,9915 |  |  << mWbkTest.Test_04_Is_Services
-22-02-17 12:05:03 08,8182         |  |  >> mWbkTest.Test_06_Exists_Service
-22-02-17 12:05:04 10,2454 01,4272 |  |  << mWbkTest.Test_06_Exists_Service
-22-02-17 12:05:04 10,2486 10,2486 |  << mWbkTest.Regression
-22-02-17 12:05:04 10,2486 10,2486 << Execution trace log 'Regression Test' mWbk module
-22-02-17 12:05:04                 Impact on the overall performance (caused by the trace itself): 00,0009 seconds!
-22-02-17 12:05:04 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-10-26 15:35:14 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)
+22-10-26 15:35:14                 >> Execution trace log 'Regression Test' mWbk module
+22-10-26 15:35:14 00,0000         |  >> mWbkTest.Regression
+22-10-26 15:35:14 00,0022         |  |  >> mWbkTest.Test_00_Opened_Service
+22-10-26 15:35:14 00,0065 00,0043 |  |  << mWbkTest.Test_00_Opened_Service
+22-10-26 15:35:14 00,0075         |  |  >> mWbkTest.Test_01_IsOpen_Service
+22-10-26 15:35:21 06,4978 06,4903 |  |  << mWbkTest.Test_01_IsOpen_Service
+22-10-26 15:35:21 06,5228         |  |  >> mWbkTest.Test_02_GetOpen_Service
+22-10-26 15:35:22 07,6918         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookObject
+22-10-26 15:35:22 07,6932 00,0014 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookObject
+22-10-26 15:35:22 07,6946         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsNameOfOpenWorkbook
+22-10-26 15:35:22 07,6972 00,0026 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsNameOfOpenWorkbook
+22-10-26 15:35:22 07,6979         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpen
+22-10-26 15:35:22 07,7002 00,0023 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpen
+22-10-26 15:35:22 07,7010         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameNotOpen
+22-10-26 15:35:24 09,3653 01,6643 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameNotOpen
+22-10-26 15:35:24 09,3664         |  |  |  >> mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpenFromMovedToLocation
+22-10-26 15:35:25 10,6197 01,2533 |  |  |  << mWbkTest.Test_02_GetOpen_Service.Test_ArgIsWorkbookFullNameOpenFromMovedToLocation
+22-10-26 15:35:25 10,6208 04,0980 |  |  << mWbkTest.Test_02_GetOpen_Service
+22-10-26 15:35:25 10,6273         |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-10-26 15:35:25 10,6285         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-10-26 15:35:25 10,6304 00,0019 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_ObjectIsNothing
+22-10-26 15:35:25 10,6311         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
+22-10-26 15:35:25 10,6335 00,0024 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_NeitherWorkbookObjectNorString
+22-10-26 15:35:25 10,6348         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-10-26 15:35:26 11,8964 01,2617 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_OpenButDiffLocationNoLongerExisting
+22-10-26 15:35:26 11,8978         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-10-26 15:35:26 11,9050 00,0073 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookNameNotAnOpenWorkbook
+22-10-26 15:35:26 11,9074         |  |  |  >> mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-10-26 15:35:26 11,9111 00,0036 |  |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions.Test_WorkbookFullNameNotExisting
+22-10-26 15:35:26 11,9119 01,2846 |  |  << mWbkTest.Test_03_GetOpen_Service_Error_Conditions
+22-10-26 15:35:26 11,9129         |  |  >> mWbkTest.Test_04_Is_Services
+22-10-26 15:35:28 13,2933 01,3804 |  |  << mWbkTest.Test_04_Is_Services
+22-10-26 15:35:28 13,2944         |  |  >> mWbkTest.Test_05_Value_Service
+22-10-26 15:35:28 13,3366 00,0421 |  |  << mWbkTest.Test_05_Value_Service
+22-10-26 15:35:28 13,3374         |  |  >> mWbkTest.Test_06_Exists_Service
+22-10-26 15:35:30 15,2572 01,9198 |  |  << mWbkTest.Test_06_Exists_Service
+22-10-26 15:35:30 15,2606 15,2606 |  << mWbkTest.Regression
+22-10-26 15:35:30 15,2606 15,2606 << Execution trace log 'Regression Test' mWbk module
+22-10-26 15:35:30                 Impact on the overall performance (caused by the trace itself): 00,0011 seconds!
+22-10-26 15:35:30 Execution trace by 'Common VBA Execution Trace Service' (https://github.com/warbe-maker/Common-VBA-Execution-Trace-Service)

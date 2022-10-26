@@ -1,8 +1,8 @@
 [mCompManClient]
-RawRevisionNumber=2022-07-22.005
+RawRevisionNumber=2022-10-08.001
 DueModificationWarning=0
 [fMsg]
-RawRevisionNumber=2022-07-03.001
+RawRevisionNumber=2022-10-21.001
 DueModificationWarning=0
 [mBasic]
 RawRevisionNumber=2022-02-15.001
@@ -11,8 +11,8 @@ DueModificationWarning=0
 RawRevisionNumber=2022-05-25.001
 DueModificationWarning=0
 [mMsg]
-RawRevisionNumber=2022-05-12.001
-DueModificationWarning=0
+RawRevisionNumber=2022-09-13.001
+DueModificationWarning=1
 [mTrc]
-RawRevisionNumber=2022-07-22.009
+RawRevisionNumber=2022-07-24.003
 DueModificationWarning=0

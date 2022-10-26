@@ -117,7 +117,7 @@ Public Type TypeMsgText
 End Type
 
 Public Type TypeMsgSect:    Label As TypeMsgLabel:  Text As TypeMsgText:    End Type
-Public Type TypeMsg:        Section(1 To 4) As TypeMsgSect:                 End Type
+Public Type TypeMsg:        Section(1 To 5) As TypeMsgSect:                 End Type
 
 Public Enum enStartupPosition     ' ---------------------------
     enManual = 0                  ' Used to position the
@@ -211,13 +211,13 @@ End Sub
 
 Public Sub ButtonAppRun(ByRef bar_dct As Dictionary, _
                         ByVal bar_button As String, _
-                        ByVal bar_wb As Workbook, _
+                        ByVal bar_wbk As Workbook, _
                         ByVal bar_service_name As String, _
                         ParamArray bar_arguments() As Variant)
 ' --------------------------------------------------------------------------
 ' Returns a Dictionary (bar_dct) with Application.Run information for the
 ' button identified by its caption string (bar_button) added with the
-' button's caption as the key and all other arguments (bar_wb,
+' button's caption as the key and all other arguments (bar_wbk ,
 ' bar_service_name, bar_arguments) as Collection as item.
 '
 ' Notes:
@@ -238,12 +238,12 @@ Public Sub ButtonAppRun(ByRef bar_dct As Dictionary, _
     
     If bar_dct Is Nothing Then Set bar_dct = New Dictionary
     
-    cll.Add bar_wb
+    cll.Add bar_wbk
     cll.Add bar_service_name
     For Each v In bar_arguments
         If TypeName(v) = "Error" Then
             Err.Raise Number:=AppErr(1) _
-                    , source:=ErrSrc(PROC) _
+                    , Source:=ErrSrc(PROC) _
                     , Description:="The ParamArray argument (bar_arguments) contains empty elements but empty elements " & _
                                    "are not supported/possible!" & "||" & _
                                    "Application.Run supports only positional but not named arguments. When only some of " & _
@@ -715,7 +715,7 @@ Public Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_number = 0 Then err_number = Err.Number
     If err_line = 0 Then err_line = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
         
@@ -803,11 +803,11 @@ Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mMsg." & sProc
 End Function
 
-Private Function GetPanesIndex(ByVal Rng As Range) As Integer
+Private Function GetPanesIndex(ByVal rng As Range) As Integer
     Dim sR As Long:          sR = ActiveWindow.SplitRow
     Dim sc As Long:          sc = ActiveWindow.SplitColumn
-    Dim r As Long:            r = Rng.row
-    Dim c As Long:            c = Rng.Column
+    Dim r As Long:            r = rng.row
+    Dim c As Long:            c = rng.Column
     Dim Index As Integer: Index = 1
 
     Select Case True
@@ -1207,7 +1207,7 @@ Private Sub ShowAtRange(ByVal sar_form As Object, _
     ConvertPixelsToPoints PosLeft, PosTop, PosLeft, PosTop
 
     With sar_form
-       .StartupPosition = 0
+       .StartUpPosition = 0
        .Left = PosLeft
        .Top = PosTop
     End With
