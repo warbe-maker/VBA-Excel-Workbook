@@ -211,13 +211,13 @@ End Sub
 
 Public Sub ButtonAppRun(ByRef bar_dct As Dictionary, _
                         ByVal bar_button As String, _
-                        ByVal bar_wbk As Workbook, _
+                        ByVal bar_wb As Workbook, _
                         ByVal bar_service_name As String, _
                         ParamArray bar_arguments() As Variant)
 ' --------------------------------------------------------------------------
 ' Returns a Dictionary (bar_dct) with Application.Run information for the
 ' button identified by its caption string (bar_button) added with the
-' button's caption as the key and all other arguments (bar_wbk ,
+' button's caption as the key and all other arguments (bar_wb,
 ' bar_service_name, bar_arguments) as Collection as item.
 '
 ' Notes:
@@ -238,7 +238,7 @@ Public Sub ButtonAppRun(ByRef bar_dct As Dictionary, _
     
     If bar_dct Is Nothing Then Set bar_dct = New Dictionary
     
-    cll.Add bar_wbk
+    cll.Add bar_wb
     cll.Add bar_service_name
     For Each v In bar_arguments
         If TypeName(v) = "Error" Then
@@ -803,11 +803,11 @@ Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mMsg." & sProc
 End Function
 
-Private Function GetPanesIndex(ByVal rng As Range) As Integer
+Private Function GetPanesIndex(ByVal Rng As Range) As Integer
     Dim sR As Long:          sR = ActiveWindow.SplitRow
     Dim sc As Long:          sc = ActiveWindow.SplitColumn
-    Dim r As Long:            r = rng.row
-    Dim c As Long:            c = rng.Column
+    Dim r As Long:            r = Rng.row
+    Dim c As Long:            c = Rng.Column
     Dim Index As Integer: Index = 1
 
     Select Case True
