@@ -1,16 +1,62 @@
-22-11-08 19:27:52 UpdateOutdatedCommonComponents (by CompMan.xlsb) for Wbk.xlsm: 
-22-11-08 19:27:52 ---------------------------------------------------------------
-22-11-08 19:28:00 ========================================================
-22-11-08 19:28:00 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
-22-11-08 19:28:00 --------------------------------------------------------
-22-11-08 19:28:00 ========================================================
-22-11-08 19:28:00 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 
-22-11-08 19:28:00 --------------------------------------------------------
-22-11-08 19:28:00 UserForm        fMsg .........: Unchanged Used Common Component
-22-11-08 19:28:00 Standard-Module mCompManClient: Unchanged Used Common Component
-22-11-08 19:28:00 Standard-Module mErH .........: Unchanged Used Common Component
-22-11-08 19:28:00 Standard-Module mMsg .........: Unchanged Used Common Component
-22-11-08 19:28:00 Standard-Module mTrc .........: Unchanged Used Common Component
-22-11-08 19:28:00 Standard-Module mWbkTest .....: Unchanged component
-22-11-08 19:28:00 Workbook        wbWrkbk ......: Unchanged component
-22-11-08 19:28:00 Worksheet       wshWbkTest ...: Unchanged component
+23-06-22-16:10:34  Update Outdated Common Components (by CompMan.xlsb) for Wbk.xlsm 
+23-06-22-16:10:34 ----------------------------------------------------------------
+23-06-22-16:10:34  UserForm        fMsg ...........: Used Common Component
+23-06-22-16:10:34  Standard-Module mCompManClient .: Used Common Component
+23-06-22-16:10:34  Standard-Module mErH ...........: Used Common Component
+23-06-22-16:10:34  Standard-Module mMsg ...........: Used Common Component
+23-06-22-16:10:34  Standard-Module mTrc ...........: Used Common Component
+23-06-22-16:10:37  UserForm        fMsg ...........: Outdated used Common Component updated by re-import of D:\Ablage\Excel VBA\DevAndTest\Common-Components\fMsg.frm
+23-06-22-16:10:38  Standard-Module mCompManClient .: Outdated used Common Component updated by re-import of D:\Ablage\Excel VBA\DevAndTest\Common-Components\mCompManClient.bas
+23-06-22-16:10:40  Standard-Module mErH ...........: Outdated used Common Component updated by re-import of D:\Ablage\Excel VBA\DevAndTest\Common-Components\mErH.bas
+23-06-22-16:10:41  Standard-Module mMsg ...........: Outdated used Common Component updated by re-import of D:\Ablage\Excel VBA\DevAndTest\Common-Components\mMsg.bas
+23-06-22-16:10:43  Standard-Module mTrc ...........: Outdated used Common Component updated by re-import of D:\Ablage\Excel VBA\DevAndTest\Common-Components\mTrc.bas
+23-06-22-16:18:13 ============================================================================================================================================================
+23-06-22-16:18:13                                                   Export Changed Components (by CompMan.xlsb) for Wbk.xlsm                                                  
+23-06-22-16:18:13 ------------------------------------------------------------------------------------------------------------------------------------------------------------
+23-06-22-16:18:13  UserForm        fMsg ...........: Modified used Common Component!!!!! (because this is not the hosting Workbook a "due revert allert" has been registered!)
+23-06-22-16:18:13                                    Modified used Common Component e x p o r t e d !
+23-06-22-16:18:13  Standard-Module mBasic .........: Unchanged used Common Component
+23-06-22-16:18:13  Standard-Module mCompManClient .: Modified used Common Component!!!!! (because this is not the hosting Workbook a "due revert allert" has been registered!)
+23-06-22-16:18:13                                    Modified used Common Component e x p o r t e d !
+23-06-22-16:18:13  Standard-Module mErH ...........: Modified used Common Component!!!!! (because this is not the hosting Workbook a "due revert allert" has been registered!)
+23-06-22-16:18:13                                    Modified used Common Component e x p o r t e d !
+23-06-22-16:18:13  Standard-Module mMsg ...........: Modified used Common Component!!!!! (because this is not the hosting Workbook a "due revert allert" has been registered!)
+23-06-22-16:18:13                                    Modified used Common Component e x p o r t e d !
+23-06-22-16:18:13  Standard-Module mTrc ...........: Modified used Common Component!!!!! (because this is not the hosting Workbook a "due revert allert" has been registered!)
+23-06-22-16:18:13                                    Modified used Common Component e x p o r t e d !
+23-06-22-16:18:13  Standard-Module mWbk ...........: Hosted Raw Common Component code modified
+23-06-22-16:18:13                                    Modified hosted Common Component e x p o r t e d !
+23-06-22-16:18:13                                    Modified hosted Common Component's Revision Number increased
+23-06-22-16:18:13                                    Modified hosted Common Component's Export-File copied to D:\Ablage\Excel VBA\DevAndTest\Common-Components
+23-06-22-16:18:13  Standard-Module mWbkTest .......: Modified VBComponent e x p o r t e d !
+23-06-22-16:18:13  Workbook        wbWrkbk ........: Unchanged VBComponent
+23-06-22-16:18:13  Worksheet       wshWbkTest .....: Unchanged VBComponent
+23-06-22-16:18:19 ==================================================================
+23-06-22-16:18:19      Export Changed Components (by CompMan.xlsb) for Wbk.xlsm     
+23-06-22-16:18:19 ------------------------------------------------------------------
+23-06-22-16:18:19  UserForm        fMsg ...........: Unchanged used Common Component
+23-06-22-16:18:19  Standard-Module mBasic .........: Unchanged used Common Component
+23-06-22-16:18:19  Standard-Module mCompManClient .: Unchanged used Common Component
+23-06-22-16:18:20  Standard-Module mErH ...........: Unchanged used Common Component
+23-06-22-16:18:20  Standard-Module mMsg ...........: Unchanged used Common Component
+23-06-22-16:18:20  Standard-Module mTrc ...........: Unchanged used Common Component
+23-06-22-16:18:20  Standard-Module mWbk ...........: Unchanged hosted raw Common Component
+23-06-22-16:18:20  Standard-Module mWbkTest .......: Unchanged VBComponent
+23-06-22-16:18:20  Workbook        wbWrkbk ........: Unchanged VBComponent
+23-06-22-16:18:20  Worksheet       wshWbkTest .....: Unchanged VBComponent
+23-06-22-16:29:10 ==================================================================
+23-06-22-16:29:10      Export Changed Components (by CompMan.xlsb) for Wbk.xlsm     
+23-06-22-16:29:10 ------------------------------------------------------------------
+23-06-22-16:29:10  UserForm        fMsg ...........: Unchanged used Common Component
+23-06-22-16:29:10  Standard-Module mBasic .........: Unchanged used Common Component
+23-06-22-16:29:10  Standard-Module mCompManClient .: Unchanged used Common Component
+23-06-22-16:29:10  Standard-Module mErH ...........: Unchanged used Common Component
+23-06-22-16:29:10  Standard-Module mMsg ...........: Unchanged used Common Component
+23-06-22-16:29:10  Standard-Module mTrc ...........: Unchanged used Common Component
+23-06-22-16:29:10  Standard-Module mWbk ...........: Hosted Raw Common Component code modified
+23-06-22-16:29:10                                    Modified hosted Common Component e x p o r t e d !
+23-06-22-16:29:10                                    Modified hosted Common Component's Revision Number increased
+23-06-22-16:29:10                                    Modified hosted Common Component's Export-File copied to D:\Ablage\Excel VBA\DevAndTest\Common-Components
+23-06-22-16:29:10  Standard-Module mWbkTest .......: Modified VBComponent e x p o r t e d !
+23-06-22-16:29:10  Workbook        wbWrkbk ........: Unchanged VBComponent
+23-06-22-16:29:10  Worksheet       wshWbkTest .....: Unchanged VBComponent

@@ -1,9 +1,14 @@
 Attribute VB_Name = "mWbkTest"
 Option Explicit
-' ------------------------------------------------------------
-' Standard Module mTest Test of all Existence checks variants
-'                       in module mExists
-' -----------------------------------------------------------
+' ------------------------------------------------------------------------------
+' Standard Module mWbkTest: Common Excel Workbook Services - Test
+' =========================
+'
+' Uses (for this test only): mBasic, mErH, fMsg/mMsg, mTrc
+'
+' W. Rauschenberger Berlin, Jun 2023
+' See: https://github.com/warbe-maker/VBA-Excel-Workbook
+' ------------------------------------------------------------------------------
 'Declare API
 Declare PtrSafe Function GetKeyState Lib "user32" (ByVal vKey As Integer) As Integer
 Const SHIFT_KEY = 16
@@ -18,191 +23,6 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
 ' ------------------------------------------------------------------------------
     If app_err_no >= 0 Then AppErr = app_err_no + vbObjectError Else AppErr = Abs(app_err_no - vbObjectError)
 End Function
-
-Private Sub BoP(ByVal b_proc As String, _
-          ParamArray b_arguments() As Variant)
-' ------------------------------------------------------------------------------
-' Common 'Begin of Procedure' service. When neither the Common Execution Trace
-' Component (mTrc) nor the Common Error Handling Component (mErH) is installed
-' (indicated by the Conditional Compile Arguments 'ExecTrace = 1' and/or the
-' Conditional Compile Argument 'ErHComp = 1') this procedure does nothing.
-' Else the service is handed over to the corresponding procedures.
-' May be copied as Private Sub into any module or directly used when mBasic is
-' installed.
-' ------------------------------------------------------------------------------
-    Dim s As String
-    If UBound(b_arguments) >= 0 Then s = Join(b_arguments, ",")
-#If ErHComp = 1 Then
-    '~~ The error handling also hands over to the mTrc component when 'ExecTrace = 1'
-    '~~ so the Else is only for the case only the mTrc is installed but not the merH.
-    mErH.BoP b_proc, s
-#ElseIf ExecTrace = 1 Then
-    mTrc.BoP b_proc, s
-#End If
-End Sub
-
-Private Sub EoP(ByVal e_proc As String, _
-      Optional ByVal e_inf As String = vbNullString)
-' ------------------------------------------------------------------------------
-' Common 'End of Procedure' service. When neither the Common Execution Trace
-' Component (mTrc) nor the Common Error Handling Component (mErH) is installed
-' (indicated by the Conditional Compile Arguments 'ExecTrace = 1' and/or the
-' Conditional Compile Argument 'ErHComp = 1') this procedure does nothing.
-' Else the service is handed over to the corresponding procedures.
-' May be copied as Private Sub into any module or directly used when mBasic is
-' installed.
-' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
-    '~~ The error handling also hands over to the mTrc component when 'ExecTrace = 1'
-    '~~ so the Else is only for the case the mTrc is installed but the merH is not.
-    mErH.EoP e_proc
-#ElseIf ExecTrace = 1 Then
-    mTrc.EoP e_proc, e_inf
-#End If
-End Sub
-
-Private Function ErrMsg(ByVal err_source As String, _
-              Optional ByVal err_no As Long = 0, _
-              Optional ByVal err_dscrptn As String = vbNullString, _
-              Optional ByVal err_line As Long = 0) As Variant
-' ------------------------------------------------------------------------------
-' Universal error message display service including a debugging option active
-' when the Conditional Compile Argument 'Debugging = 1' and an optional
-' additional "About the error:" section displaying text connected to an error
-' message by two vertical bars (||).
-'
-' A copy of this function is used in each procedure with an error handling
-' (On error Goto eh).
-'
-' The function considers the Common VBA Error Handling Component (ErH) which
-' may be installed (Conditional Compile Argument 'ErHComp = 1') and/or the
-' Common VBA Message Display Component (mMsg) installed (Conditional Compile
-' Argument 'MsgComp = 1'). Only when none of the two is installed the error
-' message is displayed by means of the VBA.MsgBox.
-'
-' Usage: Example with the Conditional Compile Argument 'Debugging = 1'
-'
-'        Private/Public <procedure-name>
-'            Const PROC = "<procedure-name>"
-'
-'            On Error Goto eh
-'            ....
-'        xt: Exit Sub/Function/Property
-'
-'        eh: Select Case ErrMsg(ErrSrc(PROC))
-'               Case vbResume:  Stop: Resume
-'               Case Else:      GoTo xt
-'            End Select
-'        End Sub/Function/Property
-'
-'        The above may appear a lot of code lines but will be a godsend in case
-'        of an error!
-'
-' Uses:  - For programmed application errors (Err.Raise AppErr(n), ....) the
-'          function AppErr will be used which turns the positive number into a
-'          negative one. The error message will regard a negative error number
-'          as an 'Application Error' and will use AppErr to turn it back for
-'          the message into its original positive number. Together with the
-'          ErrSrc there will be no need to maintain numerous different error
-'          numbers for a VB-Project.
-'        - The caller provides the source of the error through the module
-'          specific function ErrSrc(PROC) which adds the module name to the
-'          procedure name.
-'
-' W. Rauschenberger Berlin, Nov 2021
-' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
-    '~~ ------------------------------------------------------------------------
-    '~~ When the Common VBA Error Handling Component (mErH) is installed in the
-    '~~ VB-Project (which includes the mMsg component) the mErh.ErrMsg service
-    '~~ is preferred since it provides some enhanced features like a path to the
-    '~~ error.
-    '~~ ------------------------------------------------------------------------
-    ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line)
-    GoTo xt
-#ElseIf MsgComp = 1 Then
-    '~~ ------------------------------------------------------------------------
-    '~~ When only the Common Message Services Component (mMsg) is installed but
-    '~~ not the mErH component the mMsg.ErrMsg service is preferred since it
-    '~~ provides an enhanced layout and other features.
-    '~~ ------------------------------------------------------------------------
-    ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line)
-    GoTo xt
-#End If
-    '~~ -------------------------------------------------------------------
-    '~~ When neither the mMsg nor the mErH component is installed the error
-    '~~ message is displayed by means of the VBA.MsgBox
-    '~~ -------------------------------------------------------------------
-    Dim ErrBttns    As Variant
-    Dim ErrAtLine   As String
-    Dim ErrDesc     As String
-    Dim ErrLine     As Long
-    Dim ErrNo       As Long
-    Dim ErrSrc      As String
-    Dim ErrText     As String
-    Dim ErrTitle    As String
-    Dim ErrType     As String
-    Dim ErrAbout    As String
-        
-    '~~ Obtain error information from the Err object for any argument not provided
-    If err_no = 0 Then err_no = Err.Number
-    If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.Source
-    If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
-    If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
-    
-    If InStr(err_dscrptn, "||") <> 0 Then
-        ErrDesc = Split(err_dscrptn, "||")(0)
-        ErrAbout = Split(err_dscrptn, "||")(1)
-    Else
-        ErrDesc = err_dscrptn
-    End If
-    
-    '~~ Determine the type of error
-    Select Case err_no
-        Case Is < 0
-            ErrNo = AppErr(err_no)
-            ErrType = "Application Error "
-        Case Else
-            ErrNo = err_no
-            If (InStr(1, err_dscrptn, "DAO") <> 0 _
-            Or InStr(1, err_dscrptn, "ODBC Teradata Driver") <> 0 _
-            Or InStr(1, err_dscrptn, "ODBC") <> 0 _
-            Or InStr(1, err_dscrptn, "Oracle") <> 0) _
-            Then ErrType = "Database Error " _
-            Else ErrType = "VB Runtime Error "
-    End Select
-    
-    If err_source <> vbNullString Then ErrSrc = " in: """ & err_source & """"   ' assemble ErrSrc from available information"
-    If err_line <> 0 Then ErrAtLine = " at line " & err_line                    ' assemble ErrAtLine from available information
-    ErrTitle = Replace(ErrType & ErrNo & ErrSrc & ErrAtLine, "  ", " ")         ' assemble ErrTitle from available information
-       
-    ErrText = "Error: " & vbLf & _
-              ErrDesc & vbLf & vbLf & _
-              "Source: " & vbLf & _
-              err_source & ErrAtLine
-    If ErrAbout <> vbNullString _
-    Then ErrText = ErrText & vbLf & vbLf & _
-                  "About: " & vbLf & _
-                  ErrAbout
-    
-#If Debugging Then
-    ErrBttns = vbYesNo
-    ErrText = ErrText & vbLf & vbLf & _
-              "Debugging:" & vbLf & _
-              "Yes    = Resume Error Line" & vbLf & _
-              "No     = Terminate"
-#Else
-    ErrBttns = vbCritical
-#End If
-    
-    ErrMsg = MsgBox(Title:=ErrTitle _
-                  , Prompt:=ErrText _
-                  , Buttons:=ErrBttns)
-xt: Exit Function
-
-End Function
-
   
 Private Function ErrSrc(ByVal sProc As String) As String
     ErrSrc = "mWbkTest" & "." & sProc
@@ -223,14 +43,13 @@ Public Sub Regression()
 
     On Error GoTo eh
     
-    '~~ Initialization of a new Trace Log File for this Regression test
-    '~~ ! must be done prior the first BoP !
-    mTrc.LogFile = Replace(ThisWorkbook.FullName, ThisWorkbook.Name, "Regression Test.log")
-    mTrc.LogTitle = "Execution trace log 'Regression Test' mWbk module"
-        
+    '~~ Initialization (must be done prior the first BoP !)
+    mTrc.FileName = "RegressionTest.ExecTrace.log"
+    mTrc.Title = "Regression Test mWbk module"
+    mTrc.NewFile
     mErH.Regression = True
     
-    mErH.BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     mWbkTest.Test_00_Opened_Service
     mWbkTest.Test_01_IsOpen_Service
     mWbkTest.Test_02_GetOpen_Service
@@ -239,12 +58,12 @@ Public Sub Regression()
     mWbkTest.Test_05_Value_Service
     mWbkTest.Test_06_Exists_Service
     
-xt: mErH.EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     mErH.Regression = False
     mTrc.Dsply
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -272,7 +91,7 @@ Public Sub Test_01_IsOpen_Service()
     Dim sWb2Name        As String
     Dim sWb3Name        As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sWb1FullName = ThisWorkbook.Path & "\Test\Test1.xlsm"
     sWb2FullName = ThisWorkbook.Path & "\Test\TestSubFolder\Test2.xlsm"
     sWb3FullName = ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm"
@@ -323,10 +142,10 @@ xt: On Error Resume Next
         .Workbooks(sWb3Name).Close
     End With
     Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -351,7 +170,7 @@ Public Sub Test_02_GetOpen_Service()
     Dim sWb3FullName    As String
     Dim sFullName       As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     '~~ Ensure precondition
     On Error Resume Next
@@ -373,42 +192,42 @@ Public Sub Test_02_GetOpen_Service()
     '~~ Run tests (all not raising an error)
     '~~ --------------------------------------------
     '~~ Test 1: GetOpen Workbook by object (open)
-    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookObject"
+    mBasic.BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookObject"
     Debug.Assert GetOpen(wb1) Is wb1
-    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookObject"
+    mBasic.EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookObject"
 
     '~~ Test 2: GetOpen Workbook by name (open)
-    BoP ErrSrc(PROC) & ".Test_ArgIsNameOfOpenWorkbook"
+    mBasic.BoP ErrSrc(PROC) & ".Test_ArgIsNameOfOpenWorkbook"
     Debug.Assert GetOpen(sWb1Name) Is wb1
-    EoP ErrSrc(PROC) & ".Test_ArgIsNameOfOpenWorkbook"
+    mBasic.EoP ErrSrc(PROC) & ".Test_ArgIsNameOfOpenWorkbook"
 
     '~~ Test 3: GetOpen Workbook by fullname (open)
-    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpen"
+    mBasic.BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpen"
     Debug.Assert GetOpen(sWb1FullName) Is wb1
-    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpen"
+    mBasic.EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpen"
 
     '~~ Test 4: GetOpen Workbook by fullname (not open)
-    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameNotOpen"
+    mBasic.BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameNotOpen"
     sFullName = wb1.FullName
     wb1.Close False
     Set wb1 = GetOpen(sFullName)
     Debug.Assert wb1.FullName = sFullName
     wb1.Close False
-    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameNotOpen"
+    mBasic.EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameNotOpen"
     
     '~~ Test 5: GetOpen Workbook by full name
     '~~         A Workbook with the same name but from a different location is already open
     '~~         and the file does not/no longer exist at the provided location.
-    BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpenFromMovedToLocation"
+    mBasic.BoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpenFromMovedToLocation"
     Set wb3 = Workbooks.Open(sWb3FullName)
     Debug.Assert GetOpen(Replace(sWb1FullName, "Test1", "Test2")).Name = sWb3Name
     wb3.Close False
-    EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpenFromMovedToLocation"
+    mBasic.EoP ErrSrc(PROC) & ".Test_ArgIsWorkbookFullNameOpenFromMovedToLocation"
     
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -433,7 +252,7 @@ Public Sub Test_03_GetOpen_Service_Error_Conditions()
     Dim sWb3FullName    As String
     Dim sFullName       As String
         
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     ' Prepare
     sWb1Name = "Test1.xlsm"
     sWb1FullName = ThisWorkbook.Path & "\" & sWb1Name
@@ -443,38 +262,38 @@ Public Sub Test_03_GetOpen_Service_Error_Conditions()
     sWb3FullName = ThisWorkbook.Path & "\Test\" & sWb3Name
     
     '~~ Test 1a: GetOpen Workbook is object never opened
-    BoP ErrSrc(PROC) & ".Test_ObjectIsNothing"
-    mErH.Asserted AppErr(1) ' skip display of error message when mErH.Regression = True
+    mBasic.BoP ErrSrc(PROC) & ".Test_ObjectIsNothing"
+    mErH.Asserted AppErr(1) ' skip display of error message when mBasic.Regression = True
     mWbk.GetOpen wb1
-    EoP ErrSrc(PROC) & ".Test_ObjectIsNothing"
+    mBasic.EoP ErrSrc(PROC) & ".Test_ObjectIsNothing"
     
     '~~ Test 1b: Parameter is neither a Workbook object nor a string
-    BoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
+    mBasic.BoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
     mErH.Asserted AppErr(1)
     Set wbk = GetOpen(ThisWorkbook.ActiveSheet)
-    EoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
+    mBasic.EoP ErrSrc(PROC) & ".Test_NeitherWorkbookObjectNorString"
     
     '~~ Test 2: A Workbook with the provided name is open but from a different location
     '             and the Workbook file still exists at the provided location
-    BoP ErrSrc(PROC) & ".Test_OpenButDiffLocationNoLongerExisting"
+    mBasic.BoP ErrSrc(PROC) & ".Test_OpenButDiffLocationNoLongerExisting"
     If Not wb1 Is Nothing Then wb1.Close False
     Set wbk = Workbooks.Open(ThisWorkbook.Path & "\Test\TestSubFolder\Test3.xlsm")
     mErH.Asserted AppErr(2)
     Set wb1 = GetOpen(ThisWorkbook.Path & "\Test\" & "Test3.xlsm")
     wb1.Close False
-    EoP ErrSrc(PROC) & ".Test_OpenButDiffLocationNoLongerExisting"
+    mBasic.EoP ErrSrc(PROC) & ".Test_OpenButDiffLocationNoLongerExisting"
     
     '~~ Test 3: Parameter is a not open Workbook's name
-    BoP ErrSrc(PROC) & ".Test_WorkbookNameNotAnOpenWorkbook"
-    mErH.Asserted AppErr(3) ' skip display of error message when mErH.Regression = True
+    mBasic.BoP ErrSrc(PROC) & ".Test_WorkbookNameNotAnOpenWorkbook"
+    mErH.Asserted AppErr(3) ' skip display of error message when mBasic.Regression = True
     GetOpen sWb1Name
-    EoP ErrSrc(PROC) & ".Test_WorkbookNameNotAnOpenWorkbook"
+    mBasic.EoP ErrSrc(PROC) & ".Test_WorkbookNameNotAnOpenWorkbook"
 
     '~~ Test 4: Parameter is a Workbook's full name but the file does't exist
-    BoP ErrSrc(PROC) & ".Test_WorkbookFullNameNotExisting"
-    mErH.Asserted AppErr(4) ' skip display of error message when mErH.Regression = True
+    mBasic.BoP ErrSrc(PROC) & ".Test_WorkbookFullNameNotExisting"
+    mErH.Asserted AppErr(4) ' skip display of error message when mBasic.Regression = True
     mWbk.GetOpen Replace(sWb1FullName, sWb1Name, "not-existing.xls")
-    EoP ErrSrc(PROC) & ".Test_WorkbookFullNameNotExisting"
+    mBasic.EoP ErrSrc(PROC) & ".Test_WorkbookFullNameNotExisting"
     
     '~~ Cleanup
     On Error Resume Next
@@ -482,10 +301,10 @@ Public Sub Test_03_GetOpen_Service_Error_Conditions()
     If Not wb2 Is Nothing Then wb2.Close False
     If Not wb3 Is Nothing Then wb3.Close False
 
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -504,7 +323,7 @@ Public Sub Test_04_Is_Services()
     Dim sWb1FullName    As String
     Dim sWb1Name        As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     sWb1FullName = ThisWorkbook.Path & "\Test\Test1.xlsm"
     sWb1Name = fso.GetFileName(sWb1FullName)
@@ -536,10 +355,10 @@ Public Sub Test_04_Is_Services()
     Debug.Assert mWbk.IsWbObject(wb1) = False              ' A never assigned Workbook is not a Workbook object
         
 xt: Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -558,7 +377,7 @@ Public Sub Test_00_Opened_Service()
     Dim dct As Dictionary
     Dim v   As Variant
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     
     Set dct = mWbk.Opened
     Debug.Assert Opened.Count >= 1
@@ -570,10 +389,10 @@ Public Sub Test_00_Opened_Service()
         End If
     Next v
     
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -583,9 +402,9 @@ Public Sub Test_05_Value_Service()
     Const PROC = "Test_05_Value_Service"
     
     On Error GoTo eh
-    Dim rng As Range
+    Dim Rng As Range
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
 
     '~~ Test 1: Range name as string
     wshWbkTest.Unprotect
@@ -602,17 +421,17 @@ Public Sub Test_05_Value_Service()
     wshWbkTest.UsedRange.Cells.ClearContents
     wshWbkTest.Protect
     
-    Set rng = Range("celValueUnlocked")
-    mWbk.Value(wshWbkTest, rng) = "Test-Value-Unlocked"
-    Debug.Assert mWbk.Value(wshWbkTest, rng) = "Test-Value-Unlocked"
-    Set rng = Range("celValueLocked")
-    mWbk.Value(wshWbkTest, rng) = "Test-Value-Locked"
-    Debug.Assert mWbk.Value(wshWbkTest, rng) = "Test-Value-Locked"
+    Set Rng = Range("celValueUnlocked")
+    mWbk.Value(wshWbkTest, Rng) = "Test-Value-Unlocked"
+    Debug.Assert mWbk.Value(wshWbkTest, Rng) = "Test-Value-Unlocked"
+    Set Rng = Range("celValueLocked")
+    mWbk.Value(wshWbkTest, Rng) = "Test-Value-Locked"
+    Debug.Assert mWbk.Value(wshWbkTest, Rng) = "Test-Value-Locked"
     
-xt: EoP ErrSrc(PROC)
+xt: mBasic.EoP ErrSrc(PROC)
     Exit Sub
     
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
@@ -636,7 +455,7 @@ Public Sub Test_06_Exists_Service()
     Dim sWb1Name        As String
     Dim sWb2Name        As String
     
-    BoP ErrSrc(PROC)
+    mBasic.BoP ErrSrc(PROC)
     sWb1FullName = ThisWorkbook.Path & "\Test\Test1.xlsm"
     sWb1Name = fso.GetFileName(sWb1FullName)
     Set wb1 = mWbk.GetOpen(sWb1FullName)
@@ -667,10 +486,10 @@ Public Sub Test_06_Exists_Service()
 
 xt: mWbk.WbClose wb1
     Set fso = Nothing
-    EoP ErrSrc(PROC)
+    mBasic.EoP ErrSrc(PROC)
     Exit Sub
 
-eh: Select Case ErrMsg(ErrSrc(PROC))
+eh: Select Case mBasic.ErrMsg(ErrSrc(PROC))
         Case vbResume:  Stop: Resume
         Case Else:      GoTo xt
     End Select
