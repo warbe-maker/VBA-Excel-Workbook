@@ -1,23 +1,23 @@
 Attribute VB_Name = "mWbk"
 Option Explicit
 Option Compare Text
-' -----------------------------------------------------------------------------------
+' ------------------------------------------------------------------------------
 ' Standard Module mWbk: Provides basic Workbook services.
 ' =====================
 '
 ' Public services:
 ' ----------------
-' GetOpen     Opens a provided Workbook if possible, returns the Workbook object of
-'             the openend or an already open Workbook
-' IsFullName  Returns TRUE when a provided string is the full name of a Workbook
+' GetOpen     Opens a provided Workbook if possible, returns the Workbook
+'             object of the openend or an already open Workbook
+' IsFullName  Returns TRUE when a provided string is the full name of a
+'             Workbook
 ' IsName      Returns TRUE when a provided string is the name of a Workbook
-' IsWbObject  Returns TRUE when the provided variant is a Workbook (not necessarily
-'             also open!)
+' IsWbObject  Returns TRUE when the provided variant is a Workbook (not
+'             necessarily also open!)
 ' IsOpen      Returns TRUE when the provided Workbook is open
 ' Opened      Returns a Dictionary of all open Workbooks in any application
-'             instance with the Workbook's Name as the key and the Workbook object
-'             as the item.
-'
+'             instance with the Workbook's Name as the key and the Workbook
+'             object as the item.
 ' Uses:
 ' -----
 ' No other components
@@ -25,10 +25,10 @@ Option Compare Text
 ' Requires: Reference to "Microsoft Scripting Runtine"
 '
 '
-' W. Rauschenberger, Berlin June 2022
+' W. Rauschenberger, Berlin Dec 2024
 ' See: https://github.com/warbe-maker/VBA-Excel-Workbook
-' -----------------------------------------------------------------------------------
-#If Not MsgComp = 1 Then
+' ------------------------------------------------------------------------------
+#If Not mMsg = 1 Then
     ' ------------------------------------------------------------------------
     ' The 'minimum error handling' aproach implemented with this module and
     ' provided by the ErrMsg function uses the VBA.MsgBox to display an error
@@ -36,10 +36,9 @@ Option Compare Text
     ' provided the Conditional Compile Argument 'Debugging = 1'.
     ' This declaration allows the mTrc module to work completely autonomous.
     ' It becomes obsolete when the mMsg/fMsg module is installed which must
-    ' be indicated by the Conditional Compile Argument MsgComp = 1.
+    ' be indicated by the Conditional Compile Argument mMsg = 1.
     ' See https://github.com/warbe-maker/Common-VBA-Message-Service
     ' ------------------------------------------------------------------------
-    Private Const vbResumeOk As Long = 7 ' Buttons value in mMsg.ErrMsg (pass on not supported)
     Private Const vbResume   As Long = 6 ' return value (equates to vbYes)
 #End If
 
@@ -61,8 +60,6 @@ Private Declare PtrSafe Function apiShellExecute Lib "shell32.dll" _
 
 '***App Window Constants***
 Private Const WIN_NORMAL = 1         'Open Normal
-Private Const WIN_MAX = 3            'Open Maximized
-Private Const WIN_MIN = 2            'Open Minimized
 
 '***Error Codes***
 Private Const ERROR_SUCCESS = 32&
@@ -71,8 +68,6 @@ Private Const ERROR_OUT_OF_MEM = 0&
 Private Const ERROR_FILE_NOT_FOUND = 2&
 Private Const ERROR_PATH_NOT_FOUND = 3&
 Private Const ERROR_BAD_FORMAT = 11&
-Private Const WS_THICKFRAME As Long = &H40000
-Private Const GWL_STYLE As Long = -16
 
 Type UUID 'GUID
     Data1 As Long
@@ -171,25 +166,25 @@ Public Property Let Value(Optional ByVal v_wsh As Worksheet, _
 ' ----------------------------------------------------------------------------
     Const PROC = "Value-Let"
     
-    Dim Rng As Range
+    Dim rng As Range
     
     On Error Resume Next
     Select Case TypeName(v_name)
-        Case "String": Set Rng = v_wsh.Range(v_name)
-        Case "Range":  Set Rng = v_name
+        Case "String": Set rng = v_wsh.Range(v_name)
+        Case "Range":  Set rng = v_name
     End Select
     If Err.Number <> 0 _
     Then Err.Raise AppErr(2), ErrSrc(PROC), "The Worksheet '" & v_wsh.Name & "' has no range with a name '" & v_name & "'!"
     
-    If v_wsh.ProtectContents And Rng.Locked Then
+    If v_wsh.ProtectContents And rng.Locked Then
         On Error Resume Next
         v_wsh.Unprotect
         If Err.Number <> 0 _
         Then Err.Raise AppErr(2), ErrSrc(PROC), "The Worksheet '" & v_wsh.Name & "' is apparently password protected which is not supported by the Value service!"
-        Rng.Value = v_value
+        rng.Value = v_value
         v_wsh.Protect
     Else
-        Rng.Value = v_value
+        rng.Value = v_value
     End If
     
 xt: Exit Property
@@ -212,10 +207,10 @@ Private Function AppErr(ByVal app_err_no As Long) As Long
 End Function
 
 Private Function checkHwnds(ByRef xlApps() As Application, hWnd As LongPtr) As Boolean
-' -----------------------------------------------------------------------------------------
+' ------------------------------------------------------------------------------
 '
-' -----------------------------------------------------------------------------------------
-    Const PROC = "checkHwnds"            ' This procedure's name for the error handling and execution tracking
+' ------------------------------------------------------------------------------
+    Const PROC = "checkHwnds"
     
     On Error GoTo eh
     Dim i As Long
@@ -243,29 +238,27 @@ Private Function ErrMsg(ByVal err_source As String, _
                Optional ByVal err_dscrptn As String = vbNullString, _
                Optional ByVal err_line As Long = 0) As Variant
 ' ------------------------------------------------------------------------------
-' Universal error message display service. Obligatory copy Private for any
-' VB-Component using the common error service but not having the mBasic common
-' component installed.
-' Displays: - a debugging option button when the Cond. Comp. Arg. 'Debugging = 1'
-'           - an optional additional "About:" section when the err_dscrptn has
-'             an additional string concatenated by two vertical bars (||)
-'           - the error message by means of the Common VBA Message Service
-'             (fMsg/mMsg) when installed and active (Cond. Comp. Arg.
-'             `MsgComp = 1`)
+' Universal error message display service which displays:
+' - a debugging option button
+' - an "About:" section when the err_dscrptn has an additional string
+'   concatenated by two vertical bars (||)
+' - the error message either by means of the Common VBA Message Service
+'   (fMsg/mMsg) when installed (indicated by Cond. Comp. Arg. `mMsg = 1` or by
+'   means of the VBA.MsgBox in case not.
 '
 ' Uses: AppErr  For programmed application errors (Err.Raise AppErr(n), ....)
 '               to turn them into a negative and in the error message back into
 '               its origin positive number.
 '
-' W. Rauschenberger Berlin, June 2023
+' W. Rauschenberger Berlin, Jan 2024
 ' See: https://github.com/warbe-maker/VBA-Error
 ' ------------------------------------------------------------------------------
-#If ErHComp = 1 Then
+#If mErH = 1 Then
     '~~ When Common VBA Error Services (mErH) is availabel in the VB-Project
     '~~ (which includes the mMsg component) the mErh.ErrMsg service is invoked.
     ErrMsg = mErH.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
     GoTo xt
-#ElseIf MsgComp = 1 Then
+#ElseIf mMsg = 1 Then
     '~~ When (only) the Common Message Service (mMsg, fMsg) is available in the
     '~~ VB-Project, mMsg.ErrMsg is invoked for the display of the error message.
     ErrMsg = mMsg.ErrMsg(err_source, err_no, err_dscrptn, err_line): GoTo xt
@@ -287,7 +280,7 @@ Private Function ErrMsg(ByVal err_source As String, _
     '~~ Obtain error information from the Err object for any argument not provided
     If err_no = 0 Then err_no = Err.Number
     If err_line = 0 Then ErrLine = Erl
-    If err_source = vbNullString Then err_source = Err.source
+    If err_source = vbNullString Then err_source = Err.Source
     If err_dscrptn = vbNullString Then err_dscrptn = Err.Description
     If err_dscrptn = vbNullString Then err_dscrptn = "--- No error description available ---"
     
@@ -320,12 +313,8 @@ Private Function ErrMsg(ByVal err_source As String, _
     ErrText = "Error: " & vbLf & ErrDesc & vbLf & vbLf & "Source: " & vbLf & err_source & ErrAtLine
     If ErrAbout <> vbNullString Then ErrText = ErrText & vbLf & vbLf & "About: " & vbLf & ErrAbout
     
-#If Debugging = 1 Then
     ErrBttns = vbYesNo
     ErrText = ErrText & vbLf & vbLf & "Debugging:" & vbLf & "Yes    = Resume Error Line" & vbLf & "No     = Terminate"
-#Else
-    ErrBttns = vbCritical
-#End If
     ErrMsg = MsgBox(Title:=ErrTitle, Prompt:=ErrText, Buttons:=ErrBttns)
 xt:
 End Function
@@ -363,13 +352,13 @@ Public Function Exists(ByVal ex_wbk As Variant, _
     Dim sTest       As String
     Dim wbk         As Workbook
     Dim wsh         As Worksheet
-    Dim fso         As New FileSystemObject
+    Dim FSo         As New FileSystemObject
     Dim nme         As Name
     Dim sWsName     As String
     Dim sWsCodeName As String
     
     If IsFullName(ex_wbk) Then
-        Exists = fso.FileExists(ex_wbk)
+        Exists = FSo.FileExists(ex_wbk)
     ElseIf IsName(ex_wbk) Then
         If Not mWbk.IsOpen(ex_wbk, wbk) Then
             Err.Raise AppErr(1), ErrSrc(PROC), "The existence of a Workbook provided just by its file name (" & ex_wbk & ") " & _
@@ -430,7 +419,7 @@ Public Function Exists(ByVal ex_wbk As Variant, _
         End If
     End If
             
-xt: Set fso = Nothing
+xt: Set FSo = Nothing
     Exit Function
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -439,11 +428,10 @@ eh: Select Case ErrMsg(ErrSrc(PROC))
     End Select
 End Function
 
-Private Function GetExcelObjectFromHwnd( _
-                                  ByVal hWndMain As LongPtr) As Application
-' -----------------------------------------------------------------------------------
+Private Function GetExcelObjectFromHwnd(ByVal hWndMain As LongPtr) As Application
+' ------------------------------------------------------------------------------
 '
-' -----------------------------------------------------------------------------------
+' ------------------------------------------------------------------------------
     Const PROC = "GetExcelObjectFromHwnd"
 
 #If Win64 Then
@@ -491,8 +479,8 @@ End Function
 Public Function GetOpen(ByVal go_wbk As Variant, _
                Optional ByVal go_read_only As Boolean = False) As Workbook
 ' ----------------------------------------------------------------------------
-' Returns an open Workbook object or raises an error. If go_wbk  is a full path-file name, the file exists but
-' is not open it is opened.
+' Returns an open Workbook object or raises an error. If go_wbk  is a full
+' path-file name, the file exists but is not open it is opened.
 ' Note: A ReadOnly mode has to be set by the caller.
 ' ----------------------------------------------------------------------------
     Const PROC = "GetOpen"
@@ -501,7 +489,7 @@ Public Function GetOpen(ByVal go_wbk As Variant, _
     Dim sWbName     As String
     Dim sWbFullName As String
     Dim wbOpen      As Workbook
-    Dim fso         As New FileSystemObject
+    Dim FSo         As New FileSystemObject
         
     Set wbOpen = Nothing
        
@@ -509,7 +497,7 @@ Public Function GetOpen(ByVal go_wbk As Variant, _
         sWbName = go_wbk.Name
         sWbFullName = go_wbk.FullName
     ElseIf mWbk.IsFullName(go_wbk) Then
-        sWbName = fso.GetFileName(go_wbk)
+        sWbName = FSo.GetFileName(go_wbk)
         sWbFullName = go_wbk
     ElseIf mWbk.IsName(go_wbk) Then
         sWbName = go_wbk
@@ -531,7 +519,7 @@ Public Function GetOpen(ByVal go_wbk As Variant, _
             Set wbOpen = .Item(sWbName)
             If wbOpen.FullName = sWbFullName Then GoTo xt
             '~~ A Workbook with the Name is open but it has a different FullName
-            If fso.FileExists(sWbFullName) Then
+            If FSo.FileExists(sWbFullName) Then
                 '~~ When the Workbook file still exists at the provided location the one which is open is the wromg one
                 Err.Raise AppErr(2), ErrSrc(PROC), "A Workbook named '" & sWbName & "' is open but its location differs." & vbLf & vbLf & _
                                                    "'" & wbOpen.FullName & "'" & vbLf & vbLf & _
@@ -543,14 +531,14 @@ Public Function GetOpen(ByVal go_wbk As Variant, _
             '~~ A Workbook with the provided name is yet not open
             If sWbFullName = vbNullString _
             Then Err.Raise AppErr(3), ErrSrc(PROC), "A Workbook named '" & sWbName & "' is not open - and cannot be opened because this requires the full file name!"
-            If Not fso.FileExists(sWbFullName) _
+            If Not FSo.FileExists(sWbFullName) _
             Then Err.Raise AppErr(4), ErrSrc(PROC), "A Workbook named '" & sWbFullName & "' does not exist!"
             Set GetOpen = Workbooks.Open(sWbFullName, , go_read_only)
             GoTo xt
         End If
     End With
         
-xt: Set fso = Nothing
+xt: Set FSo = Nothing
     Exit Function
     
 eh: Select Case ErrMsg(ErrSrc(PROC))
@@ -571,9 +559,9 @@ Public Function IsFullName(ByVal v As Variant) As Boolean
 End Function
 
 Public Function IsName(ByVal v As Variant) As Boolean
-' ----------------------------------------------------------------------------
+' ------------------------------------------------------------------------------
 ' Returns TRUE when (v) is a Workbook's Name (without path!) .
-' ----------------------------------------------------------------------------
+' ------------------------------------------------------------------------------
     If VarType(v) = vbString Then
         IsName = InStr(v, "\") = 0 And InStr(v, "/") = 0 And v Like "*.xl*"
     End If
@@ -581,21 +569,21 @@ End Function
 
 Public Function IsOpen(ByVal wbk As Variant, _
               Optional ByRef wbk_result As Workbook) As Boolean
-' -----------------------------------------------------------------------------------
-' Returns TRUE when the Workbook (wbk) - which may be a Workbook object, a Workbook's
-' name or fullname - is open in any Excel Application instance. If a fullname is
-' provided and the file does not exist under this full name but a Workbook with the
-' given name is open (but from another folder) the Workbook is regarded moved and
-' thus is returned as open object(wbk_result).
+' ------------------------------------------------------------------------------
+' Returns TRUE when the Workbook (wbk) - which may be a Workbook object, a
+' Workbook's name or fullname - is open in any Excel Application instance. If a
+' fullname is provided and the file does not exist under this full name but a
+' Workbook with the given name is open (but from another folder) the Workbook is
+' regarded moved and thus is returned as open object(wbk_result).
 ' Because Workbooks with the same WbName may be open when they have different
 ' extensions a Workbook's Name including its extension is checked.
-' -----------------------------------------------------------------------------------
+' ------------------------------------------------------------------------------
     Const PROC = "IsOpen"
     
     On Error GoTo eh
     Dim OpenWbks As Dictionary
-    Dim OpenWbk  As Workbook
-    Dim fso      As New FileSystemObject
+    Dim wbOpen  As Workbook
+    Dim FSo      As New FileSystemObject
     Dim WbName As String
     
     If Not mWbk.IsWbObject(wbk) And Not mWbk.IsFullName(wbk) And Not mWbk.IsName(wbk) And Not TypeName(wbk) = "String" _
@@ -604,39 +592,39 @@ Public Function IsOpen(ByVal wbk As Variant, _
     Set OpenWbks = mWbk.Opened
     If mWbk.IsName(wbk) Then
         '~~ wbk is a Workbook's Name including its extension
-        WbName = fso.GetFileName(wbk)
+        WbName = FSo.GetFileName(wbk)
         If OpenWbks.Exists(WbName) Then
             '~~ A Workbook with the same 'WbName' is open
-            Set OpenWbk = OpenWbks.Item(WbName)
+            Set wbOpen = OpenWbks.Item(WbName)
             '~~ When a Workbook's Name is provided the Workbook is only regarde open when the open
             '~~ Workbook has the same name (i.e. including its extension)
-            If fso.GetFile(OpenWbk.FullName).Name <> fso.GetFileName(wbk) Then Set OpenWbk = Nothing
+            If FSo.GetFile(wbOpen.FullName).Name <> FSo.GetFileName(wbk) Then Set wbOpen = Nothing
         End If
     ElseIf mWbk.IsFullName(wbk) Then
-        WbName = fso.GetFileName(wbk)
+        WbName = FSo.GetFileName(wbk)
         If OpenWbks.Exists(WbName) Then
             '~~ A Workbook with the same 'WbName' is open
-            Set OpenWbk = OpenWbks.Item(WbName)
+            Set wbOpen = OpenWbks.Item(WbName)
             '~~ The provided (wbk) specifies an exist Workbook file. This Workbook is regarded open (and returned as opject)
             '~~ when a Workbook with its Name (including the extension!) is open regardless in which location
-            If fso.GetFile(OpenWbk.FullName).Name <> fso.GetFileName(wbk) Then Set OpenWbk = Nothing
+            If FSo.GetFile(wbOpen.FullName).Name <> FSo.GetFileName(wbk) Then Set wbOpen = Nothing
         End If
     ElseIf mWbk.IsWbObject(wbk) Then
         WbName = wbk.Name
         If Opened.Exists(WbName) Then
-            Set OpenWbk = OpenWbks.Item(WbName)
+            Set wbOpen = OpenWbks.Item(WbName)
         End If
     Else
         '~~ If wbk is a Workbook's WbName it is regarded open when one with that WbName is open
         '~~ regrdless its extension
-        If OpenWbks.Exists(wbk) Then Set OpenWbk = OpenWbks.Item(wbk)
+        If OpenWbks.Exists(wbk) Then Set wbOpen = OpenWbks.Item(wbk)
     End If
     
-xt: If mWbk.IsWbObject(OpenWbk) Then
+xt: If mWbk.IsWbObject(wbOpen) Then
         IsOpen = True
-        Set wbk_result = OpenWbk
+        Set wbk_result = wbOpen
     End If
-    Set fso = Nothing
+    Set FSo = Nothing
     Exit Function
     
 eh: Select Case ErrMsg(ErrSrc(PROC))

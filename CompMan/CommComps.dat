@@ -1,0 +1,76 @@
+; Common Components used/hosted/private in the serviced Workbook. The values are maintained for any Common Component used or hosted when it is exported due
+; to a modification. In case, these values are copied to the pending release registered Common Component.
+; - LastModAt           : Date/time of the last modification date/time (the export file's creation date repectively)
+; - LastModBy           : User, which had made the last modification
+; - LastModExpFileOrigin: Indicates the 'origin'! of the export file (may point to an export file not available on or not accessable by the used compunter)
+; - LastModIn           : The Workbook/VB-Project in which the last code modification had been made (may point to a Workbook om another computer)
+; - LastModOn           : The computer on which the last modification had been made in the above Workbook.
+; =========================================================================================================================================================
+[@NamesHousekeeping]
+DoneNamesHskpng_1=LastModAt<LastUpdateAtDatTime<LastModAtDatTime<LastModifiedAtDatTime<RawRevisionNumber
+DoneNamesHskpng_2=LastModExpFileOrigin<RawExpFileFullName
+DoneNamesHskpng_3=LastModIn<LastModInWrkbook<LastUpdateModIn<LastUpdateModIn<LastModInWrkbkFullName
+DoneNamesHskpng_4=LastModOn<LastUpdateModOn<LastModOnMachine
+DoneNamesHskpng_5=DueModificationWarning>
+DoneNamesHskpng_6=UsedExportFolder>
+
+[fMsg]
+KindOfComponent=used
+LastModAt=2024-12-20 13:31:20 (UTC)
+LastModBy=warbe
+LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\source\fMsg.frm
+LastModIn=E:\Sync\Excel VBA\DevAndTest\Wbk\Wbk.xlsm
+LastModOn=THINKPAD-YOGA
+
+[mBasic]
+KindOfComponent=used
+LastModAt=2024-12-20 13:31:21 (UTC)
+LastModBy=warbe
+LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\source\mBasic.bas
+LastModIn=E:\Sync\Excel VBA\DevAndTest\Wbk\Wbk.xlsm
+LastModOn=THINKPAD-YOGA
+
+[mCompManClient]
+KindOfComponent=used
+LastModAt=2024-12-20 14:12:19 (UTC)
+LastModBy=warbe
+LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\source\mCompManClient.bas
+LastModIn=E:\Sync\Excel VBA\DevAndTest\Wbk\Wbk.xlsm
+LastModOn=THINKPAD-YOGA
+
+[mErH]
+KindOfComponent=used
+LastModAt=2024-12-20 14:12:22 (UTC)
+LastModBy=warbe
+LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\source\mErH.bas
+LastModIn=E:\Sync\Excel VBA\DevAndTest\Wbk\Wbk.xlsm
+LastModOn=THINKPAD-YOGA
+
+[mMsg]
+KindOfComponent=used
+LastModAt=2024-12-20 14:12:27 (UTC)
+LastModBy=warbe
+LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\source\mMsg.bas
+LastModIn=E:\Sync\Excel VBA\DevAndTest\Wbk\Wbk.xlsm
+LastModOn=THINKPAD-YOGA
+
+[mTrc]
+KindOfComponent=used
+LastModAt=2024-12-20 14:13:27 (UTC)
+LastModBy=warbe
+LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\source\mTrc.bas
+LastModIn=E:\Sync\Excel VBA\DevAndTest\Wbk\Wbk.xlsm
+LastModOn=THINKPAD-YOGA
+
+[mWbk]
+KindOfComponent=hosted
+LastModAt=2024-12-20 13:31:20 (UTC)
+LastModBy=warbe
+LastModExpFileOrigin=E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\source\mWbk.bas
+LastModIn=E:\Sync\Excel VBA\DevAndTest\Wbk\Wbk.xlsm
+LastModOn=THINKPAD-YOGA
+; ----------------------------------------------------------------------------------------------
+; This Private Profile file is maintained by services provided by the class module "clsPrivProf"
+; (see the public Common Component in https://github.com/warbe-maker/VBA-Private-Profile).
+; Main services are: Section separation, optional file header/footer, sections and value-names
+; are maintained in alphabetical ascending order, optional section-/value headers/comments.

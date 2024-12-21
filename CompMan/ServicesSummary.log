@@ -1,0 +1,136 @@
+24-12-20-14:56:37  Standard-Module  mCompManClient.:  Code change: Line 0002 Serviced (CodeModule)....: ' Standard Module mCompManClient: CompMan client interface. To be imported 
+24-12-20-14:56:37                                     Code change: Line 0002 Serviced (Export-File)...: ' Standard Module mCompManClient: InterfaceCompMan services (Export Changed 
+24-12-20-14:56:37  Standard-Module  mErH...........:  Code change: Line 0025 Serviced (CodeModule)....: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg. `MsgComp = 1` 
+24-12-20-14:56:37                                     Code change: Line 0025 Serviced (Export-File)...: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg.               
+24-12-20-14:56:37  Standard-Module  mMsg...........:  Code change: Line 0005 Serviced (CodeModule)....: ' Box         In analogy to the MsgBox, provides a simple message but with all             
+24-12-20-14:56:37                                     Code change: Line 0005 Serviced (Export-File)...: ' ----------------                                                                         
+24-12-20-14:56:37  Standard-Module  mTrc...........:  Code change: Line 0006 Serviced (CodeModule)....: ' in case the execution terminates by exception. When this module is installed             
+24-12-20-14:56:37                                     Code change: Line 0006 Serviced (Export-File)...: ' in case the execution terminates by exception. When this module is                       
+24-12-20-14:56:38  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                                                                           
+24-12-20-14:56:38                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                            
+24-12-20-14:56:38  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:                                                                                           
+24-12-20-14:56:38                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                            
+24-12-20-14:56:39  Standard-Module  mWbk...........:  Serviced Common Component properties housekeeping:                                                                                           
+24-12-20-14:56:39                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                            
+24-12-20-14:56:39 ===============================================================================================================================================================================
+24-12-20-14:56:39 ------------------------------------------------------ Update Outdated Common Components (by CompMan.xlsb) for Wbk.xlsm -------------------------------------------------------
+24-12-20-14:56:39 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+24-12-20-14:56:39  Standard-Module  mCompManClient  Code change: Line 0002 Serviced (CodeModule)...: ' Standard Module mCompManClient: CompMan client interface. To be imported                  
+24-12-20-14:56:39                                   Code change: Line 0002 Public (Export-File)....: ' Standard Module mCompManClient: InterfaceCompMan services (Export Changed                 
+24-12-20-14:56:39  Standard-Module  mErH            Code change: Line 0025 Serviced (CodeModule)...: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg. `MsgComp = 1`  
+24-12-20-14:56:39                                   Code change: Line 0025 Public (Export-File)....: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg.                
+24-12-20-14:56:39  Standard-Module  mMsg            Code change: Line 0005 Serviced (CodeModule)...: ' Box         In analogy to the MsgBox, provides a simple message but with all              
+24-12-20-14:56:39                                   Code change: Line 0005 Public (Export-File)....: ' ----------------                                                                          
+24-12-20-14:56:39  Standard-Module  mTrc            Code change: Line 0006 Serviced (CodeModule)...: ' in case the execution terminates by exception. When this module is installed              
+24-12-20-14:56:39                                   Code change: Line 0006 Public (Export-File)....: ' in case the execution terminates by exception. When this module is                        
+24-12-20-14:56:39  Standard-Module  mWbk            Serviced Common Component used is up-to-date                                                                                                 
+24-12-20-14:56:40  UserForm         fMsg            Serviced Common Component used is up-to-date                                                                                                 
+24-12-20-14:56:40  Standard-Module  mBasic          Serviced Common Component used is up-to-date                                                                                                 
+24-12-20-14:56:49  Standard-Module  mCompManClient  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                  
+24-12-20-15:07:34 ====================================================================================================================================================================
+24-12-20-15:07:34  Standard-Module  mCompManClient.:  Code difference Line 0002 Serviced (CodeModule)....: ' Standard Module mCompManClient: CompMan client interface. To be imported 
+24-12-20-15:07:34                                     Code difference Line 0002 Serviced (Export-File)...: ' Standard Module mCompManClient: InterfaceCompMan services (Export Changed 
+24-12-20-15:07:34  Standard-Module  mErH...........:  Code difference Line 0025 Serviced (CodeModule)....: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg. `MsgComp = 1` 
+24-12-20-15:07:34                                     Code difference Line 0025 Serviced (Export-File)...: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg.               
+24-12-20-15:07:34  Standard-Module  mMsg...........:  Code difference Line 0005 Serviced (CodeModule)....: ' Box         In analogy to the MsgBox, provides a simple message but with all             
+24-12-20-15:07:34                                     Code difference Line 0005 Serviced (Export-File)...: ' ----------------                                                                         
+24-12-20-15:07:34  Standard-Module  mTrc...........:  Code difference Line 0006 Serviced (CodeModule)....: ' in case the execution terminates by exception. When this module is installed             
+24-12-20-15:07:34                                     Code difference Line 0006 Serviced (Export-File)...: ' in case the execution terminates by exception. When this module is                       
+24-12-20-15:07:34  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                                                                              
+24-12-20-15:07:34                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                               
+24-12-20-15:07:34  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:                                                                                              
+24-12-20-15:07:34                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                               
+24-12-20-15:07:35  Standard-Module  mWbk...........:  Serviced Common Component properties housekeeping:                                                                                              
+24-12-20-15:07:35                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                               
+24-12-20-15:07:35 ==================================================================================================================================================================================
+24-12-20-15:07:35 -------------------------------------------------------- Update Outdated Common Components (by CompMan.xlsb) for Wbk.xlsm --------------------------------------------------------
+24-12-20-15:07:35 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+24-12-20-15:07:35  Standard-Module  mCompManClient  Code difference Line 0002 Serviced (CodeModule)...: ' Standard Module mCompManClient: CompMan client interface. To be imported                  
+24-12-20-15:07:35                                   Code difference Line 0002 Public (Export-File)....: ' Standard Module mCompManClient: InterfaceCompMan services (Export Changed                 
+24-12-20-15:07:35  Standard-Module  mErH            Code difference Line 0025 Serviced (CodeModule)...: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg. `MsgComp = 1`  
+24-12-20-15:07:35                                   Code difference Line 0025 Public (Export-File)....: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg.                
+24-12-20-15:07:35  Standard-Module  mMsg            Code difference Line 0005 Serviced (CodeModule)...: ' Box         In analogy to the MsgBox, provides a simple message but with all              
+24-12-20-15:07:35                                   Code difference Line 0005 Public (Export-File)....: ' ----------------                                                                          
+24-12-20-15:07:35  Standard-Module  mTrc            Code difference Line 0006 Serviced (CodeModule)...: ' in case the execution terminates by exception. When this module is installed              
+24-12-20-15:07:35                                   Code difference Line 0006 Public (Export-File)....: ' in case the execution terminates by exception. When this module is                        
+24-12-20-15:07:35  Standard-Module  mWbk            Serviced Common Component used is up-to-date                                                                                                    
+24-12-20-15:07:35  UserForm         fMsg            Serviced Common Component used is up-to-date                                                                                                    
+24-12-20-15:07:35  Standard-Module  mBasic          Serviced Common Component used is up-to-date                                                                                                    
+24-12-20-15:12:12 ====================================================================================================================================================================
+24-12-20-15:12:12  Standard-Module  mCompManClient.:  Code difference Line 0002 Serviced (CodeModule)....: ' Standard Module mCompManClient: CompMan client interface. To be imported 
+24-12-20-15:12:12                                     Code difference Line 0002 Serviced (Export-File)...: ' Standard Module mCompManClient: InterfaceCompMan services (Export Changed 
+24-12-20-15:12:13  Standard-Module  mErH...........:  Code difference Line 0025 Serviced (CodeModule)....: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg. `MsgComp = 1` 
+24-12-20-15:12:13                                     Code difference Line 0025 Serviced (Export-File)...: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg.               
+24-12-20-15:12:13  Standard-Module  mMsg...........:  Code difference Line 0005 Serviced (CodeModule)....: ' Box         In analogy to the MsgBox, provides a simple message but with all             
+24-12-20-15:12:13                                     Code difference Line 0005 Serviced (Export-File)...: ' ----------------                                                                         
+24-12-20-15:12:13  Standard-Module  mTrc...........:  Code difference Line 0006 Serviced (CodeModule)....: ' in case the execution terminates by exception. When this module is installed             
+24-12-20-15:12:13                                     Code difference Line 0006 Serviced (Export-File)...: ' in case the execution terminates by exception. When this module is                       
+24-12-20-15:12:13  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                                                                              
+24-12-20-15:12:13                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                               
+24-12-20-15:12:14  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:                                                                                              
+24-12-20-15:12:14                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                               
+24-12-20-15:12:14  Standard-Module  mWbk...........:  Serviced Common Component properties housekeeping:                                                                                              
+24-12-20-15:12:14                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                               
+24-12-20-15:12:14 ==================================================================================================================================================================================
+24-12-20-15:12:14 -------------------------------------------------------- Update Outdated Common Components (by CompMan.xlsb) for Wbk.xlsm --------------------------------------------------------
+24-12-20-15:12:14 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+24-12-20-15:12:14  Standard-Module  mCompManClient  Code difference Line 0002 Serviced (CodeModule)...: ' Standard Module mCompManClient: CompMan client interface. To be imported                  
+24-12-20-15:12:14                                   Code difference Line 0002 Public (Export-File)....: ' Standard Module mCompManClient: InterfaceCompMan services (Export Changed                 
+24-12-20-15:12:14  Standard-Module  mErH            Code difference Line 0025 Serviced (CodeModule)...: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg. `MsgComp = 1`  
+24-12-20-15:12:14                                   Code difference Line 0025 Public (Export-File)....: ' fMsg/mMsg   Used only when installed and activated by the Cond. Comp. Arg.                
+24-12-20-15:12:15  Standard-Module  mMsg            Code difference Line 0005 Serviced (CodeModule)...: ' Box         In analogy to the MsgBox, provides a simple message but with all              
+24-12-20-15:12:15                                   Code difference Line 0005 Public (Export-File)....: ' ----------------                                                                          
+24-12-20-15:12:15  Standard-Module  mTrc            Code difference Line 0006 Serviced (CodeModule)...: ' in case the execution terminates by exception. When this module is installed              
+24-12-20-15:12:15                                   Code difference Line 0006 Public (Export-File)....: ' in case the execution terminates by exception. When this module is                        
+24-12-20-15:12:15  Standard-Module  mWbk            Serviced Common Component used is up-to-date                                                                                                    
+24-12-20-15:12:15  UserForm         fMsg            Serviced Common Component used is up-to-date                                                                                                    
+24-12-20-15:12:15  Standard-Module  mBasic          Serviced Common Component used is up-to-date                                                                                                    
+24-12-20-15:12:19  Standard-Module  mCompManClient  Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                     
+24-12-20-15:12:23  Standard-Module  mErH            Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                     
+24-12-20-15:12:27  Standard-Module  mMsg            Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                                     
+24-12-20-15:13:20 ========================================================================================================================================================================
+24-12-20-15:13:20  Standard-Module  mTrc...........:  Code difference Line 0006 Serviced (CodeModule)....: ' in case the execution terminates by exception. When this module is installed 
+24-12-20-15:13:20                                     Code difference Line 0006 Serviced (Export-File)...: ' in case the execution terminates by exception. When this module is           
+24-12-20-15:13:21  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:                                                                                  
+24-12-20-15:13:21                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                   
+24-12-20-15:13:21  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:                                                                                  
+24-12-20-15:13:21                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                   
+24-12-20-15:13:21  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                                                                  
+24-12-20-15:13:21                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                   
+24-12-20-15:13:21  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                                                                  
+24-12-20-15:13:21                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                   
+24-12-20-15:13:21  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                                                                  
+24-12-20-15:13:21                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                   
+24-12-20-15:13:22  Standard-Module  mWbk...........:  Serviced Common Component properties housekeeping:                                                                                  
+24-12-20-15:13:22                                     Serviced Common Component's Export-File meets public: Properties set equal public                                                   
+24-12-20-15:13:22 ======================================================================================================================================================================
+24-12-20-15:13:22 -------------------------------------------------- Update Outdated Common Components (by CompMan.xlsb) for Wbk.xlsm --------------------------------------------------
+24-12-20-15:13:22 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+24-12-20-15:13:22  Standard-Module  mTrc            Code difference Line 0006 Serviced (CodeModule)...: ' in case the execution terminates by exception. When this module is installed  
+24-12-20-15:13:22                                   Code difference Line 0006 Public (Export-File)....: ' in case the execution terminates by exception. When this module is            
+24-12-20-15:13:22  Standard-Module  mWbk            Serviced Common Component used is up-to-date                                                                                        
+24-12-20-15:13:22  UserForm         fMsg            Serviced Common Component used is up-to-date                                                                                        
+24-12-20-15:13:23  Standard-Module  mBasic          Serviced Common Component used is up-to-date                                                                                        
+24-12-20-15:13:23  Standard-Module  mCompManClient  Serviced Common Component used is up-to-date                                                                                        
+24-12-20-15:13:23  Standard-Module  mErH            Serviced Common Component used is up-to-date                                                                                        
+24-12-20-15:13:23  Standard-Module  mMsg            Serviced Common Component used is up-to-date                                                                                        
+24-12-20-15:13:28  Standard-Module  mTrc            Serviced Common Component updated by re-import of the public Export-File from the Common-Components folder.                         
+24-12-20-15:13:53 =================================================================================================
+24-12-20-15:13:53  UserForm         fMsg...........:  Serviced Common Component properties housekeeping:           
+24-12-20-15:13:53                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+24-12-20-15:13:53  Standard-Module  mBasic.........:  Serviced Common Component properties housekeeping:                                
+24-12-20-15:13:53                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+24-12-20-15:13:53  Standard-Module  mCompManClient.:  Serviced Common Component properties housekeeping:                                
+24-12-20-15:13:53                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+24-12-20-15:13:53  Standard-Module  mErH...........:  Serviced Common Component properties housekeeping:                                
+24-12-20-15:13:53                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+24-12-20-15:13:53  Standard-Module  mMsg...........:  Serviced Common Component properties housekeeping:                                
+24-12-20-15:13:53                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+24-12-20-15:13:53  Standard-Module  mTrc...........:  Serviced Common Component properties housekeeping:                                
+24-12-20-15:13:53                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+24-12-20-15:13:54  Standard-Module  mWbk...........:  Serviced Common Component properties housekeeping:                                
+24-12-20-15:13:54                                     Serviced Common Component's Export-File meets public: Properties set equal public 
+24-12-20-15:13:55 =====================================================================================================================================================
+24-12-20-15:13:55 --------------------------------------------- Export Changed Components (by CompMan.xlsb) for Wbk.xlsm ----------------------------------------------
+24-12-20-15:13:55 -----------------------------------------------------------------------------------------------------------------------------------------------------
+24-12-20-15:13:55 ExportChangedComponents (by CompMan.xlsb) for Wbk.xlsm: 0 of 10 exported  (see E:\Sync\Excel VBA\DevAndTest\Wbk\CompMan\Services.log for log details)
